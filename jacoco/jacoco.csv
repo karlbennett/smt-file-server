@@ -1,7 +1,7 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 smt-file-server,shiver.me.timbers.file.io,JavaFile,0,49,0,2,0,12,0,5,0,4
 smt-file-server,shiver.me.timbers.file.io,InvalidPathException,0,9,0,0,0,4,0,2,0,2
-smt-file-server,shiver.me.timbers.file.io,JavaFileSystemElement,2,164,1,19,0,35,1,19,0,10
+smt-file-server,shiver.me.timbers.file.io,JavaFileSystemElement,0,166,0,20,0,35,0,20,0,10
 smt-file-server,shiver.me.timbers.file.io,JavaDirectory,0,96,0,10,0,21,0,10,0,5
 smt-file-server,shiver.me.timbers.file.server,FilesConfiguration,0,3,0,0,0,1,0,1,0,1
 smt-file-server,shiver.me.timbers.file.server,FilesController.new Callable() {...},35,0,4,0,6,0,4,0,2,0
