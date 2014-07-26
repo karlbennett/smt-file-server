@@ -136,6 +136,8 @@ public class FileSystemElementSteps {
     public static void The_file_system_element_should_have_correct_equality(FileSystemElement left,
                                                                             final FileSystemElement right) {
 
+        assertEquals("the file system element should be equal to it's self.", left, left);
+
         assertEquals("the file system elements should be equal.", left, right);
 
         assertEquals("the file system element hash codes should be equal.", left.hashCode(), right.hashCode());

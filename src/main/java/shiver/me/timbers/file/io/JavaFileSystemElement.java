@@ -11,7 +11,7 @@ public class JavaFileSystemElement implements FileSystemElement {
 
     private final String name;
     private final String extension;
-    private final Date created;
+    private final Date modified;
 
     public JavaFileSystemElement(String path) {
         this(new java.io.File(path));
@@ -28,7 +28,7 @@ public class JavaFileSystemElement implements FileSystemElement {
         name = canonicalFile.getName();
         // Only files should have extensions.
         extension = shouldHaveExtension(canonicalFile) ? FilenameUtils.getExtension(name) : "";
-        created = new Date(canonicalFile.lastModified());
+        modified = new Date(canonicalFile.lastModified());
     }
 
     static java.io.File getCanonicalFile(java.io.File file) {
@@ -74,7 +74,7 @@ public class JavaFileSystemElement implements FileSystemElement {
 
     @Override
     public Date getModified() {
-        return created;
+        return modified;
     }
 
     @Override
@@ -87,13 +87,13 @@ public class JavaFileSystemElement implements FileSystemElement {
 
         if (this == o) return true;
 
-        if (!(o instanceof JavaFileSystemElement)) return false;
+        if (!(o instanceof FileSystemElement)) return false;
 
-        JavaFileSystemElement that = (JavaFileSystemElement) o;
+        FileSystemElement that = (FileSystemElement) o;
 
-        if (!created.equals(that.created)) return false;
-        if (!extension.equals(that.extension)) return false;
-        if (!name.equals(that.name)) return false;
+        if (!modified.equals(that.getModified())) return false;
+        if (!extension.equals(that.getExtension())) return false;
+        if (!name.equals(that.getName())) return false;
 
         return true;
     }
@@ -103,7 +103,7 @@ public class JavaFileSystemElement implements FileSystemElement {
 
         int result = name.hashCode();
         result = 31 * result + extension.hashCode();
-        result = 31 * result + created.hashCode();
+        result = 31 * result + modified.hashCode();
 
         return result;
     }
