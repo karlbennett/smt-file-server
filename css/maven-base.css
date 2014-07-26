@@ -1,0 +1,30 @@
+div.clear hr{
+  display: none;
+}
+#bannerLeft, #bannerRight {
+  font-size: xx-large;
+  font-weight: bold;
+}
+#leftColumn {
+ width: 170px;
+ float:left;
+ overflow: auto;
+}
+#navcolumn ul {
+  margin: 0;
+  padding: 0;
+  font-size: small;
+}
+#navcolumn li {
+  background-image: none;
+  list-style: none outside;
+  line-height: 1.2em;
+}
+.source {
+  padding: 12px;
+  margin: 1em 7px 1em 7px;
+}
+.source pre {
+  margin: 0px;
+  padding: 0px;
+}
