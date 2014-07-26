@@ -1,8 +1,11 @@
 package shiver.me.timbers.file.server;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.io.File;
 
 /**
  * Configuration class used to configure the Spring framework.
@@ -15,4 +18,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 // required package.
 @ComponentScan("shiver.me.timbers.file.server")
 public class FilesConfiguration {
+
+    @Bean
+    public static String rootPath() {
+
+        return Thread.currentThread().getContextClassLoader().getResource(".").getPath() + File.separator;
+    }
+
 }

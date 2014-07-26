@@ -1,5 +1,7 @@
 package shiver.me.timbers.file.server;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +12,7 @@ import shiver.me.timbers.file.io.InvalidPathException;
 import shiver.me.timbers.file.io.JavaDirectory;
 import shiver.me.timbers.file.io.JavaFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.concurrent.Callable;
 
@@ -23,39 +26,30 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * @author Karl Bennett
  */
 @RestController
-@RequestMapping("/")
 public class FilesController {
 
-    @RequestMapping(value = "/{file}", method = GET, produces = APPLICATION_JSON_VALUE)
-    public Callable<Object> retrieve(@PathVariable final File file) {
+    @Autowired
+    private String rootPath;
+
+    @RequestMapping(method = GET)
+    public Callable<Object> retrieve(final HttpServletRequest request) {
 
         return new Callable<Object>() {
 
             @Override
             public Object call() throws Exception {
 
+                final File file = new File(rootPath, request.getPathInfo()).getCanonicalFile();
+
                 if (file.isDirectory()) {
                     return new JavaDirectory(file);
                 }
 
                 if (file.isFile()) {
-                    return new JavaFile(file).getInputStream();
+                    return new FileSystemResource(file);
                 }
 
                 throw new InvalidPathException("No such file or directory.");
-            }
-        };
-    }
-
-    @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE)
-    public Callable<Directory> retrieve() {
-
-        return new Callable<Directory>() {
-
-            @Override
-            public Directory call() throws Exception {
-
-                return new JavaDirectory("");
             }
         };
     }
