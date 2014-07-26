@@ -1,4 +1,4 @@
-package shiver.me.timbers.file;
+package shiver.me.timbers.file.io;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -26,7 +26,8 @@ public class JavaFileSystemElement implements FileSystemElement {
         }
 
         name = canonicalFile.getName();
-        extension = FilenameUtils.getExtension(name);
+        // Only files should have extensions.
+        extension = shouldHaveExtension(canonicalFile) ? FilenameUtils.getExtension(name) : "";
         created = new Date(canonicalFile.lastModified());
     }
 
@@ -40,6 +41,25 @@ public class JavaFileSystemElement implements FileSystemElement {
 
             throw new InvalidPathException(format("Could not access file system at %s", file.getPath()), e);
         }
+    }
+
+    private static boolean shouldHaveExtension(java.io.File file) {
+
+        // Directories should not have an extension.
+        if (file.isDirectory()) {
+            return false;
+        }
+
+        if (null == file.getName()) {
+            return false;
+        }
+
+        // Handles when a filename starts with a '.' and has no there extension e.g. .gitignore
+        if (".".equals(file.getName().replace(FilenameUtils.getExtension(file.getName()), ""))) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

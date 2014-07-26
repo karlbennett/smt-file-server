@@ -1,8 +1,7 @@
 package shiver.me.timbers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +12,7 @@ import static java.io.File.separator;
 
 public class Constants {
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("dd-MM-yyyy HH:mm:ss");
+    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public static final File CURRENT_DIRECTORY_FILE = getCurrentDirectory();
     public static final String CURRENT_DIRECTORY_PATH = CURRENT_DIRECTORY_FILE.getPath();
@@ -32,7 +31,7 @@ public class Constants {
     public static final String DIRECTORY_THREE_PATH = buildPath(CURRENT_DIRECTORY_PATH, DIRECTORY_THREE_NAME);
     public static final Date DIRECTORY_THREE_MODIFICATION_DATE = getLastModified(DIRECTORY_THREE_PATH);
 
-    public static final String DIRECTORY_FOUR_NAME = "dirfour";
+    public static final String DIRECTORY_FOUR_NAME = ".dirfour";
     public static final String DIRECTORY_FOUR_PATH = buildPath(DIRECTORY_THREE_PATH, DIRECTORY_FOUR_NAME);
     public static final Date DIRECTORY_FOUR_MODIFICATION_DATE = getLastModified(DIRECTORY_FOUR_PATH);
 
@@ -43,12 +42,12 @@ public class Constants {
     public static final Date FILE_ONE_MODIFICATION_DATE = getLastModified(FILE_ONE_PATH);
     public static final String FILE_ONE_TEXT = readFileToString(FILE_ONE_PATH);
 
-    public static final String FILE_TWO_NAME = "FileTwo.txt";
+    public static final String FILE_TWO_NAME = ".FileTwo";
     public static final String FILE_TWO_PATH = buildPath(DIRECTORY_ONE_PATH, FILE_TWO_NAME);
     public static final Date FILE_TWO_MODIFICATION_DATE = getLastModified(FILE_TWO_PATH);
     public static final String FILE_TWO_TEXT = readFileToString(FILE_TWO_PATH);
 
-    public static final String FILE_THREE_NAME = "FileThree.txt";
+    public static final String FILE_THREE_NAME = ".FileThree.txt";
     public static final String FILE_THREE_PATH = buildPath(DIRECTORY_TWO_PATH, FILE_THREE_NAME);
     public static final Date FILE_THREE_MODIFICATION_DATE = getLastModified(FILE_THREE_PATH);
     public static final String FILE_THREE_TEXT = readFileToString(FILE_THREE_PATH);

@@ -1,4 +1,4 @@
-package shiver.me.timbers.file;
+package shiver.me.timbers.file.io;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -18,12 +18,13 @@ import static shiver.me.timbers.Constants.FILE_THREE_PATH;
 import static shiver.me.timbers.Constants.FILE_THREE_TEXT;
 import static shiver.me.timbers.Constants.FILE_TWO_PATH;
 import static shiver.me.timbers.Constants.FILE_TWO_TEXT;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_file_should_have_correct_equality;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_file_should_have_the_correct_to_string_value;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_files_extension_should_be_correct;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_files_modification_date_should_be_correct;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_files_name_should_be_correct;
-import static shiver.me.timbers.file.JavaFile.getInputStream;
+import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_should_be_able_to_be_serialised;
+import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_should_have_correct_equality;
+import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_should_have_the_correct_to_string_value;
+import static shiver.me.timbers.file.io.FileSystemElementSteps.The_files_extension_should_be_correct;
+import static shiver.me.timbers.file.io.FileSystemElementSteps.The_files_modification_date_should_be_correct;
+import static shiver.me.timbers.file.io.FileSystemElementSteps.The_files_name_should_be_correct;
+import static shiver.me.timbers.file.io.JavaFile.getInputStream;
 
 public class JavaFileTest {
 
@@ -100,6 +101,12 @@ public class JavaFileTest {
     public void I_can_to_string_a_file() {
 
         The_file_should_have_the_correct_to_string_value(new JavaFileCreator());
+    }
+
+    @Test
+    public void I_can_serialise_a_file() {
+
+        The_file_should_be_able_to_be_serialised(new JavaFileCreator());
     }
 
     @Test

@@ -1,4 +1,4 @@
-package shiver.me.timbers.file;
+package shiver.me.timbers.file.io;
 
 /**
  * This exception is thrown when a file is {@link FileSystemElement} is created with a path to a file that does not

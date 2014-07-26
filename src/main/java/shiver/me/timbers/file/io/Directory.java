@@ -1,4 +1,4 @@
-package shiver.me.timbers.file;
+package shiver.me.timbers.file.io;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public interface Directory extends FileSystemElement {
 
     /**
      * @return a list of {@code FileSystemElement} instances so that the directory lookup doesn't recurs through the
-     * entire directory tree.
+     *         entire directory tree.
      */
     public List<FileSystemElement> getDirectories();
 

@@ -1,4 +1,4 @@
-package shiver.me.timbers.file;
+package shiver.me.timbers.file.io;
 
 import org.junit.Test;
 
@@ -19,16 +19,12 @@ import static shiver.me.timbers.Constants.FILE_ONE_PATH;
 import static shiver.me.timbers.Constants.FILE_THREE_PATH;
 import static shiver.me.timbers.Constants.FILE_TWO_PATH;
 import static shiver.me.timbers.Constants.buildPath;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_directories_extension_should_be_correct;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_directories_modification_date_should_be_correct;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_directories_name_should_be_correct;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_directory_should_have_correct_equality;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_directory_should_have_the_correct_to_string_value;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_file_should_have_correct_equality;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_file_should_have_the_correct_to_string_value;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_files_extension_should_be_correct;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_files_modification_date_should_be_correct;
-import static shiver.me.timbers.file.FileSystemElementSteps.The_files_name_should_be_correct;
+import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_extension_should_be_correct;
+import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_modification_date_should_be_correct;
+import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_name_should_be_correct;
+import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directory_should_be_able_to_be_serialised;
+import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directory_should_have_correct_equality;
+import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directory_should_have_the_correct_to_string_value;
 
 public class JavaDirectoryTest {
 
@@ -170,6 +166,12 @@ public class JavaDirectoryTest {
     private static void The_directories_list_of_files_should_be_correct(Directory directory) {
 
         assertThat("the list of files should be empty.", directory.getFiles(), empty());
+    }
+
+    @Test
+    public void I_can_serialise_a_directory() {
+
+        The_directory_should_be_able_to_be_serialised(new JavaDirectoryCreator());
     }
 
     private static class JavaDirectoryCreator implements FileSystemElementCreator {

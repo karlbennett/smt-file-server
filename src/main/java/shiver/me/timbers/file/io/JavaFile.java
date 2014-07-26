@@ -1,4 +1,6 @@
-package shiver.me.timbers.file;
+package shiver.me.timbers.file.io;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,6 +28,7 @@ public class JavaFile extends JavaFileSystemElement implements File {
         this.file = canonicalFile;
     }
 
+    @JsonIgnore
     @Override
     public InputStream getInputStream() {
 
