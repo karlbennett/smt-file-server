@@ -12,16 +12,26 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
+import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static shiver.me.timbers.Constants.DIRECTORY_FOUR_MODIFICATION_DATE;
-import static shiver.me.timbers.Constants.DIRECTORY_ONE_ABSOLUTE_PATH;
-import static shiver.me.timbers.Constants.DIRECTORY_ONE_NAME;
-import static shiver.me.timbers.Constants.FILE_ONE_ABSOLUTE_PATH;
-import static shiver.me.timbers.Constants.FILE_ONE_TEXT;
+import static shiver.me.timbers.DirectoryConstants.DIRECTORY_FOUR_MODIFICATION_DATE;
+import static shiver.me.timbers.DirectoryConstants.DIRECTORY_ONE_ABSOLUTE_PATH;
+import static shiver.me.timbers.DirectoryConstants.DIRECTORY_ONE_NAME;
+import static shiver.me.timbers.FileConstants.FILE_EIGHT_ABSOLUTE_PATH;
+import static shiver.me.timbers.FileConstants.FILE_EIGHT_CONTENT;
+import static shiver.me.timbers.FileConstants.FILE_FIVE_ABSOLUTE_PATH;
+import static shiver.me.timbers.FileConstants.FILE_FIVE_TEXT;
+import static shiver.me.timbers.FileConstants.FILE_ONE_ABSOLUTE_PATH;
+import static shiver.me.timbers.FileConstants.FILE_ONE_TEXT;
+import static shiver.me.timbers.FileConstants.FILE_SEVEN_ABSOLUTE_PATH;
+import static shiver.me.timbers.FileConstants.FILE_SEVEN_CONTENT;
+import static shiver.me.timbers.FileConstants.FILE_SIX_ABSOLUTE_PATH;
+import static shiver.me.timbers.FileConstants.FILE_SIX_TEXT;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FilesConfiguration.class)
@@ -67,6 +77,42 @@ public class FilesControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TEXT_PLAIN))
                 .andExpect(content().string(FILE_ONE_TEXT));
+    }
+
+    @Test
+    public void I_can_request_a_json_file() throws Exception {
+
+        mockMvc.perform(get("/file").requestAttr("path", FILE_FIVE_ABSOLUTE_PATH))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
+                .andExpect(content().string(FILE_FIVE_TEXT));
+    }
+
+    @Test
+    public void I_can_request_an_xml_file() throws Exception {
+
+        mockMvc.perform(get("/file").requestAttr("path", FILE_SIX_ABSOLUTE_PATH))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_XML_VALUE))
+                .andExpect(content().string(FILE_SIX_TEXT));
+    }
+
+    @Test
+    public void I_can_request_a_png_file() throws Exception {
+
+        mockMvc.perform(get("/file").requestAttr("path", FILE_SEVEN_ABSOLUTE_PATH))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(IMAGE_PNG))
+                .andExpect(content().bytes(FILE_SEVEN_CONTENT));
+    }
+
+    @Test
+    public void I_can_request_a_video_file() throws Exception {
+
+        mockMvc.perform(get("/file").requestAttr("path", FILE_EIGHT_ABSOLUTE_PATH))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("video/mp4"))
+                .andExpect(content().bytes(FILE_EIGHT_CONTENT));
     }
 
     @Test

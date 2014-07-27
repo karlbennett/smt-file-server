@@ -6,20 +6,20 @@ import java.io.IOException;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static shiver.me.timbers.Constants.FILE_ONE_NAME;
 import static shiver.me.timbers.Constants.TEST_DIRECTORY_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_extension_should_be_correct;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_modification_date_should_be_correct;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_name_should_be_correct;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directory_should_be_able_to_be_serialised;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directory_should_have_correct_equality;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directory_should_have_the_correct_to_string_value;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_should_be_able_to_be_serialised;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_should_have_correct_equality;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_should_have_the_correct_to_string_value;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_files_extension_should_be_correct;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_files_modification_date_should_be_correct;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_files_name_should_be_correct;
+import static shiver.me.timbers.FileConstants.FILE_ONE_NAME;
+import static shiver.me.timbers.file.io.DirectorySteps.The_directories_extension_should_be_correct;
+import static shiver.me.timbers.file.io.DirectorySteps.The_directories_modification_date_should_be_correct;
+import static shiver.me.timbers.file.io.DirectorySteps.The_directories_name_should_be_correct;
+import static shiver.me.timbers.file.io.DirectorySteps.The_directory_should_be_able_to_be_serialised;
+import static shiver.me.timbers.file.io.DirectorySteps.The_directory_should_have_correct_equality;
+import static shiver.me.timbers.file.io.DirectorySteps.The_directory_should_have_the_correct_to_string_value;
+import static shiver.me.timbers.file.io.FileSteps.The_file_should_be_able_to_be_serialised;
+import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_correct_equality;
+import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_the_correct_to_string_value;
+import static shiver.me.timbers.file.io.FileSteps.The_files_extension_should_be_correct;
+import static shiver.me.timbers.file.io.FileSteps.The_files_modification_date_should_be_correct;
+import static shiver.me.timbers.file.io.FileSteps.The_files_name_should_be_correct;
 
 public class JavaFileSystemElementTest {
 

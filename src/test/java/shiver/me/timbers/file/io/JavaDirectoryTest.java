@@ -4,30 +4,34 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static shiver.me.timbers.Constants.DIRECTORY_FOUR_ABSOLUTE_PATH;
-import static shiver.me.timbers.Constants.DIRECTORY_ONE_ABSOLUTE_PATH;
-import static shiver.me.timbers.Constants.DIRECTORY_ONE_NAME;
-import static shiver.me.timbers.Constants.DIRECTORY_THREE_ABSOLUTE_PATH;
-import static shiver.me.timbers.Constants.DIRECTORY_TWO_ABSOLUTE_PATH;
-import static shiver.me.timbers.Constants.FILE_FOUR_ABSOLUTE_PATH;
-import static shiver.me.timbers.Constants.FILE_ONE_ABSOLUTE_PATH;
-import static shiver.me.timbers.Constants.FILE_THREE_ABSOLUTE_PATH;
-import static shiver.me.timbers.Constants.FILE_TWO_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.TEST_DIRECTORY_ABSOLUTE_PATH;
-import static shiver.me.timbers.Constants.TEST_PROPERTIES_FILE_ABSOLUTE_PATH;
-import static shiver.me.timbers.Constants.buildAbsolutePath;
-import static shiver.me.timbers.Constants.buildTestPath;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_extension_should_be_correct;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_modification_date_should_be_correct;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_name_should_be_correct;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directory_should_be_able_to_be_serialised;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directory_should_have_correct_equality;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directory_should_have_the_correct_to_string_value;
+import static shiver.me.timbers.DirectoryConstants.DIRECTORY_FOUR_ABSOLUTE_PATH;
+import static shiver.me.timbers.DirectoryConstants.DIRECTORY_ONE_ABSOLUTE_PATH;
+import static shiver.me.timbers.DirectoryConstants.DIRECTORY_ONE_NAME;
+import static shiver.me.timbers.DirectoryConstants.DIRECTORY_THREE_ABSOLUTE_PATH;
+import static shiver.me.timbers.DirectoryConstants.DIRECTORY_TWO_ABSOLUTE_PATH;
+import static shiver.me.timbers.DirectoryConstants.buildAbsolutePath;
+import static shiver.me.timbers.DirectoryConstants.buildTestPath;
+import static shiver.me.timbers.FileConstants.FILE_EIGHT_ABSOLUTE_PATH;
+import static shiver.me.timbers.FileConstants.FILE_FIVE_ABSOLUTE_PATH;
+import static shiver.me.timbers.FileConstants.FILE_FOUR_ABSOLUTE_PATH;
+import static shiver.me.timbers.FileConstants.FILE_ONE_ABSOLUTE_PATH;
+import static shiver.me.timbers.FileConstants.FILE_SEVEN_ABSOLUTE_PATH;
+import static shiver.me.timbers.FileConstants.FILE_SIX_ABSOLUTE_PATH;
+import static shiver.me.timbers.FileConstants.FILE_THREE_ABSOLUTE_PATH;
+import static shiver.me.timbers.FileConstants.FILE_TWO_ABSOLUTE_PATH;
+import static shiver.me.timbers.FileConstants.TEST_PROPERTIES_FILE_ABSOLUTE_PATH;
+import static shiver.me.timbers.file.io.DirectorySteps.The_directories_extension_should_be_correct;
+import static shiver.me.timbers.file.io.DirectorySteps.The_directories_modification_date_should_be_correct;
+import static shiver.me.timbers.file.io.DirectorySteps.The_directories_name_should_be_correct;
+import static shiver.me.timbers.file.io.DirectorySteps.The_directory_should_be_able_to_be_serialised;
+import static shiver.me.timbers.file.io.DirectorySteps.The_directory_should_have_correct_equality;
+import static shiver.me.timbers.file.io.DirectorySteps.The_directory_should_have_the_correct_to_string_value;
 
 public class JavaDirectoryTest {
 
@@ -43,6 +47,10 @@ public class JavaDirectoryTest {
     private static final File FILE_TWO = new JavaFile(FILE_TWO_ABSOLUTE_PATH);
     private static final File FILE_THREE = new JavaFile(FILE_THREE_ABSOLUTE_PATH);
     private static final File FILE_FOUR = new JavaFile(FILE_FOUR_ABSOLUTE_PATH);
+    private static final File FILE_FIVE = new JavaFile(FILE_FIVE_ABSOLUTE_PATH);
+    private static final File FILE_SIX = new JavaFile(FILE_SIX_ABSOLUTE_PATH);
+    private static final File FILE_SEVEN = new JavaFile(FILE_SEVEN_ABSOLUTE_PATH);
+    private static final File FILE_EIGHT = new JavaFile(FILE_EIGHT_ABSOLUTE_PATH);
 
     @Test(expected = NullPointerException.class)
     public void I_cannot_create_a_directory_with_a_null_path() {
@@ -149,7 +157,8 @@ public class JavaDirectoryTest {
     @Test
     public void I_can_get_a_directories_file_list() {
 
-        The_directories_list_of_files_should_be_correct(TEST_DIRECTORY, TEST_PROPERTIES_FILE, FILE_ONE);
+        The_directories_list_of_files_should_be_correct(TEST_DIRECTORY, TEST_PROPERTIES_FILE, FILE_ONE, FILE_FIVE,
+                FILE_SIX, FILE_SEVEN, FILE_EIGHT);
         The_directories_list_of_files_should_be_correct(DIRECTORY_ONE, FILE_TWO);
         The_directories_list_of_files_should_be_correct(DIRECTORY_TWO, FILE_THREE);
         The_directories_list_of_files_should_be_correct(DIRECTORY_THREE);
@@ -159,7 +168,8 @@ public class JavaDirectoryTest {
     private static void The_directories_list_of_directories_should_be_correct(Directory directory,
                                                                               FileSystemElement... directories) {
 
-        assertThat("the list of directories should be correct.", directory.getDirectories(), contains(directories));
+        assertThat("the list of directories should be correct.", directory.getDirectories(),
+                containsInAnyOrder(directories));
     }
 
     private static void The_directories_list_of_directories_should_be_correct(Directory directory) {
@@ -170,7 +180,7 @@ public class JavaDirectoryTest {
     private static void The_directories_list_of_files_should_be_correct(Directory directory,
                                                                         File... files) {
 
-        assertThat("the list of files should be correct.", directory.getFiles(), contains(files));
+        assertThat("the list of files should be correct.", directory.getFiles(), containsInAnyOrder(files));
     }
 
     private static void The_directories_list_of_files_should_be_correct(Directory directory) {
