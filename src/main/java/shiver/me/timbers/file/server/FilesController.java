@@ -1,59 +1,49 @@
 package shiver.me.timbers.file.server;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import shiver.me.timbers.file.io.Directory;
 import shiver.me.timbers.file.io.InvalidPathException;
 import shiver.me.timbers.file.io.JavaDirectory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.util.concurrent.Callable;
+import java.io.IOException;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 /**
- * Controller for mapping the file requests.
+ * Controller for mapping the file and directory requests.
  *
  * @author Karl Bennett
  */
 @RestController
 public class FilesController {
 
-    @Autowired
-    private String rootPath;
+    @ModelAttribute
+    public String path(HttpServletRequest request) {
 
-    @RequestMapping(method = GET)
-    public Callable<Object> retrieve(final HttpServletRequest request) {
+        final Object path = request.getAttribute("path");
 
-        return new Callable<Object>() {
+        if (null == path) {
+            throw new InvalidPathException("No path provided.");
+        }
 
-            @Override
-            public Object call() throws Exception {
-
-                final File file = new File(rootPath, request.getPathInfo()).getCanonicalFile();
-
-                if (file.isDirectory()) {
-                    return new JavaDirectory(file);
-                }
-
-                if (file.isFile()) {
-                    return new FileSystemResource(file);
-                }
-
-                throw new InvalidPathException("No such file or directory.");
-            }
-        };
+        return path.toString();
     }
 
-    @ExceptionHandler
-    @ResponseStatus(NOT_FOUND)
-    public String invalidPath(InvalidPathException e) {
+    @RequestMapping(value = "/directory", method = GET, produces = APPLICATION_JSON_VALUE)
+    public Directory directory(@ModelAttribute String path) throws IOException {
 
-        return e.getMessage();
+        return new JavaDirectory(path);
+    }
+
+    @RequestMapping(value = "/file", method = GET)
+    public FileSystemResource file(@ModelAttribute String path) throws IOException {
+
+        return new FileSystemResource(new File(path));
     }
 }

@@ -12,14 +12,17 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FilesConfiguration.class)
-@WebAppConfiguration
+@WebAppConfiguration("classpath:")
 public class FilesConfigurationTest {
 
     @Autowired
     private ApplicationContext context;
 
     @Autowired
-    private FilesController controller;
+    private FilesRoutingController controller;
+
+    @Autowired
+    private String rootPath;
 
     @Test
     public void I_can_access_the_spring_context() {
@@ -31,5 +34,11 @@ public class FilesConfigurationTest {
     public void I_can_access_the_files_controller() {
 
         assertNotNull("the files controller should be available.", controller);
+    }
+
+    @Test
+    public void I_can_access_the_root_path() {
+
+        assertNotNull("the root path should be available.", rootPath);
     }
 }
