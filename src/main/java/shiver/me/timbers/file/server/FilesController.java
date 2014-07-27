@@ -33,9 +33,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 public class FilesController {
 
     @ModelAttribute
-    public String path(HttpServletRequest request) {
+    public String absolutePath(HttpServletRequest request) {
 
-        final Object path = request.getAttribute("path");
+        final Object path = request.getAttribute("absolutePath");
 
         if (null == path) {
             throw new InvalidPathException("No path provided.");

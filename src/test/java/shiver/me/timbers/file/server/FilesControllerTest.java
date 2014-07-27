@@ -38,6 +38,7 @@ import static shiver.me.timbers.FileConstants.FILE_SIX_TEXT;
 @WebAppConfiguration("classpath:")
 public class FilesControllerTest {
 
+    private static final String ATTRIBUTE_NAME = "absolutePath";
     private static final String ERROR_MESSAGE = "No path provided.";
 
     @Autowired
@@ -53,7 +54,7 @@ public class FilesControllerTest {
     @Test
     public void I_can_request_a_directory() throws Exception {
 
-        mockMvc.perform(get("/directory").requestAttr("path", DIRECTORY_ONE_ABSOLUTE_PATH))
+        mockMvc.perform(get("/directory").requestAttr(ATTRIBUTE_NAME, DIRECTORY_ONE_ABSOLUTE_PATH))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.name").value(DIRECTORY_ONE_NAME))
@@ -73,7 +74,7 @@ public class FilesControllerTest {
     @Test
     public void I_can_request_a_file() throws Exception {
 
-        mockMvc.perform(get("/file").requestAttr("path", FILE_ONE_ABSOLUTE_PATH))
+        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_ONE_ABSOLUTE_PATH))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TEXT_PLAIN))
                 .andExpect(content().string(FILE_ONE_TEXT));
@@ -82,7 +83,7 @@ public class FilesControllerTest {
     @Test
     public void I_can_request_a_json_file() throws Exception {
 
-        mockMvc.perform(get("/file").requestAttr("path", FILE_FIVE_ABSOLUTE_PATH))
+        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_FIVE_ABSOLUTE_PATH))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
                 .andExpect(content().string(FILE_FIVE_TEXT));
@@ -91,7 +92,7 @@ public class FilesControllerTest {
     @Test
     public void I_can_request_an_xml_file() throws Exception {
 
-        mockMvc.perform(get("/file").requestAttr("path", FILE_SIX_ABSOLUTE_PATH))
+        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_SIX_ABSOLUTE_PATH))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_XML_VALUE))
                 .andExpect(content().string(FILE_SIX_TEXT));
@@ -100,7 +101,7 @@ public class FilesControllerTest {
     @Test
     public void I_can_request_a_png_file() throws Exception {
 
-        mockMvc.perform(get("/file").requestAttr("path", FILE_SEVEN_ABSOLUTE_PATH))
+        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_SEVEN_ABSOLUTE_PATH))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(IMAGE_PNG))
                 .andExpect(content().bytes(FILE_SEVEN_CONTENT));
@@ -109,7 +110,7 @@ public class FilesControllerTest {
     @Test
     public void I_can_request_a_video_file() throws Exception {
 
-        mockMvc.perform(get("/file").requestAttr("path", FILE_EIGHT_ABSOLUTE_PATH))
+        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_EIGHT_ABSOLUTE_PATH))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("video/mp4"))
                 .andExpect(content().bytes(FILE_EIGHT_CONTENT));

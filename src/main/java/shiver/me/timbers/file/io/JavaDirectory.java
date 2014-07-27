@@ -9,11 +9,11 @@ public class JavaDirectory extends JavaFileSystemElement implements Directory {
     private final List<File> files;
 
     public JavaDirectory(String path) {
-        this(getCanonicalFile(new java.io.File(path)));
+        this(new java.io.File(path));
     }
 
     public JavaDirectory(String root, String path) {
-        this(getCanonicalFile(new java.io.File(root, path)));
+        this(new java.io.File(root, path));
     }
 
     public JavaDirectory(java.io.File file) {
