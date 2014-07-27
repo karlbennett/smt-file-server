@@ -11,6 +11,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static shiver.me.timbers.Constants.CURRENT_DIRECTORY_PATH;
 import static shiver.me.timbers.Constants.DIRECTORY_FOUR_PATH;
+import static shiver.me.timbers.Constants.DIRECTORY_ONE_NAME;
 import static shiver.me.timbers.Constants.DIRECTORY_ONE_PATH;
 import static shiver.me.timbers.Constants.DIRECTORY_THREE_PATH;
 import static shiver.me.timbers.Constants.DIRECTORY_TWO_PATH;
@@ -75,6 +76,12 @@ public class JavaDirectoryTest {
         when(file.exists()).thenReturn(true);
 
         new JavaDirectory(file);
+    }
+
+    @Test
+    public void I_can_create_a_java_file_system_element_with_a_root_and_path() {
+
+        new JavaDirectory(CURRENT_DIRECTORY_PATH, DIRECTORY_ONE_NAME);
     }
 
     @Test

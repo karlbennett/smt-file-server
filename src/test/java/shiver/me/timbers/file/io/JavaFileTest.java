@@ -9,9 +9,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static shiver.me.timbers.Constants.CURRENT_DIRECTORY_PATH;
 import static shiver.me.timbers.Constants.DIRECTORY_ONE_PATH;
 import static shiver.me.timbers.Constants.FILE_FOUR_PATH;
 import static shiver.me.timbers.Constants.FILE_FOUR_TEXT;
+import static shiver.me.timbers.Constants.FILE_ONE_NAME;
 import static shiver.me.timbers.Constants.FILE_ONE_PATH;
 import static shiver.me.timbers.Constants.FILE_ONE_TEXT;
 import static shiver.me.timbers.Constants.FILE_THREE_PATH;
@@ -59,6 +61,12 @@ public class JavaFileTest {
         when(file.getCanonicalFile()).thenThrow(new IOException());
 
         new JavaFile(file);
+    }
+
+    @Test
+    public void I_can_create_a_java_file_with_a_root_and_path() {
+
+        new JavaFile(CURRENT_DIRECTORY_PATH, FILE_ONE_NAME);
     }
 
     @Test(expected = InvalidPathException.class)

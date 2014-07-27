@@ -16,6 +16,10 @@ public class JavaFile extends JavaFileSystemElement implements File {
         this(new java.io.File(path));
     }
 
+    public JavaFile(String root, String path) {
+        this(new java.io.File(root, path));
+    }
+
     public JavaFile(java.io.File file) {
         super(file);
 

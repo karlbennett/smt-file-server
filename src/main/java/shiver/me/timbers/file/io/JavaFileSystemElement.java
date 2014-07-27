@@ -17,6 +17,10 @@ public class JavaFileSystemElement implements FileSystemElement {
         this(new java.io.File(path));
     }
 
+    public JavaFileSystemElement(String root, String path) {
+        this(new java.io.File(root, path));
+    }
+
     public JavaFileSystemElement(java.io.File file) {
 
         final java.io.File canonicalFile = getCanonicalFile(file);
