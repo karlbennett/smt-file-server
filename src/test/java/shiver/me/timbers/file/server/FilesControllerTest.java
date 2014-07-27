@@ -19,7 +19,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static shiver.me.timbers.DirectoryConstants.DIRECTORY_FOUR_MODIFICATION_DATE;
 import static shiver.me.timbers.DirectoryConstants.DIRECTORY_ONE_ABSOLUTE_PATH;
 import static shiver.me.timbers.DirectoryConstants.DIRECTORY_ONE_NAME;
 import static shiver.me.timbers.FileConstants.FILE_EIGHT_ABSOLUTE_PATH;
@@ -59,7 +58,7 @@ public class FilesControllerTest {
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.name").value(DIRECTORY_ONE_NAME))
                 .andExpect(jsonPath("$.extension").value(""))
-                .andExpect(jsonPath("$.modified").value(DIRECTORY_FOUR_MODIFICATION_DATE.getTime()));
+                .andExpect(jsonPath("$.modified").exists());
     }
 
     @Test
