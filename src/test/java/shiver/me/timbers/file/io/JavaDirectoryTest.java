@@ -9,16 +9,16 @@ import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static shiver.me.timbers.Constants.CURRENT_DIRECTORY_PATH;
-import static shiver.me.timbers.Constants.DIRECTORY_FOUR_PATH;
+import static shiver.me.timbers.Constants.CURRENT_DIRECTORY_ABSOLUTE_PATH;
+import static shiver.me.timbers.Constants.DIRECTORY_FOUR_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.DIRECTORY_ONE_NAME;
-import static shiver.me.timbers.Constants.DIRECTORY_ONE_PATH;
-import static shiver.me.timbers.Constants.DIRECTORY_THREE_PATH;
-import static shiver.me.timbers.Constants.DIRECTORY_TWO_PATH;
-import static shiver.me.timbers.Constants.FILE_FOUR_PATH;
-import static shiver.me.timbers.Constants.FILE_ONE_PATH;
-import static shiver.me.timbers.Constants.FILE_THREE_PATH;
-import static shiver.me.timbers.Constants.FILE_TWO_PATH;
+import static shiver.me.timbers.Constants.DIRECTORY_ONE_ABSOLUTE_PATH;
+import static shiver.me.timbers.Constants.DIRECTORY_THREE_ABSOLUTE_PATH;
+import static shiver.me.timbers.Constants.DIRECTORY_TWO_ABSOLUTE_PATH;
+import static shiver.me.timbers.Constants.FILE_FOUR_ABSOLUTE_PATH;
+import static shiver.me.timbers.Constants.FILE_ONE_ABSOLUTE_PATH;
+import static shiver.me.timbers.Constants.FILE_THREE_ABSOLUTE_PATH;
+import static shiver.me.timbers.Constants.FILE_TWO_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.buildPath;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_extension_should_be_correct;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_modification_date_should_be_correct;
@@ -29,17 +29,18 @@ import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directory_sho
 
 public class JavaDirectoryTest {
 
-    private static final Directory CURRENT_DIRECTORY = new JavaDirectory(CURRENT_DIRECTORY_PATH);
-    private static final Directory DIRECTORY_ONE = new JavaDirectory(DIRECTORY_ONE_PATH);
-    private static final Directory DIRECTORY_TWO = new JavaDirectory(DIRECTORY_TWO_PATH);
-    private static final Directory DIRECTORY_THREE = new JavaDirectory(DIRECTORY_THREE_PATH);
-    private static final Directory DIRECTORY_FOUR = new JavaDirectory(DIRECTORY_FOUR_PATH);
-    private static final Directory SHIVER_DIRECTORY = new JavaDirectory(buildPath(CURRENT_DIRECTORY_PATH, "shiver"));
+    private static final Directory CURRENT_DIRECTORY = new JavaDirectory(CURRENT_DIRECTORY_ABSOLUTE_PATH);
+    private static final Directory DIRECTORY_ONE = new JavaDirectory(DIRECTORY_ONE_ABSOLUTE_PATH);
+    private static final Directory DIRECTORY_TWO = new JavaDirectory(DIRECTORY_TWO_ABSOLUTE_PATH);
+    private static final Directory DIRECTORY_THREE = new JavaDirectory(DIRECTORY_THREE_ABSOLUTE_PATH);
+    private static final Directory DIRECTORY_FOUR = new JavaDirectory(DIRECTORY_FOUR_ABSOLUTE_PATH);
+    private static final Directory SHIVER_DIRECTORY = new JavaDirectory(buildPath(CURRENT_DIRECTORY_ABSOLUTE_PATH,
+            "shiver"));
 
-    private static final File FILE_ONE = new JavaFile(FILE_ONE_PATH);
-    private static final File FILE_TWO = new JavaFile(FILE_TWO_PATH);
-    private static final File FILE_THREE = new JavaFile(FILE_THREE_PATH);
-    private static final File FILE_FOUR = new JavaFile(FILE_FOUR_PATH);
+    private static final File FILE_ONE = new JavaFile(FILE_ONE_ABSOLUTE_PATH);
+    private static final File FILE_TWO = new JavaFile(FILE_TWO_ABSOLUTE_PATH);
+    private static final File FILE_THREE = new JavaFile(FILE_THREE_ABSOLUTE_PATH);
+    private static final File FILE_FOUR = new JavaFile(FILE_FOUR_ABSOLUTE_PATH);
 
     @Test(expected = NullPointerException.class)
     public void I_cannot_create_a_directory_with_a_null_path() {
@@ -81,7 +82,7 @@ public class JavaDirectoryTest {
     @Test
     public void I_can_create_a_java_file_system_element_with_a_root_and_path() {
 
-        new JavaDirectory(CURRENT_DIRECTORY_PATH, DIRECTORY_ONE_NAME);
+        new JavaDirectory(CURRENT_DIRECTORY_ABSOLUTE_PATH, DIRECTORY_ONE_NAME);
     }
 
     @Test
@@ -99,7 +100,7 @@ public class JavaDirectoryTest {
     @Test(expected = InvalidPathException.class)
     public void I_cannot_create_a_directory_with_a_file() {
 
-        new JavaDirectory(FILE_ONE_PATH);
+        new JavaDirectory(FILE_ONE_ABSOLUTE_PATH);
     }
 
     @Test

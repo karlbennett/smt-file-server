@@ -9,16 +9,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static shiver.me.timbers.Constants.CURRENT_DIRECTORY_PATH;
-import static shiver.me.timbers.Constants.DIRECTORY_ONE_PATH;
-import static shiver.me.timbers.Constants.FILE_FOUR_PATH;
+import static shiver.me.timbers.Constants.CURRENT_DIRECTORY_ABSOLUTE_PATH;
+import static shiver.me.timbers.Constants.DIRECTORY_ONE_ABSOLUTE_PATH;
+import static shiver.me.timbers.Constants.FILE_FOUR_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_FOUR_TEXT;
 import static shiver.me.timbers.Constants.FILE_ONE_NAME;
-import static shiver.me.timbers.Constants.FILE_ONE_PATH;
+import static shiver.me.timbers.Constants.FILE_ONE_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_ONE_TEXT;
-import static shiver.me.timbers.Constants.FILE_THREE_PATH;
+import static shiver.me.timbers.Constants.FILE_THREE_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_THREE_TEXT;
-import static shiver.me.timbers.Constants.FILE_TWO_PATH;
+import static shiver.me.timbers.Constants.FILE_TWO_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_TWO_TEXT;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_should_be_able_to_be_serialised;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_should_have_correct_equality;
@@ -45,7 +45,7 @@ public class JavaFileTest {
     @Test(expected = InvalidPathException.class)
     public void I_cannot_create_a_java_file_with_a_path_to_a_directory() {
 
-        new JavaFile(DIRECTORY_ONE_PATH);
+        new JavaFile(DIRECTORY_ONE_ABSOLUTE_PATH);
     }
 
     @Test(expected = InvalidPathException.class)
@@ -66,7 +66,7 @@ public class JavaFileTest {
     @Test
     public void I_can_create_a_java_file_with_a_root_and_path() {
 
-        new JavaFile(CURRENT_DIRECTORY_PATH, FILE_ONE_NAME);
+        new JavaFile(CURRENT_DIRECTORY_ABSOLUTE_PATH, FILE_ONE_NAME);
     }
 
     @Test(expected = InvalidPathException.class)
@@ -120,25 +120,25 @@ public class JavaFileTest {
     @Test
     public void I_can_get_a_files_input_stream() {
 
-        The_file_should_produce_an_input_stream(new JavaFile(FILE_ONE_PATH));
-        The_file_should_produce_an_input_stream(new JavaFile(FILE_TWO_PATH));
-        The_file_should_produce_an_input_stream(new JavaFile(FILE_THREE_PATH));
-        The_file_should_produce_an_input_stream(new JavaFile(FILE_FOUR_PATH));
+        The_file_should_produce_an_input_stream(new JavaFile(FILE_ONE_ABSOLUTE_PATH));
+        The_file_should_produce_an_input_stream(new JavaFile(FILE_TWO_ABSOLUTE_PATH));
+        The_file_should_produce_an_input_stream(new JavaFile(FILE_THREE_ABSOLUTE_PATH));
+        The_file_should_produce_an_input_stream(new JavaFile(FILE_FOUR_ABSOLUTE_PATH));
     }
 
     @Test
     public void I_can_read_a_files_input_stream() {
 
-        The_files_input_stream_should_pread_to(FILE_ONE_TEXT, new JavaFile(FILE_ONE_PATH));
-        The_files_input_stream_should_pread_to(FILE_TWO_TEXT, new JavaFile(FILE_TWO_PATH));
-        The_files_input_stream_should_pread_to(FILE_THREE_TEXT, new JavaFile(FILE_THREE_PATH));
-        The_files_input_stream_should_pread_to(FILE_FOUR_TEXT, new JavaFile(FILE_FOUR_PATH));
+        The_files_input_stream_should_pread_to(FILE_ONE_TEXT, new JavaFile(FILE_ONE_ABSOLUTE_PATH));
+        The_files_input_stream_should_pread_to(FILE_TWO_TEXT, new JavaFile(FILE_TWO_ABSOLUTE_PATH));
+        The_files_input_stream_should_pread_to(FILE_THREE_TEXT, new JavaFile(FILE_THREE_ABSOLUTE_PATH));
+        The_files_input_stream_should_pread_to(FILE_FOUR_TEXT, new JavaFile(FILE_FOUR_ABSOLUTE_PATH));
     }
 
     @Test(expected = InvalidPathException.class)
     public void I_cannot_read_an_invalid_files_input_stream() throws IOException {
 
-        getInputStream(new java.io.File(FILE_ONE_PATH + '\u0000'));
+        getInputStream(new java.io.File(FILE_ONE_ABSOLUTE_PATH + '\u0000'));
     }
 
     private static void The_file_should_produce_an_input_stream(File file) {

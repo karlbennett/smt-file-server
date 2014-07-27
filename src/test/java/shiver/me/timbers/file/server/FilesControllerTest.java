@@ -18,9 +18,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static shiver.me.timbers.Constants.DIRECTORY_FOUR_MODIFICATION_DATE;
+import static shiver.me.timbers.Constants.DIRECTORY_ONE_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.DIRECTORY_ONE_NAME;
-import static shiver.me.timbers.Constants.DIRECTORY_ONE_PATH;
-import static shiver.me.timbers.Constants.FILE_ONE_PATH;
+import static shiver.me.timbers.Constants.FILE_ONE_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_ONE_TEXT;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -43,7 +43,7 @@ public class FilesControllerTest {
     @Test
     public void I_can_request_a_directory() throws Exception {
 
-        mockMvc.perform(get("/directory").requestAttr("path", DIRECTORY_ONE_PATH).accept(APPLICATION_JSON_VALUE))
+        mockMvc.perform(get("/directory").requestAttr("path", DIRECTORY_ONE_ABSOLUTE_PATH))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.name").value(DIRECTORY_ONE_NAME))
@@ -63,7 +63,7 @@ public class FilesControllerTest {
     @Test
     public void I_can_request_a_file() throws Exception {
 
-        mockMvc.perform(get("/file").requestAttr("path", FILE_ONE_PATH))
+        mockMvc.perform(get("/file").requestAttr("path", FILE_ONE_ABSOLUTE_PATH))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TEXT_PLAIN))
                 .andExpect(content().string(FILE_ONE_TEXT));

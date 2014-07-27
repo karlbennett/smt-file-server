@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static shiver.me.timbers.Constants.CURRENT_DIRECTORY_PATH;
+import static shiver.me.timbers.Constants.CURRENT_DIRECTORY_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_ONE_NAME;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_extension_should_be_correct;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_modification_date_should_be_correct;
@@ -53,7 +53,7 @@ public class JavaFileSystemElementTest {
     @Test
     public void I_can_create_a_java_file_system_element_with_a_root_and_path() {
 
-        new JavaFileSystemElement(CURRENT_DIRECTORY_PATH, FILE_ONE_NAME);
+        new JavaFileSystemElement(CURRENT_DIRECTORY_ABSOLUTE_PATH, FILE_ONE_NAME);
     }
 
     @Test
