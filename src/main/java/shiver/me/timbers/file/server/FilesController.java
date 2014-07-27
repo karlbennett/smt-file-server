@@ -1,5 +1,6 @@
 package shiver.me.timbers.file.server;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,7 +19,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 /**
@@ -42,25 +45,36 @@ public class FilesController {
     }
 
     @RequestMapping(value = "/directory", method = GET, produces = APPLICATION_JSON_VALUE)
-    public Directory directory(@ModelAttribute String path) throws IOException {
+    public Directory directory(@ModelAttribute String absolutePath) throws IOException {
 
-        return new JavaDirectory(path);
+        return new JavaDirectory(absolutePath);
     }
 
     @RequestMapping(value = "/file", method = GET)
-    public ResponseEntity<FileSystemResource> file(@ModelAttribute String path) throws IOException {
+    public ResponseEntity<FileSystemResource> file(@ModelAttribute String absolutePath) throws IOException {
 
         final HttpHeaders headers = new HttpHeaders();
 
-        headers.setContentType(inspectMediaType(path));
+        headers.setContentType(inspectMediaType(absolutePath));
 
-        return new ResponseEntity<>(new FileSystemResource(new File(path)), headers, OK);
+        return new ResponseEntity<>(new FileSystemResource(new File(absolutePath)), headers, OK);
     }
 
     private static MediaType inspectMediaType(String path) throws IOException {
 
         final String mimeType = Files.probeContentType(Paths.get(path));
 
+        // It seem that at the moment Files.probeContentType(Paths) returns a mime type of "text/plain" for JSON files.
+        if (isJsonFile(path, mimeType)) {
+
+            return APPLICATION_JSON;
+        }
+
         return MediaType.valueOf(mimeType);
+    }
+
+    private static boolean isJsonFile(String path, String mimeType) {
+
+        return TEXT_PLAIN_VALUE.equals(mimeType) && "json".equalsIgnoreCase(FilenameUtils.getExtension(path));
     }
 }

@@ -31,7 +31,7 @@ public class FilesRoutingController {
         // We add the path to a request attribute not a query parameter because this cannot be set in an incoming HTTP
         // request, that means arbitrary paths cannot be sent into the /directory and /file endpoints to access any path
         // in the file system.
-        request.setAttribute("path", file.getPath());
+        request.setAttribute("absolutePath", file.getPath());
 
         if (file.isDirectory()) {
             return "forward:/directory";
