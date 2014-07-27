@@ -2,7 +2,6 @@ package shiver.me.timbers.file.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import shiver.me.timbers.file.io.InvalidPathException;
 
@@ -22,14 +21,6 @@ public class FilesRoutingController {
 
     @Autowired
     private String rootPath;
-
-    @ModelAttribute
-    public String path(HttpServletRequest request) {
-
-        final Object path = request.getAttribute("path");
-
-        return null == path ? "" : path.toString();
-    }
 
     @RequestMapping(method = GET)
     public String retrieve(HttpServletRequest request) throws IOException {

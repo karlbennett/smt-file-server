@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Configuration class used to configure the Spring framework.
@@ -20,9 +21,9 @@ import java.io.File;
 public class FilesConfiguration {
 
     @Bean
-    public static String rootPath() {
+    public static String rootPath() throws IOException {
 
-        return Thread.currentThread().getContextClassLoader().getResource(".").getPath() + File.separator;
+        return new File("").getCanonicalPath();
     }
 
 }

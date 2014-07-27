@@ -9,17 +9,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static shiver.me.timbers.Constants.CURRENT_DIRECTORY_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.DIRECTORY_ONE_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_FOUR_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_FOUR_TEXT;
-import static shiver.me.timbers.Constants.FILE_ONE_NAME;
 import static shiver.me.timbers.Constants.FILE_ONE_ABSOLUTE_PATH;
+import static shiver.me.timbers.Constants.FILE_ONE_NAME;
 import static shiver.me.timbers.Constants.FILE_ONE_TEXT;
 import static shiver.me.timbers.Constants.FILE_THREE_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_THREE_TEXT;
 import static shiver.me.timbers.Constants.FILE_TWO_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_TWO_TEXT;
+import static shiver.me.timbers.Constants.TEST_DIRECTORY_ABSOLUTE_PATH;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_should_be_able_to_be_serialised;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_should_have_correct_equality;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_should_have_the_correct_to_string_value;
@@ -66,7 +66,7 @@ public class JavaFileTest {
     @Test
     public void I_can_create_a_java_file_with_a_root_and_path() {
 
-        new JavaFile(CURRENT_DIRECTORY_ABSOLUTE_PATH, FILE_ONE_NAME);
+        new JavaFile(TEST_DIRECTORY_ABSOLUTE_PATH, FILE_ONE_NAME);
     }
 
     @Test(expected = InvalidPathException.class)

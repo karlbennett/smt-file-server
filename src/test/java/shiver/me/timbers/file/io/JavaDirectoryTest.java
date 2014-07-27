@@ -9,17 +9,19 @@ import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static shiver.me.timbers.Constants.CURRENT_DIRECTORY_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.DIRECTORY_FOUR_ABSOLUTE_PATH;
-import static shiver.me.timbers.Constants.DIRECTORY_ONE_NAME;
 import static shiver.me.timbers.Constants.DIRECTORY_ONE_ABSOLUTE_PATH;
+import static shiver.me.timbers.Constants.DIRECTORY_ONE_NAME;
 import static shiver.me.timbers.Constants.DIRECTORY_THREE_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.DIRECTORY_TWO_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_FOUR_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_ONE_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_THREE_ABSOLUTE_PATH;
 import static shiver.me.timbers.Constants.FILE_TWO_ABSOLUTE_PATH;
-import static shiver.me.timbers.Constants.buildPath;
+import static shiver.me.timbers.Constants.TEST_DIRECTORY_ABSOLUTE_PATH;
+import static shiver.me.timbers.Constants.TEST_PROPERTIES_FILE_ABSOLUTE_PATH;
+import static shiver.me.timbers.Constants.buildAbsolutePath;
+import static shiver.me.timbers.Constants.buildTestPath;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_extension_should_be_correct;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_modification_date_should_be_correct;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directories_name_should_be_correct;
@@ -29,14 +31,14 @@ import static shiver.me.timbers.file.io.FileSystemElementSteps.The_directory_sho
 
 public class JavaDirectoryTest {
 
-    private static final Directory CURRENT_DIRECTORY = new JavaDirectory(CURRENT_DIRECTORY_ABSOLUTE_PATH);
+    private static final Directory TEST_DIRECTORY = new JavaDirectory(TEST_DIRECTORY_ABSOLUTE_PATH);
     private static final Directory DIRECTORY_ONE = new JavaDirectory(DIRECTORY_ONE_ABSOLUTE_PATH);
     private static final Directory DIRECTORY_TWO = new JavaDirectory(DIRECTORY_TWO_ABSOLUTE_PATH);
     private static final Directory DIRECTORY_THREE = new JavaDirectory(DIRECTORY_THREE_ABSOLUTE_PATH);
     private static final Directory DIRECTORY_FOUR = new JavaDirectory(DIRECTORY_FOUR_ABSOLUTE_PATH);
-    private static final Directory SHIVER_DIRECTORY = new JavaDirectory(buildPath(CURRENT_DIRECTORY_ABSOLUTE_PATH,
-            "shiver"));
+    private static final Directory SHIVER_DIRECTORY = new JavaDirectory(buildAbsolutePath(buildTestPath("shiver")));
 
+    private static final File TEST_PROPERTIES_FILE = new JavaFile(TEST_PROPERTIES_FILE_ABSOLUTE_PATH);
     private static final File FILE_ONE = new JavaFile(FILE_ONE_ABSOLUTE_PATH);
     private static final File FILE_TWO = new JavaFile(FILE_TWO_ABSOLUTE_PATH);
     private static final File FILE_THREE = new JavaFile(FILE_THREE_ABSOLUTE_PATH);
@@ -82,7 +84,7 @@ public class JavaDirectoryTest {
     @Test
     public void I_can_create_a_java_file_system_element_with_a_root_and_path() {
 
-        new JavaDirectory(CURRENT_DIRECTORY_ABSOLUTE_PATH, DIRECTORY_ONE_NAME);
+        new JavaDirectory(TEST_DIRECTORY_ABSOLUTE_PATH, DIRECTORY_ONE_NAME);
     }
 
     @Test
@@ -136,7 +138,7 @@ public class JavaDirectoryTest {
     @Test
     public void I_can_get_a_directories_directory_list() {
 
-        The_directories_list_of_directories_should_be_correct(CURRENT_DIRECTORY, DIRECTORY_ONE, DIRECTORY_THREE,
+        The_directories_list_of_directories_should_be_correct(TEST_DIRECTORY, DIRECTORY_ONE, DIRECTORY_THREE,
                 SHIVER_DIRECTORY);
         The_directories_list_of_directories_should_be_correct(DIRECTORY_ONE, DIRECTORY_TWO);
         The_directories_list_of_directories_should_be_correct(DIRECTORY_TWO);
@@ -147,7 +149,7 @@ public class JavaDirectoryTest {
     @Test
     public void I_can_get_a_directories_file_list() {
 
-        The_directories_list_of_files_should_be_correct(CURRENT_DIRECTORY, FILE_ONE);
+        The_directories_list_of_files_should_be_correct(TEST_DIRECTORY, TEST_PROPERTIES_FILE, FILE_ONE);
         The_directories_list_of_files_should_be_correct(DIRECTORY_ONE, FILE_TWO);
         The_directories_list_of_files_should_be_correct(DIRECTORY_TWO, FILE_THREE);
         The_directories_list_of_files_should_be_correct(DIRECTORY_THREE);

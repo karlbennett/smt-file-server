@@ -6,10 +6,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import shiver.me.timbers.file.io.InvalidPathException;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 
+import static java.util.Collections.singletonMap;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
@@ -28,15 +27,8 @@ public class FilesControllerAdvice {
         return buildError(e);
     }
 
-    @ExceptionHandler
-    @ResponseStatus(NOT_FOUND)
-    public Map<String, String> invalidPath(IOException e) {
-
-        return buildError(e);
-    }
-
     private static Map<String, String> buildError(Throwable throwable) {
 
-        return Collections.singletonMap("error", throwable.getMessage());
+        return singletonMap("error", throwable.getMessage());
     }
 }
