@@ -24,6 +24,7 @@
     <properties>
         <jackson.version>[2.4.1]</jackson.version>
         <spring.version>[4.0.6.RELEASE]</spring.version>
+        <slf4j.version>[1.7.7]</slf4j.version>
     </properties>
 
     <build>
@@ -148,6 +149,20 @@
             <version>${jackson.version}</version>
         </dependency>
 
+        <!-- SLF4J is required by some dependencies to handle the logging.-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <!-- The SLF4J Log4j implementation that allows all logging to be configured with log4j.-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
         <!-- Log4j added to silence the libraries. -->
         <dependency>
             <groupId>log4j</groupId>
@@ -182,6 +197,14 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- This dependency is required to use the Spring MVC test jsonPath() methods. -->
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>[0.9.1]</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
