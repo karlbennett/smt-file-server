@@ -1,7 +1,5 @@
 package shiver.me.timbers.file.io;
 
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.IOException;
 import java.util.Date;
 
@@ -10,7 +8,6 @@ import static java.lang.String.format;
 public class JavaFileSystemElement implements FileSystemElement {
 
     private final String name;
-    private final String extension;
     private final Date modified;
 
     public JavaFileSystemElement(String path) {
@@ -30,8 +27,6 @@ public class JavaFileSystemElement implements FileSystemElement {
         }
 
         name = canonicalFile.getName();
-        // Only files should have extensions.
-        extension = shouldHaveExtension(canonicalFile) ? FilenameUtils.getExtension(name) : "";
         modified = new Date(canonicalFile.lastModified());
     }
 
@@ -47,33 +42,9 @@ public class JavaFileSystemElement implements FileSystemElement {
         }
     }
 
-    private static boolean shouldHaveExtension(java.io.File file) {
-
-        // Directories should not have an extension.
-        if (file.isDirectory()) {
-            return false;
-        }
-
-        if (null == file.getName()) {
-            return false;
-        }
-
-        // Handles when a filename starts with a '.' and has no there extension e.g. .gitignore
-        if (".".equals(file.getName().replace(FilenameUtils.getExtension(file.getName()), ""))) {
-            return false;
-        }
-
-        return true;
-    }
-
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public String getExtension() {
-        return extension;
     }
 
     @Override
@@ -93,10 +64,9 @@ public class JavaFileSystemElement implements FileSystemElement {
 
         if (!(o instanceof FileSystemElement)) return false;
 
-        FileSystemElement that = (FileSystemElement) o;
+        final FileSystemElement that = (FileSystemElement) o;
 
         if (!modified.equals(that.getModified())) return false;
-        if (!extension.equals(that.getExtension())) return false;
         if (!name.equals(that.getName())) return false;
 
         return true;
@@ -106,7 +76,6 @@ public class JavaFileSystemElement implements FileSystemElement {
     public int hashCode() {
 
         int result = name.hashCode();
-        result = 31 * result + extension.hashCode();
         result = 31 * result + modified.hashCode();
 
         return result;

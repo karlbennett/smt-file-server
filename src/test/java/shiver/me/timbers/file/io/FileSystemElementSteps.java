@@ -12,6 +12,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static shiver.me.timbers.Constants.OBJECT_MAPPER;
+import static shiver.me.timbers.FileConstants.FILE_ONE_ABSOLUTE_PATH;
 
 public class FileSystemElementSteps {
 
@@ -20,17 +21,17 @@ public class FileSystemElementSteps {
         assertEquals("the name of the file system element should be correct.", name, element.getName());
     }
 
-    public static void The_file_system_elements_extension_should_be_correct(String extension,
-                                                                            FileSystemElement element) {
-
-        assertEquals("the extension of the file system element should be correct.", extension, element.getExtension());
-    }
-
     public static void The_file_system_elements_modification_date_should_be_correct(Date modified,
                                                                                     FileSystemElement element) {
 
         assertEquals("the modification date of the file system element should be correct.", modified,
                 element.getModified());
+    }
+
+    public static void The_file_system_element_should_have_correct_equality(FileSystemElementCreator creator) {
+
+        The_file_system_element_should_have_correct_equality(creator.create(FILE_ONE_ABSOLUTE_PATH),
+                creator.create(FILE_ONE_ABSOLUTE_PATH));
     }
 
     public static void The_file_system_element_should_have_correct_equality(FileSystemElement left,
@@ -43,24 +44,20 @@ public class FileSystemElementSteps {
         assertEquals("the file system element hash codes should be equal.", left.hashCode(), right.hashCode());
 
         assertNotEquals("the file system element should not be equal to an element with a different name.", left,
-                mockFileSystemElement("different", left.getExtension(), left.getModified()));
-
-        assertNotEquals("the file system element should not be equal to an element with a different extension.", left,
-                mockFileSystemElement(left.getName(), "different", left.getModified()));
+                mockFileSystemElement("different", left.getModified()));
 
         assertNotEquals("the file system element should not be equal to an element with a different modified date.",
-                left, mockFileSystemElement(left.getName(), left.getExtension(), new Date()));
+                left, mockFileSystemElement(left.getName(), new Date()));
 
         assertNotEquals("the file system element should not be equal to object.", left, new Object());
 
         assertNotEquals("the file system element should not be equal to null.", left, null);
     }
 
-    private static FileSystemElement mockFileSystemElement(String name, String extension, Date modified) {
+    private static FileSystemElement mockFileSystemElement(String name, Date modified) {
 
         final FileSystemElement mock = mock(FileSystemElement.class);
         when(mock.getName()).thenReturn(name);
-        when(mock.getExtension()).thenReturn(extension);
         when(mock.getModified()).thenReturn(modified);
 
         return mock;

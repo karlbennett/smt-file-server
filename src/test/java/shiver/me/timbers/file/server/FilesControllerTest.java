@@ -57,7 +57,6 @@ public class FilesControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.name").value(DIRECTORY_ONE_NAME))
-                .andExpect(jsonPath("$.extension").value(""))
                 .andExpect(jsonPath("$.modified").exists());
     }
 

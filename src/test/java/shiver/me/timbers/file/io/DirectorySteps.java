@@ -18,7 +18,6 @@ import static shiver.me.timbers.DirectoryConstants.DIRECTORY_TWO_NAME;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_system_element_should_be_able_to_be_serialised;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_system_element_should_have_correct_equality;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_system_element_should_have_the_correct_to_string_value;
-import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_system_elements_extension_should_be_correct;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_system_elements_modification_date_should_be_correct;
 import static shiver.me.timbers.file.io.FileSystemElementSteps.The_file_system_elements_name_should_be_correct;
 
@@ -36,15 +35,6 @@ public class DirectorySteps {
                 creator.create(DIRECTORY_THREE_ABSOLUTE_PATH));
         The_file_system_elements_name_should_be_correct(DIRECTORY_FOUR_NAME,
                 creator.create(DIRECTORY_FOUR_ABSOLUTE_PATH));
-    }
-
-    public static void The_directories_extension_should_be_correct(FileSystemElementCreator creator) {
-
-        The_file_system_elements_extension_should_be_correct("", creator.create(CURRENT_DIRECTORY_ABSOLUTE_PATH));
-        The_file_system_elements_extension_should_be_correct("", creator.create(DIRECTORY_ONE_ABSOLUTE_PATH));
-        The_file_system_elements_extension_should_be_correct("", creator.create(DIRECTORY_TWO_ABSOLUTE_PATH));
-        The_file_system_elements_extension_should_be_correct("", creator.create(DIRECTORY_THREE_ABSOLUTE_PATH));
-        The_file_system_elements_extension_should_be_correct("", creator.create(DIRECTORY_FOUR_ABSOLUTE_PATH));
     }
 
     public static void The_directories_modification_date_should_be_correct(FileSystemElementCreator creator) {

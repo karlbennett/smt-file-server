@@ -158,10 +158,10 @@ public class JavaFileTest {
         }
     }
 
-    private static class JavaFileCreator implements FileSystemElementCreator {
+    private static class JavaFileCreator implements FileCreator {
 
         @Override
-        public FileSystemElement create(String path) {
+        public File create(String path) {
             return new JavaFile(path);
         }
     }

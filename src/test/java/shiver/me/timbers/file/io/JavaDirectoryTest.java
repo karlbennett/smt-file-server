@@ -26,7 +26,6 @@ import static shiver.me.timbers.FileConstants.FILE_SIX_ABSOLUTE_PATH;
 import static shiver.me.timbers.FileConstants.FILE_THREE_ABSOLUTE_PATH;
 import static shiver.me.timbers.FileConstants.FILE_TWO_ABSOLUTE_PATH;
 import static shiver.me.timbers.FileConstants.TEST_PROPERTIES_FILE_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.DirectorySteps.The_directories_extension_should_be_correct;
 import static shiver.me.timbers.file.io.DirectorySteps.The_directories_modification_date_should_be_correct;
 import static shiver.me.timbers.file.io.DirectorySteps.The_directories_name_should_be_correct;
 import static shiver.me.timbers.file.io.DirectorySteps.The_directory_should_be_able_to_be_serialised;
@@ -117,12 +116,6 @@ public class JavaDirectoryTest {
     public void I_can_get_a_directories_name() {
 
         The_directories_name_should_be_correct(new JavaDirectoryCreator());
-    }
-
-    @Test
-    public void I_can_get_a_directories_extension() {
-
-        The_directories_extension_should_be_correct(new JavaDirectoryCreator());
     }
 
     @Test
