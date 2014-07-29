@@ -17,8 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static shiver.me.timbers.DirectoryConstants.DIRECTORY_ONE_PATH;
-import static shiver.me.timbers.FileConstants.FILE_ONE_PATH;
+import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE_PATH;
+import static shiver.me.timbers.file.io.FileConstants.FILE_ONE_PATH;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FilesConfiguration.class)

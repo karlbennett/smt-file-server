@@ -19,18 +19,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static shiver.me.timbers.DirectoryConstants.DIRECTORY_ONE_ABSOLUTE_PATH;
-import static shiver.me.timbers.DirectoryConstants.DIRECTORY_ONE_NAME;
-import static shiver.me.timbers.FileConstants.FILE_EIGHT_ABSOLUTE_PATH;
-import static shiver.me.timbers.FileConstants.FILE_EIGHT_CONTENT;
-import static shiver.me.timbers.FileConstants.FILE_FIVE_ABSOLUTE_PATH;
-import static shiver.me.timbers.FileConstants.FILE_FIVE_TEXT;
-import static shiver.me.timbers.FileConstants.FILE_ONE_ABSOLUTE_PATH;
-import static shiver.me.timbers.FileConstants.FILE_ONE_TEXT;
-import static shiver.me.timbers.FileConstants.FILE_SEVEN_ABSOLUTE_PATH;
-import static shiver.me.timbers.FileConstants.FILE_SEVEN_CONTENT;
-import static shiver.me.timbers.FileConstants.FILE_SIX_ABSOLUTE_PATH;
-import static shiver.me.timbers.FileConstants.FILE_SIX_TEXT;
+import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE_ABSOLUTE_PATH;
+import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE_NAME;
+import static shiver.me.timbers.file.io.FileConstants.FILE_EIGHT_ABSOLUTE_PATH;
+import static shiver.me.timbers.file.io.FileConstants.FILE_EIGHT_CONTENT;
+import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE_ABSOLUTE_PATH;
+import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE_TEXT;
+import static shiver.me.timbers.file.io.FileConstants.FILE_ONE_ABSOLUTE_PATH;
+import static shiver.me.timbers.file.io.FileConstants.FILE_ONE_TEXT;
+import static shiver.me.timbers.file.io.FileConstants.FILE_SEVEN_ABSOLUTE_PATH;
+import static shiver.me.timbers.file.io.FileConstants.FILE_SEVEN_CONTENT;
+import static shiver.me.timbers.file.io.FileConstants.FILE_SIX_ABSOLUTE_PATH;
+import static shiver.me.timbers.file.io.FileConstants.FILE_SIX_TEXT;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FilesConfiguration.class)

@@ -12,7 +12,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static shiver.me.timbers.Constants.OBJECT_MAPPER;
-import static shiver.me.timbers.FileConstants.FILE_ONE_ABSOLUTE_PATH;
+import static shiver.me.timbers.file.io.FileConstants.FILE_ONE_ABSOLUTE_PATH;
 
 public class FileSystemElementSteps {
 
