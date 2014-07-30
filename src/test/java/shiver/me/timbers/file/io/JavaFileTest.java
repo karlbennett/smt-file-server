@@ -9,17 +9,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static shiver.me.timbers.Constants.TEST_DIRECTORY_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.FileConstants.FILE_FOUR_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.FileConstants.FILE_FOUR_TEXT;
-import static shiver.me.timbers.file.io.FileConstants.FILE_ONE_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.FileConstants.FILE_ONE_NAME;
-import static shiver.me.timbers.file.io.FileConstants.FILE_ONE_TEXT;
-import static shiver.me.timbers.file.io.FileConstants.FILE_THREE_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.FileConstants.FILE_THREE_TEXT;
-import static shiver.me.timbers.file.io.FileConstants.FILE_TWO_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.FileConstants.FILE_TWO_TEXT;
+import static shiver.me.timbers.file.io.DirectoryConstants.CURRENT_DIRECTORY;
+import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE;
+import static shiver.me.timbers.file.io.FileConstants.FILE_FOUR;
+import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
+import static shiver.me.timbers.file.io.FileConstants.FILE_THREE;
+import static shiver.me.timbers.file.io.FileConstants.FILE_TWO;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_be_able_to_be_serialised;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_correct_equality;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_the_correct_to_string_value;
@@ -45,7 +40,7 @@ public class JavaFileTest {
     @Test(expected = InvalidPathException.class)
     public void I_cannot_create_a_java_file_with_a_path_to_a_directory() {
 
-        new JavaFile(DIRECTORY_ONE_ABSOLUTE_PATH);
+        new JavaFile(DIRECTORY_ONE.getAbsolutePath());
     }
 
     @Test(expected = InvalidPathException.class)
@@ -66,7 +61,7 @@ public class JavaFileTest {
     @Test
     public void I_can_create_a_java_file_with_a_root_and_path() {
 
-        new JavaFile(TEST_DIRECTORY_ABSOLUTE_PATH, FILE_ONE_NAME);
+        new JavaFile(CURRENT_DIRECTORY.getAbsolutePath(), FILE_ONE.getPath());
     }
 
     @Test(expected = InvalidPathException.class)
@@ -120,25 +115,25 @@ public class JavaFileTest {
     @Test
     public void I_can_get_a_files_input_stream() {
 
-        The_file_should_produce_an_input_stream(new JavaFile(FILE_ONE_ABSOLUTE_PATH));
-        The_file_should_produce_an_input_stream(new JavaFile(FILE_TWO_ABSOLUTE_PATH));
-        The_file_should_produce_an_input_stream(new JavaFile(FILE_THREE_ABSOLUTE_PATH));
-        The_file_should_produce_an_input_stream(new JavaFile(FILE_FOUR_ABSOLUTE_PATH));
+        The_file_should_produce_an_input_stream(new JavaFile(FILE_ONE.getAbsolutePath()));
+        The_file_should_produce_an_input_stream(new JavaFile(FILE_TWO.getAbsolutePath()));
+        The_file_should_produce_an_input_stream(new JavaFile(FILE_THREE.getAbsolutePath()));
+        The_file_should_produce_an_input_stream(new JavaFile(FILE_FOUR.getAbsolutePath()));
     }
 
     @Test
     public void I_can_read_a_files_input_stream() {
 
-        The_files_input_stream_should_pread_to(FILE_ONE_TEXT, new JavaFile(FILE_ONE_ABSOLUTE_PATH));
-        The_files_input_stream_should_pread_to(FILE_TWO_TEXT, new JavaFile(FILE_TWO_ABSOLUTE_PATH));
-        The_files_input_stream_should_pread_to(FILE_THREE_TEXT, new JavaFile(FILE_THREE_ABSOLUTE_PATH));
-        The_files_input_stream_should_pread_to(FILE_FOUR_TEXT, new JavaFile(FILE_FOUR_ABSOLUTE_PATH));
+        The_files_input_stream_should_pread_to(FILE_ONE.getContent(), new JavaFile(FILE_ONE.getAbsolutePath()));
+        The_files_input_stream_should_pread_to(FILE_TWO.getContent(), new JavaFile(FILE_TWO.getAbsolutePath()));
+        The_files_input_stream_should_pread_to(FILE_THREE.getContent(), new JavaFile(FILE_THREE.getAbsolutePath()));
+        The_files_input_stream_should_pread_to(FILE_FOUR.getContent(), new JavaFile(FILE_FOUR.getAbsolutePath()));
     }
 
     @Test(expected = InvalidPathException.class)
     public void I_cannot_read_an_invalid_files_input_stream() throws IOException {
 
-        getInputStream(new java.io.File(FILE_ONE_ABSOLUTE_PATH + '\u0000'));
+        getInputStream(new java.io.File(FILE_ONE.getAbsolutePath() + '\u0000'));
     }
 
     private static void The_file_should_produce_an_input_stream(File file) {

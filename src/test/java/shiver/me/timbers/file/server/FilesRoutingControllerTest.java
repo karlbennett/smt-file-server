@@ -17,8 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE_PATH;
-import static shiver.me.timbers.file.io.FileConstants.FILE_ONE_PATH;
+import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE;
+import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FilesConfiguration.class)
@@ -40,7 +40,7 @@ public class FilesRoutingControllerTest {
     @Test
     public void I_can_route_to_a_directory() throws Exception {
 
-        mockMvc.perform(get(DIRECTORY_ONE_PATH))
+        mockMvc.perform(get(DIRECTORY_ONE.getPath()))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("/directory"));
     }
@@ -48,7 +48,7 @@ public class FilesRoutingControllerTest {
     @Test
     public void I_can_route_to_a_file() throws Exception {
 
-        mockMvc.perform(get(FILE_ONE_PATH))
+        mockMvc.perform(get(FILE_ONE.getPath()))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("/file"));
     }

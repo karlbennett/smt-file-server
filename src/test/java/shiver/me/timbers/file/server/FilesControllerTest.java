@@ -19,18 +19,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE_NAME;
-import static shiver.me.timbers.file.io.FileConstants.FILE_EIGHT_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.FileConstants.FILE_EIGHT_CONTENT;
-import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE_TEXT;
-import static shiver.me.timbers.file.io.FileConstants.FILE_ONE_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.FileConstants.FILE_ONE_TEXT;
-import static shiver.me.timbers.file.io.FileConstants.FILE_SEVEN_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.FileConstants.FILE_SEVEN_CONTENT;
-import static shiver.me.timbers.file.io.FileConstants.FILE_SIX_ABSOLUTE_PATH;
-import static shiver.me.timbers.file.io.FileConstants.FILE_SIX_TEXT;
+import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE;
+import static shiver.me.timbers.file.io.FileConstants.FILE_EIGHT;
+import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE;
+import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
+import static shiver.me.timbers.file.io.FileConstants.FILE_SEVEN;
+import static shiver.me.timbers.file.io.FileConstants.FILE_SIX;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FilesConfiguration.class)
@@ -53,10 +47,10 @@ public class FilesControllerTest {
     @Test
     public void I_can_request_a_directory() throws Exception {
 
-        mockMvc.perform(get("/directory").requestAttr(ATTRIBUTE_NAME, DIRECTORY_ONE_ABSOLUTE_PATH))
+        mockMvc.perform(get("/directory").requestAttr(ATTRIBUTE_NAME, DIRECTORY_ONE.getAbsolutePath()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.name").value(DIRECTORY_ONE_NAME))
+                .andExpect(jsonPath("$.name").value(DIRECTORY_ONE.getName()))
                 .andExpect(jsonPath("$.modified").exists());
     }
 
@@ -72,46 +66,46 @@ public class FilesControllerTest {
     @Test
     public void I_can_request_a_file() throws Exception {
 
-        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_ONE_ABSOLUTE_PATH))
+        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_ONE.getAbsolutePath()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TEXT_PLAIN))
-                .andExpect(content().string(FILE_ONE_TEXT));
+                .andExpect(content().string(FILE_ONE.getContent()));
     }
 
     @Test
     public void I_can_request_a_json_file() throws Exception {
 
-        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_FIVE_ABSOLUTE_PATH))
+        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_FIVE.getAbsolutePath()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
-                .andExpect(content().string(FILE_FIVE_TEXT));
+                .andExpect(content().string(FILE_FIVE.getContent()));
     }
 
     @Test
     public void I_can_request_an_xml_file() throws Exception {
 
-        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_SIX_ABSOLUTE_PATH))
+        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_SIX.getAbsolutePath()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_XML_VALUE))
-                .andExpect(content().string(FILE_SIX_TEXT));
+                .andExpect(content().string(FILE_SIX.getContent()));
     }
 
     @Test
     public void I_can_request_a_png_file() throws Exception {
 
-        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_SEVEN_ABSOLUTE_PATH))
+        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_SEVEN.getAbsolutePath()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(IMAGE_PNG))
-                .andExpect(content().bytes(FILE_SEVEN_CONTENT));
+                .andExpect(content().bytes(FILE_SEVEN.getContent()));
     }
 
     @Test
     public void I_can_request_a_video_file() throws Exception {
 
-        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_EIGHT_ABSOLUTE_PATH))
+        mockMvc.perform(get("/file").requestAttr(ATTRIBUTE_NAME, FILE_EIGHT.getAbsolutePath()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("video/mp4"))
-                .andExpect(content().bytes(FILE_EIGHT_CONTENT));
+                .andExpect(content().bytes(FILE_EIGHT.getContent()));
     }
 
     @Test

@@ -12,30 +12,31 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static shiver.me.timbers.Constants.OBJECT_MAPPER;
-import static shiver.me.timbers.file.io.FileConstants.FILE_ONE_ABSOLUTE_PATH;
+import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 
 public class FileSystemElementSteps {
 
-    public static void The_file_system_elements_name_should_be_correct(String name, FileSystemElement element) {
+    public static void The_file_system_elements_name_should_be_correct(FileSystemElement expected,
+                                                                       FileSystemElement actual) {
 
-        assertEquals("the name of the file system element should be correct.", name, element.getName());
+        assertEquals("the name of the file system element should be correct.", expected.getName(), actual.getName());
     }
 
-    public static void The_file_system_elements_modification_date_should_be_correct(Date modified,
-                                                                                    FileSystemElement element) {
+    public static void The_file_system_elements_modification_date_should_be_correct(FileSystemElement expected,
+                                                                                    FileSystemElement actual) {
 
-        assertEquals("the modification date of the file system element should be correct.", modified,
-                element.getModified());
+        assertEquals("the modification date of the file system element should be correct.", expected.getModified(),
+                actual.getModified());
     }
 
     public static void The_file_system_element_should_have_correct_equality(FileSystemElementCreator creator) {
 
-        The_file_system_element_should_have_correct_equality(creator.create(FILE_ONE_ABSOLUTE_PATH),
-                creator.create(FILE_ONE_ABSOLUTE_PATH));
+        The_file_system_element_should_have_correct_equality(creator.create(FILE_ONE.getAbsolutePath()),
+                creator.create(FILE_ONE.getAbsolutePath()));
     }
 
     public static void The_file_system_element_should_have_correct_equality(FileSystemElement left,
-                                                                            final FileSystemElement right) {
+                                                                            FileSystemElement right) {
 
         assertEquals("the file system element should be equal to it's self.", left, left);
 
@@ -63,10 +64,11 @@ public class FileSystemElementSteps {
         return mock;
     }
 
-    public static void The_file_system_element_should_have_the_correct_to_string_value(String string,
-                                                                                       FileSystemElement element) {
+    public static void The_file_system_element_should_have_the_correct_to_string_value(FileSystemElement expected,
+                                                                                       FileSystemElement actual) {
 
-        assertEquals("the file system elements toString value should be correct.", string, element.toString());
+        assertEquals("the file system elements toString value should be correct.", expected.getName(),
+                actual.toString());
     }
 
     public static void The_file_system_element_should_be_able_to_be_serialised(FileSystemElement element,
