@@ -13,7 +13,6 @@ import shiver.me.timbers.file.io.InvalidPathException;
 import shiver.me.timbers.file.io.JavaDirectory;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -57,7 +56,7 @@ public class FilesController {
 
         headers.setContentType(inspectMediaType(absolutePath));
 
-        return new ResponseEntity<>(new FileSystemResource(new File(absolutePath)), headers, OK);
+        return new ResponseEntity<>(new FileSystemResource(absolutePath), headers, OK);
     }
 
     private static MediaType inspectMediaType(String path) throws IOException {
