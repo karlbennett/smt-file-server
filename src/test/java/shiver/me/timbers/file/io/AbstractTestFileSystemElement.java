@@ -1,9 +1,9 @@
 package shiver.me.timbers.file.io;
 
-import java.io.IOException;
 import java.util.Date;
 
 import static shiver.me.timbers.Constants.CURRENT_DIRECTORY_ABSOLUTE_PATH;
+import static shiver.me.timbers.Utils.getFile;
 
 public abstract class AbstractTestFileSystemElement implements TestFileSystemElement {
 
@@ -20,18 +20,6 @@ public abstract class AbstractTestFileSystemElement implements TestFileSystemEle
         this.absolutePath = file.getPath();
         this.name = file.getName();
         this.modified = new Date(file.lastModified());
-    }
-
-    private static java.io.File getFile(String path) {
-
-        try {
-
-            return new java.io.File(path).getCanonicalFile();
-
-        } catch (IOException e) {
-
-            throw new RuntimeException("Could not get the current directory in: " + path, e);
-        }
     }
 
     @Override

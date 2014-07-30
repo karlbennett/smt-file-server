@@ -91,7 +91,7 @@ public class JavaDirectoryTest {
     @Test(expected = InvalidPathException.class)
     public void I_cannot_create_a_directory_with_a_file() {
 
-        new JavaDirectory(FILE_ONE.getPath());
+        new JavaDirectory(FILE_ONE.getAbsolutePath());
     }
 
     @Test

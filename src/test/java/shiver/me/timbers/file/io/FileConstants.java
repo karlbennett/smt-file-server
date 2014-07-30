@@ -1,10 +1,12 @@
 package shiver.me.timbers.file.io;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 import static shiver.me.timbers.Constants.TEST_PROPERTIES;
-import static shiver.me.timbers.Utils.readFileToByteArray;
-import static shiver.me.timbers.Utils.readFileToString;
 
 public class FileConstants {
 
@@ -67,6 +69,18 @@ public class FileConstants {
             this.content = readFileToString(absolutePath);
         }
 
+        private static String readFileToString(String path) {
+
+            try {
+
+                return FileUtils.readFileToString(new java.io.File(path));
+
+            } catch (IOException e) {
+
+                throw new RuntimeException(e);
+            }
+        }
+
         @Override
         public String getContent() {
             return content;
@@ -81,6 +95,18 @@ public class FileConstants {
             super(absolutePath, extension);
 
             this.content = readFileToByteArray(absolutePath);
+        }
+
+        private static byte[] readFileToByteArray(String path) {
+
+            try {
+
+                return FileUtils.readFileToByteArray(new File(path));
+
+            } catch (IOException e) {
+
+                throw new RuntimeException(e);
+            }
         }
 
         @Override
