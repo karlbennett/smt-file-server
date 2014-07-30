@@ -11,8 +11,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.http.HttpMethod.HEAD;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -49,6 +51,14 @@ public class FilesRoutingControllerTest {
     public void I_can_route_to_a_file() throws Exception {
 
         mockMvc.perform(get(FILE_ONE.getPath()))
+                .andExpect(status().isOk())
+                .andExpect(forwardedUrl("/file"));
+    }
+
+    @Test
+    public void I_can_route_to_a_file_check() throws Exception {
+
+        mockMvc.perform(request(HEAD, FILE_ONE.getPath()))
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("/file"));
     }

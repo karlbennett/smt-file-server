@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
 
 /**
  * Controller for routing the request to either a directory or file request.
@@ -22,7 +23,7 @@ public class FilesRoutingController {
     @Autowired
     private String rootPath;
 
-    @RequestMapping(method = GET)
+    @RequestMapping(method = {GET, HEAD})
     public String retrieve(HttpServletRequest request) throws IOException {
 
         final File file = new File(rootPath, request.getPathInfo()).getCanonicalFile();

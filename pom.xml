@@ -156,6 +156,13 @@
             <version>${jackson.version}</version>
         </dependency>
 
+        <!-- Using Joda Time to set the values of date specific HTTP headers. -->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>[2.3]</version>
+        </dependency>
+
         <!-- SLF4J is required by some dependencies to handle the logging.-->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -189,14 +196,6 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-        </dependency>
-
-        <!-- Using Joda Time in the tests only to be able to verify the dates are correct with different code. -->
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>[2.3]</version>
-            <scope>test</scope>
         </dependency>
 
         <!-- Spring test classes that simplify the loading of the Spring context in for JUnit tests. -->
