@@ -19,7 +19,13 @@ public class FilesConfigurationTest {
     private ApplicationContext context;
 
     @Autowired
-    private FilesRoutingController controller;
+    private FilesControllerAdvice filesControllerAdvice;
+
+    @Autowired
+    private FilesRoutingController filesRoutingController;
+
+    @Autowired
+    private FilesController filesController;
 
     @Autowired
     private String rootPath;
@@ -31,9 +37,21 @@ public class FilesConfigurationTest {
     }
 
     @Test
+    public void I_can_access_the_files_controller_advice() {
+
+        assertNotNull("the files files controller advice should be available.", filesControllerAdvice);
+    }
+
+    @Test
+    public void I_can_access_the_files_routing_controller() {
+
+        assertNotNull("the files files routing controller should be available.", filesRoutingController);
+    }
+
+    @Test
     public void I_can_access_the_files_controller() {
 
-        assertNotNull("the files controller should be available.", controller);
+        assertNotNull("the files files controller should be available.", filesController);
     }
 
     @Test
