@@ -13,6 +13,7 @@ import shiver.me.timbers.file.io.InvalidPathException;
 import shiver.me.timbers.file.io.JavaDirectory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,7 +33,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 public class FilesController {
 
     @ModelAttribute
-    public String absolutePath(HttpServletRequest request) {
+    public File absolutePath(HttpServletRequest request) {
 
         final Object path = request.getAttribute("absolutePath");
 
@@ -40,31 +41,31 @@ public class FilesController {
             throw new InvalidPathException("No path provided.");
         }
 
-        return path.toString();
+        return new File(path.toString());
     }
 
     @RequestMapping(value = "/directory", method = GET, produces = APPLICATION_JSON_VALUE)
-    public Directory directory(@ModelAttribute String absolutePath) throws IOException {
+    public Directory directory(File directory) throws IOException {
 
-        return new JavaDirectory(absolutePath);
+        return new JavaDirectory(directory);
     }
 
     @RequestMapping(value = "/file", method = GET)
-    public ResponseEntity<FileSystemResource> file(@ModelAttribute String absolutePath) throws IOException {
+    public ResponseEntity<FileSystemResource> file(File file) throws IOException {
 
         final HttpHeaders headers = new HttpHeaders();
 
-        headers.setContentType(inspectMediaType(absolutePath));
+        headers.setContentType(inspectMediaType(file));
 
-        return new ResponseEntity<>(new FileSystemResource(absolutePath), headers, OK);
+        return new ResponseEntity<>(new FileSystemResource(file), headers, OK);
     }
 
-    private static MediaType inspectMediaType(String path) throws IOException {
+    private static MediaType inspectMediaType(File file) throws IOException {
 
-        final String mimeType = Files.probeContentType(Paths.get(path));
+        final String mimeType = Files.probeContentType(Paths.get(file.getPath()));
 
         // It seem that at the moment Files.probeContentType(Paths) returns a mime type of "text/plain" for JSON files.
-        if (isJsonFile(path, mimeType)) {
+        if (isJsonFile(file, mimeType)) {
 
             return APPLICATION_JSON;
         }
@@ -72,8 +73,8 @@ public class FilesController {
         return MediaType.valueOf(mimeType);
     }
 
-    private static boolean isJsonFile(String path, String mimeType) {
+    private static boolean isJsonFile(File file, String mimeType) {
 
-        return TEXT_PLAIN_VALUE.equals(mimeType) && "json".equalsIgnoreCase(FilenameUtils.getExtension(path));
+        return TEXT_PLAIN_VALUE.equals(mimeType) && "json".equalsIgnoreCase(FilenameUtils.getExtension(file.getName()));
     }
 }
