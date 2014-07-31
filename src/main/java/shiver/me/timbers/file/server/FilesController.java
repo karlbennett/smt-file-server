@@ -57,11 +57,9 @@ public class FilesController {
     }
 
     @RequestMapping(value = "/file", method = HEAD)
-    public ResponseEntity<Void> fileHead(File file) throws IOException {
+    public HttpHeaders fileHead(File file) throws IOException {
 
-        final HttpHeaders headers = buildFileHeaders(file);
-
-        return new ResponseEntity<>(headers, OK);
+        return buildFileHeaders(file);
     }
 
     @RequestMapping(value = "/file", method = GET)
