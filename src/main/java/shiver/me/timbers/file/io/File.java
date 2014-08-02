@@ -11,5 +11,7 @@ public interface File extends FileSystemElement {
 
     public String getExtension();
 
+    public long getSize();
+
     public InputStream getInputStream();
 }

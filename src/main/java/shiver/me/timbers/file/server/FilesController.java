@@ -76,7 +76,7 @@ public class FilesController {
 
         headers.setContentType(inspectMediaType(file));
         headers.set("Accept-Ranges", "bytes");
-        headers.setETag(format("\"%s_%d\"", file.getName(), file.lastModified()));
+        headers.setETag(format("\"%s_%d_%d\"", file.getName(), file.length(), file.lastModified()));
         headers.set("Last-Modified", HTTP_DATE.print(file.lastModified()));
         headers.setContentLength(file.length());
 

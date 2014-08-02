@@ -1,5 +1,7 @@
 package shiver.me.timbers.file.io;
 
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.mock;
@@ -81,12 +83,24 @@ public class FileSteps {
 
         The_file_system_element_should_have_correct_equality(left, right);
 
-        final File mock = mock(File.class);
-        when(mock.getName()).thenReturn(left.getName());
-        when(mock.getModified()).thenReturn(left.getModified());
-        when(mock.getExtension()).thenReturn("different");
+        final File mock1 = mockFile(left.getName(), left.getModified(), "different", left.getSize());
 
-        assertNotEquals("the file should not be equal to a file with a different extension.", left, mock);
+        assertNotEquals("the file should not be equal to a file with a different extension.", left, mock1);
+
+        final File mock2 = mockFile(left.getName(), left.getModified(), left.getExtension(), -1);
+
+        assertNotEquals("the file should not be equal to a file with a different size.", left, mock2);
+    }
+
+    private static File mockFile(String name, Date modified, String extension, long size) {
+
+        final File mock = mock(File.class);
+        when(mock.getName()).thenReturn(name);
+        when(mock.getModified()).thenReturn(modified);
+        when(mock.getExtension()).thenReturn(extension);
+        when(mock.getSize()).thenReturn(size);
+
+        return mock;
     }
 
     public static void The_file_should_have_the_correct_to_string_value(FileSystemElementCreator creator) {

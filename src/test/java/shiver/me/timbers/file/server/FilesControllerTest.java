@@ -30,11 +30,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE;
+import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_TWO;
 import static shiver.me.timbers.file.io.FileConstants.FILE_EIGHT;
 import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SEVEN;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SIX;
+import static shiver.me.timbers.file.io.FileConstants.FILE_TWO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FilesConfiguration.class)
@@ -61,7 +63,15 @@ public class FilesControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.name").value(DIRECTORY_ONE.getName()))
-                .andExpect(jsonPath("$.modified").exists());
+                .andExpect(jsonPath("$.modified").exists())
+                .andExpect(jsonPath("$.directories").isArray())
+                .andExpect(jsonPath("$.directories[0].name").value(DIRECTORY_TWO.getName()))
+                .andExpect(jsonPath("$.directories[0].modified").exists())
+                .andExpect(jsonPath("$.files").isArray())
+                .andExpect(jsonPath("$.files[0].name").value(FILE_TWO.getName()))
+                .andExpect(jsonPath("$.files[0].modified").value(FILE_TWO.getModified().getTime()))
+                .andExpect(jsonPath("$.files[0].extension").value(FILE_TWO.getExtension()))
+                .andExpect(jsonPath("$.files[0].size").value(Long.valueOf(FILE_TWO.getSize()).intValue()));
     }
 
     @Test
@@ -141,7 +151,8 @@ public class FilesControllerTest {
         return mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(header().string("Accept-Ranges", "bytes"))
-                .andExpect(header().string("ETag", format("\"%s_%d\"", file.getName(), file.getModified().getTime())))
+                .andExpect(header().string("ETag", format("\"%s_%d_%d\"", file.getName(), file.getSize(),
+                        file.getModified().getTime())))
                 .andExpect(header().string("Last-Modified", HTTP_DATE.format(file.getModified())));
     }
 }

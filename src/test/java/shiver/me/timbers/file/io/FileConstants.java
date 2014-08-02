@@ -5,6 +5,8 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static shiver.me.timbers.Constants.TEST_PROPERTIES;
 
@@ -41,16 +43,35 @@ public class FileConstants {
     private static abstract class AbstractTestFile<C> extends AbstractTestFileSystemElement implements TestFile<C> {
 
         private final String extension;
+        private final long size;
 
         protected AbstractTestFile(String absolutePath, String extension) {
             super(absolutePath);
 
             this.extension = extension;
+            this.size = fileSize(absolutePath);
+        }
+
+        private long fileSize(String absolutePath) {
+
+            try {
+
+                return Files.size(Paths.get(absolutePath));
+
+            } catch (IOException e) {
+
+                throw new RuntimeException(e);
+            }
         }
 
         @Override
         public String getExtension() {
             return extension;
+        }
+
+        @Override
+        public long getSize() {
+            return size;
         }
 
         @Override

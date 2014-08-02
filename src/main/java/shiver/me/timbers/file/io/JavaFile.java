@@ -13,6 +13,7 @@ public class JavaFile extends JavaFileSystemElement implements File {
 
     private final java.io.File file;
     private final String extension;
+    private final long size;
 
     public JavaFile(String path) {
         this(new java.io.File(path));
@@ -33,6 +34,7 @@ public class JavaFile extends JavaFileSystemElement implements File {
 
         this.file = canonicalFile;
         this.extension = shouldHaveExtension(canonicalFile) ? FilenameUtils.getExtension(canonicalFile.getName()) : "";
+        this.size = file.length();
     }
 
 
@@ -46,10 +48,14 @@ public class JavaFile extends JavaFileSystemElement implements File {
         return true;
     }
 
-
     @Override
     public String getExtension() {
         return extension;
+    }
+
+    @Override
+    public long getSize() {
+        return size;
     }
 
     @JsonIgnore
@@ -73,17 +79,26 @@ public class JavaFile extends JavaFileSystemElement implements File {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object object) {
 
-        if (this == o) return true;
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof File)) {
+            return false;
+        }
+        if (!super.equals(object)) {
+            return false;
+        }
 
-        if (!(o instanceof File)) return false;
+        File file = (File) object;
 
-        if (!super.equals(o)) return false;
-
-        final File file = (File) o;
-
-        if (!extension.equals(file.getExtension())) return false;
+        if (size != file.getSize()) {
+            return false;
+        }
+        if (!extension.equals(file.getExtension())) {
+            return false;
+        }
 
         return true;
     }
@@ -93,6 +108,7 @@ public class JavaFile extends JavaFileSystemElement implements File {
 
         int result = super.hashCode();
         result = 31 * result + extension.hashCode();
+        result = 31 * result + (int) (size ^ (size >>> 32));
 
         return result;
     }
