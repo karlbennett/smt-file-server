@@ -7,44 +7,36 @@ package shiver.me.timbers.file.server;
  */
 public class Range {
 
-    private static final String BYTES = "bytes=";
+    private static final String HYPHEN = "-";
 
-    private final String rangeHeader;
+    private final String range;
     private final long fileSize;
 
     private final long start;
     private final long end;
 
-    public Range(String rangeHeaderValue, long fileSize) {
+    /**
+     * @param range    must be in the format "\d*-\d*" where at least one of the numbers on either side is present.
+     * @param fileSize the size of the file that the range is being requested for.
+     */
+    public Range(String range, long fileSize) {
 
-        this.rangeHeader = rangeHeaderValue;
+        this.range = range;
         this.fileSize = fileSize;
 
-        rangeHeaderMustBeSupplied();
+        validRangeHeaderMustBeSupplied();
 
-        final String rangeValue = rangeHeaderValue.replace(BYTES, "");
-        final String[] ranges = rangeValue.split(",");
-
-        final String firstRange = ranges[0];
-
-        this.start = deriveStart(firstRange);
+        this.start = deriveStart(range);
 
         startBoundaryMustBeLessThanTheFileSize();
 
-        this.end = deriveEnd(firstRange);
+        this.end = deriveEnd(range);
     }
 
-    private void rangeHeaderMustBeSupplied() {
+    private void validRangeHeaderMustBeSupplied() {
 
-        if (null == rangeHeader || !rangeHeader.startsWith(BYTES)) {
-            throw new RequestedRangeNotSatisfiableException(rangeHeader, fileSize);
-        }
-    }
-
-    private void startBoundaryMustBeLessThanTheFileSize() {
-
-        if (fileSize < start) {
-            throw new RequestedRangeNotSatisfiableException(rangeHeader, fileSize);
+        if (null == range || !range.contains(HYPHEN)) {
+            throw new RequestedRangeNotSatisfiableException(range, fileSize);
         }
     }
 
@@ -62,13 +54,20 @@ public class Range {
         return valueOf(boundaries[0]);
     }
 
+    private void startBoundaryMustBeLessThanTheFileSize() {
+
+        if (fileSize < start) {
+            throw new RequestedRangeNotSatisfiableException(range, fileSize);
+        }
+    }
+
     private long deriveEnd(String range) {
 
         if (isPartialRange(range)) {
             return fileSize - 1;
         }
 
-        final String[] boundaries = splitRange(range);
+        final String[] boundaries = range.split("-");
 
         final long end = valueOf(boundaries[1]);
 
@@ -79,28 +78,12 @@ public class Range {
         return end;
     }
 
-    private String[] splitRange(String range) {
-
-        final String[] boundaries = range.split("-");
-
-        thereMustBeTwoBoundaries(boundaries);
-
-        return boundaries;
-    }
-
     private static boolean isPartialRange(String range) {
         return range.startsWith("-") || range.endsWith("-");
     }
 
     private boolean isEquivalentToFileSize(long end) {
         return fileSize <= end;
-    }
-
-    private void thereMustBeTwoBoundaries(String[] boundaries) {
-
-        if (2 != boundaries.length) {
-            throw new RequestedRangeNotSatisfiableException(rangeHeader, fileSize);
-        }
     }
 
     private long valueOf(String boundary) {
@@ -111,7 +94,7 @@ public class Range {
 
         } catch (NumberFormatException e) {
 
-            throw new RequestedRangeNotSatisfiableException(rangeHeader, fileSize);
+            throw new RequestedRangeNotSatisfiableException(range, fileSize);
         }
     }
 
