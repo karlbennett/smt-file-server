@@ -1,7 +1,8 @@
 package shiver.me.timbers.file.server;
 
 /**
- * The range of bytes that should be read from a file.
+ * This class parses an individual range value that has been previously extracted from an HTTP Range header.
+ * e.g. "500-999" that was extracted from "Rage: bytes=0-499,500-999,1000-1499"
  *
  * @author Karl Bennett
  */
