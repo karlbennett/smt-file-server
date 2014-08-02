@@ -12,7 +12,7 @@ import static java.lang.String.format;
 public class RequestedRangeNotSatisfiableException extends RuntimeException {
 
     public RequestedRangeNotSatisfiableException(String rangeHeader, long fileSize) {
-        super(format("The supplied Range header is either malformed or out of bounds. Header Value: %s, File Size: %d",
+        super(format("The supplied Range header is either malformed or out of bounds. Range: %s, File Size: %d",
                 rangeHeader, fileSize));
     }
 }

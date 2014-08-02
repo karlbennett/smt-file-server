@@ -107,6 +107,18 @@ public class RangeTest {
     }
 
     @Test(expected = RequestedRangeNotSatisfiableException.class)
+    public void I_cannot_parse_an_invalid_prefix_value() {
+
+        new Range("invalid-", FILE_SIZE);
+    }
+
+    @Test(expected = RequestedRangeNotSatisfiableException.class)
+    public void I_cannot_parse_an_invalid_sufix_value() {
+
+        new Range("-invalid", FILE_SIZE);
+    }
+
+    @Test(expected = RequestedRangeNotSatisfiableException.class)
     public void I_cannot_parse_a_range_with_only_a_number() {
 
         new Range("500", FILE_SIZE);
