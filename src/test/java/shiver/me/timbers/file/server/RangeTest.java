@@ -5,6 +5,7 @@ import org.junit.Test;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class RangeTest {
@@ -61,6 +62,14 @@ public class RangeTest {
         final Range range = new Range("0-10001", FILE_SIZE);
 
         assertRangeIsCorrect(0, 9999, range);
+    }
+
+    @Test
+    public void I_can_parse_a_range_value_with_a_start_equal_to_the_end() {
+
+        final Range range = new Range("500-500", FILE_SIZE);
+
+        assertRangeIsCorrect(500, 500, range);
     }
 
     @Test
@@ -125,6 +134,43 @@ public class RangeTest {
     public void I_cannot_parse_an_empty_range() {
 
         new Range("", FILE_SIZE);
+    }
+
+    @Test
+    public void I_can_to_string_a_range() {
+
+        assertEquals("range toString should be correct", "{ \"start\" : 1, \"end\" : 2, \"fileSize\" : 3 }",
+                new Range("1-2", 3).toString());
+    }
+
+    @Test
+    public void I_can_to_check_the_equality_of_ranges() {
+
+        final long start = 1;
+        final long end = 3;
+        final long fileSize = 5;
+
+        final Range left = new Range(format("%d-%d", start, end), fileSize);
+        final Range right = new Range(format("%d-%d", start, end), fileSize);
+
+        assertEquals("the range should be equal to it's self.", left, left);
+
+        assertEquals("the ranges should be equal.", left, right);
+
+        assertEquals("the range hash codes should be equal.", left.hashCode(), right.hashCode());
+
+        assertNotEquals("the range should not be equal to a range with a different start.", left,
+                new Range(format("%d-%d", 2, end), fileSize));
+
+        assertNotEquals("the range should not be equal to a range with a different end.", left,
+                new Range(format("%d-%d", start, 4), fileSize));
+
+        assertNotEquals("the range should not be equal to a range with a different fileSize.", left,
+                new Range(format("%d-%d", start, end), 6));
+
+        assertNotEquals("the range should not be equal to object.", left, new Object());
+
+        assertNotEquals("the range should not be equal to null.", left, null);
     }
 
     private static void assertRangeIsCorrect(long start, long end, Range range) {

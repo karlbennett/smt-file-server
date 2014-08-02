@@ -1,5 +1,7 @@
 package shiver.me.timbers.file.server;
 
+import static java.lang.String.format;
+
 /**
  * This class parses an individual range value that has been previously extracted from an HTTP Range header.
  * e.g. "500-999" that was extracted from "Rage: bytes=0-499,500-999,1000-1499"
@@ -109,6 +111,42 @@ public class Range {
 
     public boolean isValid() {
 
-        return start < end;
+        return start <= end;
+    }
+
+    @Override
+    public String toString() {
+        return format("{ \"start\" : %d, \"end\" : %d, \"fileSize\" : %d }", start, end, fileSize);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof Range)) return false;
+
+        Range range = (Range) o;
+
+        if (end != range.end) {
+            return false;
+        }
+        if (fileSize != range.fileSize) {
+            return false;
+        }
+        if (start != range.start) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+
+        int result = (int) (fileSize ^ (fileSize >>> 32));
+        result = 31 * result + (int) (start ^ (start >>> 32));
+        result = 31 * result + (int) (end ^ (end >>> 32));
+
+        return result;
     }
 }
