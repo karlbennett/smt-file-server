@@ -6,7 +6,7 @@ package shiver.me.timbers.file.io;
  *
  * @author Karl Bennett
  */
-public class InvalidPathException extends IllegalArgumentException {
+public class InvalidPathException extends RuntimeException {
 
     private static final String DEFAULT_MESSAGE = "No such file or directory.";
 

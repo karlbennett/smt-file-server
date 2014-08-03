@@ -183,8 +183,8 @@ public class FileControllerTest {
         mockMvc.perform(get("/file")
                 .requestAttr(ABSOLUTE_PATH, "invalid")
                 .header("Range", "bytes=0-10")
-        ).andExpect(status().isBadRequest()) // This should be a 404, but @InitBinder exceptions can't be handled.
-                .andExpect(content().string(""));
+        ).andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("No such file or directory."));
     }
 
     private ResultActions mockMvcForFile(TestFile file) throws Exception {
