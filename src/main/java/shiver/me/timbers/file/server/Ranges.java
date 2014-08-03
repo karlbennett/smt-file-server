@@ -14,6 +14,7 @@ public class Ranges extends AbstractList<Range> {
     private static final String BYTES = "bytes=";
 
     private final List<Range> ranges;
+    private boolean valid = false;
 
     /**
      * @param rangeHeaderValue must be in the format "bytes=(\d*-\d*)*" where at least one of the numbers on either side
@@ -33,7 +34,13 @@ public class Ranges extends AbstractList<Range> {
 
         for (String rangeString : rangeStrings) {
 
-            this.ranges.add(new Range(rangeString, fileSize));
+            final Range range = new Range(rangeString, fileSize);
+
+            if (range.isValid()) {
+                valid = true;
+            }
+
+            this.ranges.add(range);
         }
     }
 
@@ -59,6 +66,11 @@ public class Ranges extends AbstractList<Range> {
     @Override
     public int size() {
         return ranges.size();
+    }
+
+    public boolean isValid() {
+
+        return valid;
     }
 
     @Override

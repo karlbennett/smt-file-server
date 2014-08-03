@@ -7,11 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class RangesTest {
 
@@ -48,18 +51,48 @@ public class RangesTest {
     public void I_can_parse_some_ranges() {
 
         assertThat("some ranges should be produced.", ranges, hasSize(greaterThan(0)));
+        assertTrue("ranges should be valid.", ranges.isValid());
     }
 
     @Test
     public void I_can_parse_the_correct_number_of_ranges() {
 
         assertThat("the right number of ranges should be produced.", ranges, hasSize(3));
+        assertTrue("ranges should be valid.", ranges.isValid());
     }
 
     @Test
     public void I_can_parse_the_correct_ranges() {
 
         assertEquals("correct ranges should be produced.", RANGE_LIST, ranges);
+        assertTrue("ranges should be valid.", ranges.isValid());
+    }
+
+    @Test
+    public void I_can_parse_a_ranges_that_contains_a_range_with_a_start_value_greater_than_the_end_value() {
+
+        final Range wrongRange = new Range("999-500", FILE_SIZE);
+
+        final Ranges ranges = new Ranges(format("bytes=%s,%s,%s", RANGE_ONE, wrongRange, RANGE_THREE), FILE_SIZE);
+
+        assertEquals("correct ranges should be produced.", asList(RANGE_LIST.get(0), wrongRange, RANGE_LIST.get(2)),
+                ranges);
+        assertTrue("ranges should be valid.", ranges.isValid());
+    }
+
+    @Test
+    public void I_can_parse_a_ranges_that_contains_only_ranges_with_a_start_value_greater_than_the_end_value() {
+
+        final Range wrongRangeOne = new Range("499-0", FILE_SIZE);
+        final Range wrongRangeTwO = new Range("999-500", FILE_SIZE);
+        final Range wrongRangeThree = new Range("1499-1000", FILE_SIZE);
+
+        final Ranges ranges = new Ranges(format("bytes=%s,%s,%s", wrongRangeOne, wrongRangeTwO, wrongRangeThree),
+                FILE_SIZE);
+
+        assertEquals("correct ranges should be produced.", asList(wrongRangeOne, wrongRangeTwO, wrongRangeThree),
+                ranges);
+        assertFalse("ranges should be invalid.", ranges.isValid());
     }
 
     @Test(expected = RequestedRangeNotSatisfiableException.class)

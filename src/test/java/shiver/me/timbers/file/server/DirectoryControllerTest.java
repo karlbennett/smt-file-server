@@ -52,7 +52,7 @@ public class DirectoryControllerTest {
                 .andExpect(jsonPath("$.files[0].name").value(FILE_TWO.getName()))
                 .andExpect(jsonPath("$.files[0].modified").value(FILE_TWO.getModified().getTime()))
                 .andExpect(jsonPath("$.files[0].extension").value(FILE_TWO.getExtension()))
-                .andExpect(jsonPath("$.files[0].size").value(Long.valueOf(FILE_TWO.getSize()).intValue()));
+                .andExpect(jsonPath("$.files[0].size").value((int) FILE_TWO.getSize()));
     }
 
     @Test

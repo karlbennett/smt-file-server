@@ -1,6 +1,7 @@
 package shiver.me.timbers.file.server;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.core.io.FileSystemResource;
@@ -17,9 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 import shiver.me.timbers.file.io.InvalidPathException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.beans.PropertyEditorSupport;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -43,6 +48,8 @@ import static shiver.me.timbers.file.server.GlobalControllerAdvice.buildError;
 @RestController
 @RequestMapping("/file")
 public class FileController {
+
+    private static final int DEFAULT_BUFFER_SIZE = 10240;
 
     private static final String RANGE = "Range";
     private static final String CONTENT_RANGE = "Content-Range";
@@ -92,6 +99,11 @@ public class FileController {
 
         final HttpHeaders headers = buildFileHeaders(file);
 
+        if (!ranges.isValid()) {
+
+            return headers;
+        }
+
         addContentRange(ranges, file, headers);
 
         return headers;
@@ -106,14 +118,25 @@ public class FileController {
     }
 
     @RequestMapping(method = GET, headers = RANGE)
-    public ResponseEntity<FileSystemResource> file(@RequestHeader(value = RANGE) Ranges ranges,
-                                                   File file) throws IOException {
+    public void file(@RequestHeader(value = RANGE) Ranges ranges, File file, HttpServletResponse response)
+            throws IOException {
 
-        final HttpHeaders headers = buildFileHeaders(file);
+        response.setStatus(PARTIAL_CONTENT.value());
 
-        addContentRange(ranges, file, headers);
+        addHeaders(file, response);
 
-        return new ResponseEntity<>(new FileSystemResource(file), headers, PARTIAL_CONTENT);
+        if (!ranges.isValid()) {
+
+            copyToResponse(file, response);
+
+            return;
+        }
+
+        addContentRange(ranges, file, response);
+
+        final Range range = ranges.get(0);
+
+        copy(range.getStart(), range.getEnd(), file, response);
     }
 
     private static HttpHeaders buildFileHeaders(File file) throws IOException {
@@ -127,6 +150,15 @@ public class FileController {
         headers.setContentLength(file.length());
 
         return headers;
+    }
+
+    private static void addHeaders(File file, HttpServletResponse response) throws IOException {
+
+        response.setContentType(inspectMediaType(file).toString());
+        response.setHeader("Accept-Ranges", "bytes");
+        response.setHeader("ETag", format("\"%s_%d_%d\"", file.getName(), file.length(), file.lastModified()));
+        response.setHeader("Last-Modified", HTTP_DATE.print(file.lastModified()));
+        response.setContentLength((int) file.length());
     }
 
     private static MediaType inspectMediaType(File file) throws IOException {
@@ -149,13 +181,50 @@ public class FileController {
 
     private static void addContentRange(Ranges ranges, File file, HttpHeaders headers) {
 
-        final Range range = ranges.get(0);
+        headers.set(CONTENT_RANGE, format("bytes %s/%d", ranges.get(0), file.length()));
+    }
 
-        if (!range.isValid()) {
+    private static void addContentRange(Ranges ranges, File file, HttpServletResponse response) {
+
+        response.setHeader(CONTENT_RANGE, format("bytes %s/%d", ranges.get(0), file.length()));
+    }
+
+    private void copy(long start, long end, File file, HttpServletResponse response) throws IOException {
+
+        final long length = end - start + 1;
+
+        if (file.length() <= length) {
+
+            copyToResponse(file, response);
+
             return;
         }
 
-        headers.set(CONTENT_RANGE, format("bytes %s/%d", range, file.length()));
+        try (
+                final RandomAccessFile input = new RandomAccessFile(file, "r");
+                final OutputStream output = response.getOutputStream()
+        ) {
+
+            input.seek(start);
+
+            final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            int read;
+
+            long toRead = length;
+
+            while ((read = input.read(buffer)) > 0 && (toRead -= read) > 0) {
+                output.write(buffer, 0, read);
+            }
+
+            output.write(buffer, 0, (int) toRead + read);
+        }
+    }
+
+    private static void copyToResponse(File file, HttpServletResponse response) throws IOException {
+        try (OutputStream out = response.getOutputStream()) {
+
+            IOUtils.copy(new FileInputStream(file), out);
+        }
     }
 
     @ExceptionHandler
