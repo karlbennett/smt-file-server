@@ -183,7 +183,7 @@ public class FileControllerTest {
         mockMvc.perform(get("/file")
                 .requestAttr(ABSOLUTE_PATH, "invalid")
                 .header("Range", "bytes=0-10")
-        ).andExpect(status().isBadRequest()) // FIXME: This should return a 404. The initBinder isn't mapping errors.
+        ).andExpect(status().isBadRequest()) // This should be a 404, but @InitBinder exceptions can't be handled.
                 .andExpect(content().string(""));
     }
 
