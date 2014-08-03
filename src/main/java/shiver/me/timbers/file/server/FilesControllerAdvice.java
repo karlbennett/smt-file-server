@@ -1,34 +1,31 @@
 package shiver.me.timbers.file.server;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import shiver.me.timbers.file.io.InvalidPathException;
 
-import java.util.Map;
-
-import static java.util.Collections.singletonMap;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 
 /**
- * This class provides global controller behaviour e.g. error mapping.
+ * This class provides shared controller behaviour for the {@link DirectoryController} and {@link FileController}.
  *
  * @author Karl Bennett
  */
-@ControllerAdvice
+@ControllerAdvice(assignableTypes = {DirectoryController.class, FileController.class})
 @ResponseBody
 public class FilesControllerAdvice {
 
-    @ExceptionHandler
-    @ResponseStatus(NOT_FOUND)
-    public Map<String, String> invalidPath(InvalidPathException e) {
+    @ModelAttribute
+    public java.io.File absolutePath(HttpServletRequest request) {
 
-        return buildError(e);
-    }
+        final Object path = request.getAttribute("absolutePath");
 
-    private static Map<String, String> buildError(Throwable throwable) {
+        if (null == path) {
+            throw new InvalidPathException("No path provided.");
+        }
 
-        return singletonMap("error", throwable.getMessage());
+        return new File(path.toString());
     }
 }

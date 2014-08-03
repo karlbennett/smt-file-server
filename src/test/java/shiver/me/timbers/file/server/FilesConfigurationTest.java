@@ -19,13 +19,19 @@ public class FilesConfigurationTest {
     private ApplicationContext context;
 
     @Autowired
-    private FilesControllerAdvice filesControllerAdvice;
+    private GlobalControllerAdvice globalControllerAdvice;
 
     @Autowired
     private FilesRoutingController filesRoutingController;
 
     @Autowired
-    private FilesController filesController;
+    private FilesControllerAdvice filesControllerAdvice;
+
+    @Autowired
+    private DirectoryController directoryController;
+
+    @Autowired
+    private FileController fileController;
 
     @Autowired
     private String rootPath;
@@ -37,21 +43,33 @@ public class FilesConfigurationTest {
     }
 
     @Test
-    public void I_can_access_the_files_controller_advice() {
+    public void I_can_access_the_global_controller_advice() {
 
-        assertNotNull("the files files controller advice should be available.", filesControllerAdvice);
+        assertNotNull("the global controller advice should be available.", globalControllerAdvice);
     }
 
     @Test
     public void I_can_access_the_files_routing_controller() {
 
-        assertNotNull("the files files routing controller should be available.", filesRoutingController);
+        assertNotNull("the files routing controller should be available.", filesRoutingController);
     }
 
     @Test
-    public void I_can_access_the_files_controller() {
+    public void I_can_access_the_files_controller_advice() {
 
-        assertNotNull("the files files controller should be available.", filesController);
+        assertNotNull("the files routing controller should be available.", filesControllerAdvice);
+    }
+
+    @Test
+    public void I_can_access_the_file_controller() {
+
+        assertNotNull("the file controller should be available.", fileController);
+    }
+
+    @Test
+    public void I_can_access_the_directory_controller() {
+
+        assertNotNull("the directory controller should be available.", directoryController);
     }
 
     @Test

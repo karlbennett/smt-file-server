@@ -29,22 +29,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE;
-import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_TWO;
 import static shiver.me.timbers.file.io.FileConstants.FILE_EIGHT;
 import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SEVEN;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SIX;
-import static shiver.me.timbers.file.io.FileConstants.FILE_TWO;
+import static shiver.me.timbers.file.server.ServerConstants.ABSOLUTE_PATH;
+import static shiver.me.timbers.file.server.ServerConstants.ERROR_MESSAGE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FilesConfiguration.class)
 @WebAppConfiguration("classpath:")
-public class FilesControllerTest {
-
-    private static final String ABSOLUTE_PATH = "absolutePath";
-    private static final String ERROR_MESSAGE = "No path provided.";
+public class FileControllerTest {
 
     @Autowired
     private WebApplicationContext wac;
@@ -54,33 +50,6 @@ public class FilesControllerTest {
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-    }
-
-    @Test
-    public void I_can_request_a_directory() throws Exception {
-
-        mockMvc.perform(get("/directory").requestAttr(ABSOLUTE_PATH, DIRECTORY_ONE.getAbsolutePath()))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.name").value(DIRECTORY_ONE.getName()))
-                .andExpect(jsonPath("$.modified").exists())
-                .andExpect(jsonPath("$.directories").isArray())
-                .andExpect(jsonPath("$.directories[0].name").value(DIRECTORY_TWO.getName()))
-                .andExpect(jsonPath("$.directories[0].modified").exists())
-                .andExpect(jsonPath("$.files").isArray())
-                .andExpect(jsonPath("$.files[0].name").value(FILE_TWO.getName()))
-                .andExpect(jsonPath("$.files[0].modified").value(FILE_TWO.getModified().getTime()))
-                .andExpect(jsonPath("$.files[0].extension").value(FILE_TWO.getExtension()))
-                .andExpect(jsonPath("$.files[0].size").value(Long.valueOf(FILE_TWO.getSize()).intValue()));
-    }
-
-    @Test
-    public void I_cannot_request_a_directory_without_a_path() throws Exception {
-
-        mockMvc.perform(get("/directory"))
-                .andExpect(status().isNotFound())
-                .andExpect(content().contentType(APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.error").value(ERROR_MESSAGE));
     }
 
     @Test
