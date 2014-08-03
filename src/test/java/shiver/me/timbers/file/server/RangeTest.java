@@ -151,8 +151,7 @@ public class RangeTest {
     @Test
     public void I_can_to_string_a_range() {
 
-        assertEquals("range toString should be correct", "{ \"start\" : 1, \"end\" : 2, \"fileSize\" : 3 }",
-                new Range("1-2", 3).toString());
+        assertEquals("range toString should be correct", "1-2", new Range("1-2", 3).toString());
     }
 
     @Test

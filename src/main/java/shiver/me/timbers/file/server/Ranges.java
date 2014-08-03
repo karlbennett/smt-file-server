@@ -63,4 +63,56 @@ public class Ranges extends AbstractList<Range> {
     public int size() {
         return ranges.size();
     }
+
+    @Override
+    public String toString() {
+
+        final StringBuilder toString = new StringBuilder(BYTES);
+
+        for (Range range : ranges) {
+
+            toString.append(range).append(',');
+        }
+
+        removeLastComma(toString);
+
+        return toString.toString();
+    }
+
+    private void removeLastComma(StringBuilder toString) {
+
+        final int length = toString.length();
+
+        toString.replace(length - 1, length, "");
+    }
+
+    @Override
+    public boolean equals(Object object) {
+
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof Ranges)) {
+            return false;
+        }
+        if (!super.equals(object)) {
+            return false;
+        }
+
+        final Ranges ranges = (Ranges) object;
+
+        if (!this.ranges.equals(ranges.ranges)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+
+        int result = super.hashCode();
+        result = 31 * result + ranges.hashCode();
+        return result;
+    }
 }

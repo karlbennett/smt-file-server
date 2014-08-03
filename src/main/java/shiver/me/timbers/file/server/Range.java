@@ -116,7 +116,7 @@ public class Range {
 
     @Override
     public String toString() {
-        return format("{ \"start\" : %d, \"end\" : %d, \"fileSize\" : %d }", start, end, fileSize);
+        return format("%d-%d", start, end);
     }
 
     @Override

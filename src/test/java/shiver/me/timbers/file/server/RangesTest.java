@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 
 public class RangesTest {
@@ -109,5 +110,34 @@ public class RangesTest {
     public void I_cannot_parse_a_range_header_value_with_only_ranges() {
 
         new Ranges(format("%s,%s,%s", RANGE_ONE, RANGE_TWO, RANGE_THREE), FILE_SIZE);
+    }
+
+    @Test
+    public void I_can_to_string_a_ranges() {
+
+        assertEquals("the ranges toString should be correct.", RANGE_HEADER_VALUE, ranges.toString());
+    }
+
+    @Test
+    public void I_can_to_check_the_equality_of_ranges() {
+
+        final Ranges left = new Ranges(RANGE_HEADER_VALUE, FILE_SIZE);
+        final Ranges right = new Ranges(RANGE_HEADER_VALUE, FILE_SIZE);
+
+        assertEquals("the ranges should be equal to it's self.", left, left);
+
+        assertEquals("the ranges should be equal.", left, right);
+
+        assertEquals("the ranges hash codes should be equal.", left.hashCode(), right.hashCode());
+
+        assertNotEquals("the ranges should not be equal to a ranges with different ranges.", left,
+                new Ranges(format("bytes=%s,%s", RANGE_ONE, RANGE_THREE), FILE_SIZE));
+
+        assertNotEquals("the range should not be equal to a ranges with a different fileSize.", left,
+                new Ranges(RANGE_HEADER_VALUE, 2000));
+
+        assertNotEquals("the ranges should not be equal to object.", left, new Object());
+
+        assertNotEquals("the ranges should not be equal to null.", left, null);
     }
 }
