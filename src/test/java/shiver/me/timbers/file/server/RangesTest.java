@@ -7,10 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
@@ -44,12 +42,6 @@ public class RangesTest {
     public void setUp() {
 
         ranges = new Ranges(RANGE_HEADER_VALUE, FILE_SIZE);
-    }
-
-    @Test
-    public void I_can_parse_no_ranges() {
-
-        assertThat("some ranges should be produced.", new Ranges(), is(empty()));
     }
 
     @Test
@@ -104,6 +96,12 @@ public class RangesTest {
     public void I_cannot_parse_an_invalid_range_header_value_with_invalid_suffix_range() {
 
         new Ranges("bytes=-invalid", FILE_SIZE);
+    }
+
+    @Test(expected = RequestedRangeNotSatisfiableException.class)
+    public void I_cannot_parse_no_ranges() {
+
+        new Ranges("bytes=", FILE_SIZE);
     }
 
     @Test(expected = RequestedRangeNotSatisfiableException.class)

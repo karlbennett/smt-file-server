@@ -15,10 +15,6 @@ public class Ranges extends AbstractList<Range> {
 
     private final List<Range> ranges;
 
-    public Ranges() {
-        this(BYTES, 0);
-    }
-
     /**
      * @param rangeHeaderValue must be in the format "bytes=(\d*-\d*)*" where at least one of the numbers on either side
      *                         in each range is present.
@@ -33,9 +29,7 @@ public class Ranges extends AbstractList<Range> {
 
         this.ranges = new ArrayList<>(rangeStrings.length);
 
-        if (noRangesSupplied(rangeStrings)) {
-            return;
-        }
+        rangesMustBeSupplied(rangeStrings, rangeHeaderValue, fileSize);
 
         for (String rangeString : rangeStrings) {
 
@@ -50,8 +44,11 @@ public class Ranges extends AbstractList<Range> {
         }
     }
 
-    private static boolean noRangesSupplied(String[] rangeStrings) {
-        return 1 == rangeStrings.length && "".equals(rangeStrings[0]);
+    private static void rangesMustBeSupplied(String[] rangeStrings, String rangeHeaderValue, long fileSize) {
+
+        if (1 == rangeStrings.length && "".equals(rangeStrings[0])) {
+            throw new RequestedRangeNotSatisfiableException(rangeHeaderValue, fileSize);
+        }
     }
 
     @Override
@@ -95,13 +92,7 @@ public class Ranges extends AbstractList<Range> {
         if (!(object instanceof Ranges)) {
             return false;
         }
-        if (!super.equals(object)) {
-            return false;
-        }
-
-        final Ranges ranges = (Ranges) object;
-
-        if (!this.ranges.equals(ranges.ranges)) {
+        if (!super.equals(object)) { // This equality check will check the ranges field as well.
             return false;
         }
 

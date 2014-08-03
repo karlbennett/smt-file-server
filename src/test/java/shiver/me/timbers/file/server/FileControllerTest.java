@@ -34,7 +34,7 @@ import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SEVEN;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SIX;
-import static shiver.me.timbers.file.server.ServerConstants.ABSOLUTE_PATH;
+import static shiver.me.timbers.file.server.FilesRoutingController.ABSOLUTE_PATH;
 import static shiver.me.timbers.file.server.ServerConstants.ERROR_MESSAGE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -56,7 +56,8 @@ public class FileControllerTest {
     public void I_can_check_a_file() throws Exception {
 
         mockMvcForFile(request(HEAD, "/file").requestAttr(ABSOLUTE_PATH, FILE_ONE.getAbsolutePath()), FILE_ONE)
-                .andExpect(content().contentType(TEXT_PLAIN));
+                .andExpect(content().contentType(TEXT_PLAIN))
+                .andExpect(content().string(""));
     }
 
     @Test
@@ -108,6 +109,84 @@ public class FileControllerTest {
                 .andExpect(jsonPath("$.error").value(ERROR_MESSAGE));
     }
 
+    @Test
+    public void I_can_check_a_partial_file() throws Exception {
+
+        mockMvcHeadersForFile(
+                request(HEAD, "/file")
+                        .requestAttr(ABSOLUTE_PATH, FILE_ONE.getAbsolutePath())
+                        .header("Range", "bytes=0-10"),
+                FILE_ONE
+        ).andExpect(status().isPartialContent())
+                .andExpect(header().string("Content-Range", format("bytes 0-10/%d", FILE_ONE.getSize())))
+                .andExpect(content().contentType(TEXT_PLAIN))
+                .andExpect(content().string(""));
+    }
+
+    @Test
+    public void I_can_request_a_partial_file() throws Exception {
+
+        mockMvcHeadersForFile(
+                get("/file")
+                        .requestAttr(ABSOLUTE_PATH, FILE_ONE.getAbsolutePath())
+                        .header("Range", "bytes=0-10"),
+                FILE_ONE
+        ).andExpect(status().isPartialContent())
+                .andExpect(header().string("Content-Range", format("bytes 0-10/%d", FILE_ONE.getSize())))
+                .andExpect(content().contentType(TEXT_PLAIN))
+                .andExpect(content().string(FILE_ONE.getContent()));
+    }
+
+    @Test
+    public void I_can_request_a_partial_file_with_a_syntactically_incorrect_range() throws Exception {
+
+        mockMvcHeadersForFile(
+                get("/file")
+                        .requestAttr(ABSOLUTE_PATH, FILE_ONE.getAbsolutePath())
+                        .header("Range", "bytes=10-0"),
+                FILE_ONE
+        ).andExpect(status().isPartialContent())
+                .andExpect(header().doesNotExist("Content-Range"))
+                .andExpect(content().contentType(TEXT_PLAIN))
+                .andExpect(content().string(FILE_ONE.getContent()));
+    }
+
+    @Test
+    public void I_cannot_request_a_partial_file_with_no_ranges() throws Exception {
+
+        mockMvc.perform(get("/file")
+                .requestAttr(ABSOLUTE_PATH, FILE_ONE.getAbsolutePath())
+                .header("Range", "bytes=")
+        ).andExpect(status().isRequestedRangeNotSatisfiable())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.error").value(format(
+                        "The supplied Range header is either malformed or out of bounds. Range: bytes=, File Size: %d",
+                        FILE_ONE.getSize())));
+    }
+
+    @Test
+    public void I_cannot_request_a_partial_file_with_an_invalid_range() throws Exception {
+
+        mockMvc.perform(get("/file")
+                .requestAttr(ABSOLUTE_PATH, FILE_ONE.getAbsolutePath())
+                .header("Range", "bytes=1000-1001")
+        ).andExpect(status().isRequestedRangeNotSatisfiable())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.error").value(format(
+                        "The supplied Range header is either malformed or out of bounds. Range: 1000-1001, File Size: %d",
+                        FILE_ONE.getSize())));
+    }
+
+    @Test
+    public void I_cannot_request_a_partial_file_with_an_invalid_absolute_path() throws Exception {
+
+        mockMvc.perform(get("/file")
+                .requestAttr(ABSOLUTE_PATH, "invalid")
+                .header("Range", "bytes=0-10")
+        ).andExpect(status().isBadRequest()) // FIXME: This should return a 404. The initBinder isn't mapping errors.
+                .andExpect(content().string(""));
+    }
+
     private ResultActions mockMvcForFile(TestFile file) throws Exception {
 
         return mockMvcForFile(get("/file").requestAttr(ABSOLUTE_PATH, file.getAbsolutePath()), file);
@@ -115,10 +194,15 @@ public class FileControllerTest {
 
     private ResultActions mockMvcForFile(MockHttpServletRequestBuilder requestBuilder, TestFile file) throws Exception {
 
+        return mockMvcHeadersForFile(requestBuilder, file)
+                .andExpect(status().isOk());
+    }
+
+    private ResultActions mockMvcHeadersForFile(MockHttpServletRequestBuilder requestBuilder, TestFile file) throws Exception {
+
         final DateFormat HTTP_DATE = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
 
         return mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
                 .andExpect(header().string("Accept-Ranges", "bytes"))
                 .andExpect(header().string("ETag", format("\"%s_%d_%d\"", file.getName(), file.getSize(),
                         file.getModified().getTime())))

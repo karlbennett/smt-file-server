@@ -27,7 +27,7 @@ public class GlobalControllerAdvice {
         return buildError(e);
     }
 
-    private static Map<String, String> buildError(Throwable throwable) {
+    public static Map<String, String> buildError(Throwable throwable) {
 
         return singletonMap("error", throwable.getMessage());
     }

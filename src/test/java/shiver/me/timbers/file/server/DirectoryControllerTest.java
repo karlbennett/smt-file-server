@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE;
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_TWO;
 import static shiver.me.timbers.file.io.FileConstants.FILE_TWO;
-import static shiver.me.timbers.file.server.ServerConstants.ABSOLUTE_PATH;
+import static shiver.me.timbers.file.server.FilesRoutingController.ABSOLUTE_PATH;
 import static shiver.me.timbers.file.server.ServerConstants.ERROR_MESSAGE;
 
 @RunWith(SpringJUnit4ClassRunner.class)

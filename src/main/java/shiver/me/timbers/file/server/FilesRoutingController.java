@@ -20,6 +20,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
 @Controller
 public class FilesRoutingController {
 
+    public static final String ABSOLUTE_PATH = "absolutePath";
+
     @Autowired
     private String rootPath;
 
@@ -32,7 +34,7 @@ public class FilesRoutingController {
         // We add the path to a request attribute not a query parameter because this cannot be set in an incoming HTTP
         // request, that means arbitrary paths cannot be sent into the /directory and /file endpoints to access any path
         // in the file system.
-        request.setAttribute("absolutePath", file.getPath());
+        request.setAttribute(ABSOLUTE_PATH, file.getPath());
 
         if (file.isDirectory()) {
             return "forward:/directory";
@@ -42,6 +44,6 @@ public class FilesRoutingController {
             return "forward:/file";
         }
 
-        throw new InvalidPathException("No such file or directory.");
+        throw new InvalidPathException();
     }
 }
