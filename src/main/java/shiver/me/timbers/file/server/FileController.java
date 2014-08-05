@@ -1,7 +1,6 @@
 package shiver.me.timbers.file.server;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
@@ -76,52 +75,18 @@ public class FileController {
         }
     }
 
-    @RequestMapping(method = HEAD)
-    public void fileHead()
-            throws IOException {
+    @RequestMapping(method = {GET, HEAD})
+    public File file(File file) throws IOException {
+
+        return file;
     }
 
-    @RequestMapping(method = HEAD, headers = RANGE)
+    @RequestMapping(method = {GET, HEAD}, headers = RANGE)
     @ResponseStatus(PARTIAL_CONTENT)
-    public HttpHeaders fileHead(@RequestHeader(value = RANGE) Ranges ranges, File file)
+    public File file(@RequestHeader(value = RANGE) Ranges ranges, File file, HttpServletResponse response)
             throws IOException {
 
-        final HttpHeaders headers = new HttpHeaders();
-
-        if (!ranges.isValid()) {
-
-            return headers;
-        }
-
-        addContentRange(ranges, file, headers);
-
-        return headers;
-    }
-
-    @RequestMapping(method = GET)
-    public FileSystemResource file(File file) throws IOException {
-
-        return new FileSystemResource(file);
-    }
-
-    @RequestMapping(method = GET, headers = RANGE)
-    public void file(@RequestHeader(value = RANGE) Ranges ranges, File file, HttpServletResponse response)
-            throws IOException {
-
-        response.setStatus(PARTIAL_CONTENT.value());
-
-        if (!ranges.isValid()) {
-
-            copyToResponse(file, response);
-
-            return;
-        }
-
-        addContentRange(ranges, file, response);
-
-        final Range range = ranges.get(0);
-
-        copy(range.getStart(), range.getEnd(), file, response);
+        return file;
     }
 
     private static void addContentRange(Ranges ranges, File file, HttpHeaders headers) {

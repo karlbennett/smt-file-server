@@ -14,8 +14,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import shiver.me.timbers.file.io.TestFile;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import static java.lang.String.format;
@@ -37,6 +35,7 @@ import static shiver.me.timbers.file.io.FileConstants.FILE_SEVEN;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SIX;
 import static shiver.me.timbers.file.server.FilesRoutingController.ABSOLUTE_PATH;
 import static shiver.me.timbers.file.server.ServerConstants.ERROR_MESSAGE;
+import static shiver.me.timbers.file.server.ServerConstants.dateFormat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FilesConfiguration.class)
@@ -229,9 +228,7 @@ public class FileControllerTest {
                 .requestAttr(ABSOLUTE_PATH, FILE_ONE.getAbsolutePath())
                 .header("Range", "bytes=")
         ).andExpect(status().isRequestedRangeNotSatisfiable())
-                // FIXME: Should be the below media type.
-                // .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
-                .andExpect(content().contentType(TEXT_PLAIN))
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.error").value(format(
                         "The supplied Range header is either malformed or out of bounds. Range: bytes=, File Size: %d",
                         FILE_ONE.getSize())));
@@ -244,9 +241,7 @@ public class FileControllerTest {
                 .requestAttr(ABSOLUTE_PATH, FILE_ONE.getAbsolutePath())
                 .header("Range", "bytes=1000-1001")
         ).andExpect(status().isRequestedRangeNotSatisfiable())
-                // FIXME: Should be the below media type.
-                // .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
-                .andExpect(content().contentType(TEXT_PLAIN))
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.error").value(format(
                         "The supplied Range header is either malformed or out of bounds. Range: 1000-1001, File Size: %d",
                         FILE_ONE.getSize())));
@@ -275,12 +270,10 @@ public class FileControllerTest {
 
     private ResultActions mockMvcHeadersForFile(MockHttpServletRequestBuilder requestBuilder, TestFile file) throws Exception {
 
-        final DateFormat HTTP_DATE = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
-
         return mockMvc.perform(requestBuilder)
                 .andExpect(header().string("Accept-Ranges", "bytes"))
                 .andExpect(header().string("ETag", format("\"%s_%d_%d\"", file.getName(), file.getSize(),
                         file.getModified().getTime())))
-                .andExpect(header().string("Last-Modified", HTTP_DATE.format(file.getModified())));
+                .andExpect(header().string("Last-Modified", dateFormat().format(file.getModified())));
     }
 }
