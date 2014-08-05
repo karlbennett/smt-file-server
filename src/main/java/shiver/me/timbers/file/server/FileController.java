@@ -1,12 +1,8 @@
 package shiver.me.timbers.file.server;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,15 +26,12 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import static java.lang.String.format;
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 import static org.springframework.http.HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
-import static shiver.me.timbers.file.server.FilesControllerAdvice.getAbsolutePath;
 import static shiver.me.timbers.file.server.GlobalControllerAdvice.buildError;
+import static shiver.me.timbers.file.server.Requests.getAbsolutePathAttribute;
 
 /**
  * Controller for mapping the file and directory requests.
@@ -54,8 +47,6 @@ public class FileController {
     private static final String RANGE = "Range";
     private static final String CONTENT_RANGE = "Content-Range";
 
-    private static final DateTimeFormatter HTTP_DATE = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss zzz");
-
     @InitBinder
     public void initBinder(final HttpServletRequest request, WebDataBinder binder) throws IOException {
 
@@ -64,7 +55,7 @@ public class FileController {
             @Override
             public void setAsText(String text) throws IllegalArgumentException {
 
-                final String absolutePath = getAbsolutePath(request);
+                final String absolutePath = getAbsolutePathAttribute(request);
 
                 final long fileSize = fileSize(absolutePath);
 
@@ -86,10 +77,8 @@ public class FileController {
     }
 
     @RequestMapping(method = HEAD)
-    public HttpHeaders fileHead(File file)
+    public void fileHead()
             throws IOException {
-
-        return buildFileHeaders(file);
     }
 
     @RequestMapping(method = HEAD, headers = RANGE)
@@ -97,7 +86,7 @@ public class FileController {
     public HttpHeaders fileHead(@RequestHeader(value = RANGE) Ranges ranges, File file)
             throws IOException {
 
-        final HttpHeaders headers = buildFileHeaders(file);
+        final HttpHeaders headers = new HttpHeaders();
 
         if (!ranges.isValid()) {
 
@@ -110,11 +99,9 @@ public class FileController {
     }
 
     @RequestMapping(method = GET)
-    public ResponseEntity<FileSystemResource> file(File file) throws IOException {
+    public FileSystemResource file(File file) throws IOException {
 
-        final HttpHeaders headers = buildFileHeaders(file);
-
-        return new ResponseEntity<>(new FileSystemResource(file), headers, OK);
+        return new FileSystemResource(file);
     }
 
     @RequestMapping(method = GET, headers = RANGE)
@@ -122,8 +109,6 @@ public class FileController {
             throws IOException {
 
         response.setStatus(PARTIAL_CONTENT.value());
-
-        addHeaders(file, response);
 
         if (!ranges.isValid()) {
 
@@ -137,46 +122,6 @@ public class FileController {
         final Range range = ranges.get(0);
 
         copy(range.getStart(), range.getEnd(), file, response);
-    }
-
-    private static HttpHeaders buildFileHeaders(File file) throws IOException {
-
-        final HttpHeaders headers = new HttpHeaders();
-
-        headers.setContentType(inspectMediaType(file));
-        headers.set("Accept-Ranges", "bytes");
-        headers.setETag(format("\"%s_%d_%d\"", file.getName(), file.length(), file.lastModified()));
-        headers.set("Last-Modified", HTTP_DATE.print(file.lastModified()));
-        headers.setContentLength(file.length());
-
-        return headers;
-    }
-
-    private static void addHeaders(File file, HttpServletResponse response) throws IOException {
-
-        response.setContentType(inspectMediaType(file).toString());
-        response.setHeader("Accept-Ranges", "bytes");
-        response.setHeader("ETag", format("\"%s_%d_%d\"", file.getName(), file.length(), file.lastModified()));
-        response.setHeader("Last-Modified", HTTP_DATE.print(file.lastModified()));
-        response.setContentLength((int) file.length());
-    }
-
-    private static MediaType inspectMediaType(File file) throws IOException {
-
-        final String mimeType = Files.probeContentType(Paths.get(file.getPath()));
-
-        // It seem that at the moment Files.probeContentType(Paths) returns a mime type of "text/plain" for JSON files.
-        if (isJsonFile(file, mimeType)) {
-
-            return APPLICATION_JSON;
-        }
-
-        return MediaType.valueOf(mimeType);
-    }
-
-    private static boolean isJsonFile(File file, String mimeType) {
-
-        return TEXT_PLAIN_VALUE.equals(mimeType) && "json".equalsIgnoreCase(FilenameUtils.getExtension(file.getName()));
     }
 
     private static void addContentRange(Ranges ranges, File file, HttpHeaders headers) {

@@ -8,7 +8,7 @@ import shiver.me.timbers.file.io.InvalidPathException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 
-import static shiver.me.timbers.file.server.FilesRoutingController.ABSOLUTE_PATH;
+import static shiver.me.timbers.file.server.Requests.getAbsolutePathAttribute;
 
 /**
  * This class provides shared controller behaviour for the {@link DirectoryController} and {@link FileController}.
@@ -22,18 +22,15 @@ public class FilesControllerAdvice {
     @ModelAttribute
     public File absolutePath(HttpServletRequest request) {
 
-        final String path = getAbsolutePath(request);
+        final String path = getAbsolutePathAttribute(request);
 
-        return new File(path);
-    }
+        final File file = new File(path);
 
-    public static String getAbsolutePath(HttpServletRequest request) {
+        if (file.exists()) {
 
-        final Object path = request.getAttribute(ABSOLUTE_PATH);
-
-        if (null == path) {
-            throw new InvalidPathException("No path provided.");
+            return file;
         }
-        return path.toString();
+
+        throw new InvalidPathException();
     }
 }
