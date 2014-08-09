@@ -12,9 +12,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import shiver.me.timbers.file.io.JavaFile;
 import shiver.me.timbers.file.io.TestFile;
 
-import java.io.File;
 import java.util.Arrays;
 
 import static java.lang.String.format;
@@ -56,7 +56,7 @@ public class FileControllerTest {
     @Test
     public void I_can_check_a_file() throws Exception {
 
-        mockMvcForFile(request(HEAD, "/file").requestAttr(FILE, FILE_ONE.getFile()), FILE_ONE)
+        mockMvcForFile(request(HEAD, "/file").requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath())), FILE_ONE)
                 .andExpect(content().contentType(TEXT_PLAIN))
                 .andExpect(content().string(""));
     }
@@ -102,15 +102,6 @@ public class FileControllerTest {
     }
 
     @Test
-    public void I_cannot_request_a_file_without_an_invalid_path() throws Exception {
-
-        mockMvc.perform(get("/file").requestAttr(FILE, new File("invalid")))
-                .andExpect(status().isNotFound())
-                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.error").value("No such file or directory."));
-    }
-
-    @Test
     public void I_cannot_request_a_file_without_a_path() throws Exception {
 
         mockMvc.perform(get("/file"))
@@ -124,7 +115,7 @@ public class FileControllerTest {
 
         mockMvcHeadersForFile(
                 request(HEAD, "/file")
-                        .requestAttr(FILE, FILE_ONE.getFile())
+                        .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", "bytes=0-10"),
                 FILE_ONE
         ).andExpect(status().isPartialContent())
@@ -138,7 +129,7 @@ public class FileControllerTest {
 
         mockMvcHeadersForFile(
                 get("/file")
-                        .requestAttr(FILE, FILE_ONE.getFile())
+                        .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", "bytes=6-12"),
                 FILE_ONE
         ).andExpect(status().isPartialContent())
@@ -161,7 +152,7 @@ public class FileControllerTest {
 
         mockMvcHeadersForFile(
                 get("/file")
-                        .requestAttr(FILE, FILE_ONE.getFile())
+                        .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", "bytes=6-1000000"),
                 FILE_ONE
         ).andExpect(status().isPartialContent())
@@ -175,7 +166,7 @@ public class FileControllerTest {
 
         mockMvcHeadersForFile(
                 get("/file")
-                        .requestAttr(FILE, FILE_ONE.getFile())
+                        .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", "bytes=0-1000000"),
                 FILE_ONE
         ).andExpect(status().isPartialContent())
@@ -192,7 +183,7 @@ public class FileControllerTest {
 
         mockMvcHeadersForFile(
                 get("/file")
-                        .requestAttr(FILE, FILE_EIGHT.getFile())
+                        .requestAttr(FILE, new JavaFile(FILE_EIGHT.getAbsolutePath()))
                         .header("Range", format("bytes=%d-%d", start, end)),
                 FILE_EIGHT
         ).andExpect(status().isPartialContent())
@@ -207,7 +198,7 @@ public class FileControllerTest {
 
         mockMvcHeadersForFile(
                 request(HEAD, "/file")
-                        .requestAttr(FILE, FILE_ONE.getFile())
+                        .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", "bytes=10-0"),
                 FILE_ONE
         ).andExpect(status().isPartialContent())
@@ -222,7 +213,7 @@ public class FileControllerTest {
 
         mockMvcHeadersForFile(
                 get("/file")
-                        .requestAttr(FILE, FILE_ONE.getFile())
+                        .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", "bytes=10-0"),
                 FILE_ONE
         ).andExpect(status().isPartialContent())
@@ -235,7 +226,7 @@ public class FileControllerTest {
     public void I_cannot_request_a_partial_file_with_no_ranges() throws Exception {
 
         mockMvc.perform(get("/file")
-                .requestAttr(FILE, FILE_ONE.getFile())
+                .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
                 .header("Range", "bytes=")
         ).andExpect(status().isRequestedRangeNotSatisfiable())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
@@ -248,7 +239,7 @@ public class FileControllerTest {
     public void I_cannot_request_a_partial_file_with_an_invalid_range() throws Exception {
 
         mockMvc.perform(get("/file")
-                .requestAttr(FILE, FILE_ONE.getFile())
+                .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
                 .header("Range", "bytes=1000-1001")
         ).andExpect(status().isRequestedRangeNotSatisfiable())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
@@ -257,19 +248,9 @@ public class FileControllerTest {
                         FILE_ONE.getSize())));
     }
 
-    @Test
-    public void I_cannot_request_a_partial_file_with_an_invalid_absolute_path() throws Exception {
-
-        mockMvc.perform(get("/file")
-                .requestAttr(FILE, new File("invalid"))
-                .header("Range", "bytes=0-10")
-        ).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value("No such file or directory."));
-    }
-
     private ResultActions mockMvcForFile(TestFile file) throws Exception {
 
-        return mockMvcForFile(get("/file").requestAttr(FILE, file.getFile()), file);
+        return mockMvcForFile(get("/file").requestAttr(FILE, new JavaFile(file.getAbsolutePath())), file);
     }
 
     private ResultActions mockMvcForFile(MockHttpServletRequestBuilder requestBuilder, TestFile file) throws Exception {

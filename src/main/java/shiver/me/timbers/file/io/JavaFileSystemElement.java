@@ -7,6 +7,7 @@ import static java.lang.String.format;
 
 public class JavaFileSystemElement implements FileSystemElement {
 
+    private final java.io.File file;
     private final String name;
     private final Date modified;
 
@@ -25,6 +26,8 @@ public class JavaFileSystemElement implements FileSystemElement {
         if (!canonicalFile.exists()) {
             throw new InvalidPathException(format("Nothing exists at %s", file.getPath()));
         }
+
+        this.file = canonicalFile;
 
         name = canonicalFile.getName();
         modified = new Date(canonicalFile.lastModified());
@@ -54,7 +57,7 @@ public class JavaFileSystemElement implements FileSystemElement {
 
     @Override
     public String toString() {
-        return name;
+        return file.getAbsolutePath();
     }
 
     @Override

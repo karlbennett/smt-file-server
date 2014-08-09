@@ -1,6 +1,5 @@
 package shiver.me.timbers.file.server;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -8,10 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
-import shiver.me.timbers.file.io.InvalidPathException;
+import shiver.me.timbers.file.io.File;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import static org.apache.commons.io.IOUtils.copy;
@@ -30,30 +27,23 @@ public class FileHttpMessageConverter extends AbstractHttpMessageConverter<File>
 
     @Override
     protected boolean supports(Class<?> clazz) {
-        return File.class.equals(clazz);
+        return File.class.isAssignableFrom(clazz);
     }
 
     @Override
     protected File readInternal(Class<? extends File> clazz, HttpInputMessage inputMessage)
             throws IOException, HttpMessageNotReadableException {
-
-        final String body = IOUtils.toString(inputMessage.getBody());
-
-        return new File(body);
+        throw new UnsupportedOperationException(" This is not required.");
     }
 
     @Override
     protected void writeInternal(File file, HttpOutputMessage outputMessage)
             throws IOException, HttpMessageNotWritableException {
 
-        if (!file.exists()) {
-            throw new InvalidPathException();
-        }
-
         final HttpHeaders headers = outputMessage.getHeaders();
 
         addFileHeaders(headers, file);
 
-        copy(new FileInputStream(file), outputMessage.getBody());
+        copy(file.getInputStream(), outputMessage.getBody());
     }
 }

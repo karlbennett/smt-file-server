@@ -5,13 +5,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
-import shiver.me.timbers.file.io.InvalidPathException;
+import shiver.me.timbers.file.io.File;
+import shiver.me.timbers.file.io.JavaFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 import static org.junit.Assert.assertEquals;
@@ -40,30 +38,10 @@ public class FileHttpMessageConverterTest {
                 MESSAGE_CONVERTER.canWrite(Object.class, null));
     }
 
-    @Test
-    public void I_can_read_a_file() throws IOException {
+    @Test(expected = UnsupportedOperationException.class)
+    public void I_cannot_read_a_file() throws IOException {
 
-        assertFileReadForPath("/some/path/to/a/file.txt");
-    }
-
-    @Test
-    public void I_can_read_a_file_with_an_empty_path() throws IOException {
-
-        assertFileReadForPath("");
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void I_cannot_read_a_file_with_a_null_path() throws IOException {
-
-        final HttpInputMessage message = mock(HttpInputMessage.class);
-
-        MESSAGE_CONVERTER.read(null, message);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void I_cannot_read_a_file_with_a_null_message() throws IOException {
-
-        MESSAGE_CONVERTER.read(null, null);
+        MESSAGE_CONVERTER.read(File.class, mock(HttpInputMessage.class));
     }
 
     @Test
@@ -73,15 +51,9 @@ public class FileHttpMessageConverterTest {
 
         final HttpOutputMessage message = mockHttpOutputMessage(output);
 
-        MESSAGE_CONVERTER.write(new File(FILE_ONE.getAbsolutePath()), null, message);
+        MESSAGE_CONVERTER.write(new JavaFile(FILE_ONE.getAbsolutePath()), null, message);
 
         assertEquals("the files content should be correct.", FILE_ONE.getContent(), output.toString());
-    }
-
-    @Test(expected = InvalidPathException.class)
-    public void I_cannot_write_an_invalid_file() throws IOException {
-
-        MESSAGE_CONVERTER.write(new File("invalid"), null, mockHttpOutputMessage(new ByteArrayOutputStream()));
     }
 
     @Test(expected = NullPointerException.class)
@@ -98,24 +70,13 @@ public class FileHttpMessageConverterTest {
         final HttpOutputMessage message = mock(HttpOutputMessage.class);
         when(message.getHeaders()).thenReturn(headers);
 
-        MESSAGE_CONVERTER.write(new File(FILE_ONE.getAbsolutePath()), null, message);
+        MESSAGE_CONVERTER.write(new JavaFile(FILE_ONE.getAbsolutePath()), null, message);
     }
 
     @Test(expected = NullPointerException.class)
     public void I_cannot_write_a_file_to_a_null_message() throws IOException {
 
-        MESSAGE_CONVERTER.write(new File(FILE_ONE.getAbsolutePath()), null, null);
-    }
-
-    private static void assertFileReadForPath(String path) throws IOException {
-        final InputStream input = new ByteArrayInputStream(path.getBytes());
-
-        final HttpInputMessage message = mock(HttpInputMessage.class);
-        when(message.getBody()).thenReturn(input);
-
-        final File file = MESSAGE_CONVERTER.read(null, message);
-
-        assertEquals("the files path should be correct.", path, file.getPath());
+        MESSAGE_CONVERTER.write(new JavaFile(FILE_ONE.getAbsolutePath()), null, null);
     }
 
     private static HttpOutputMessage mockHttpOutputMessage(OutputStream output) throws IOException {

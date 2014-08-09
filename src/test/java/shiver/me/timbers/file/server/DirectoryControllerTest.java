@@ -10,6 +10,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import shiver.me.timbers.file.io.JavaDirectory;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -20,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE;
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_TWO;
 import static shiver.me.timbers.file.io.FileConstants.FILE_TWO;
-import static shiver.me.timbers.file.server.Requests.FILE;
+import static shiver.me.timbers.file.server.Requests.DIRECTORY;
 import static shiver.me.timbers.file.server.ServerConstants.ERROR_MESSAGE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -44,7 +45,7 @@ public class DirectoryControllerTest {
     @Test
     public void I_can_request_a_directory() throws Exception {
 
-        mockMvc.perform(get("/directory").requestAttr(FILE, DIRECTORY_ONE.getFile()))
+        mockMvc.perform(get("/directory").requestAttr(DIRECTORY, new JavaDirectory(DIRECTORY_ONE.getAbsolutePath())))
                 .andExpect(status().isOk())
                 .andExpect(header().string(ACCEPT_RANGES, ACCEPT_RANGES_VALUE))
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))

@@ -25,9 +25,6 @@ public class FilesConfigurationTest {
     private FilesRoutingController filesRoutingController;
 
     @Autowired
-    private FilesControllerAdvice filesControllerAdvice;
-
-    @Autowired
     private DirectoryController directoryController;
 
     @Autowired
@@ -52,12 +49,6 @@ public class FilesConfigurationTest {
     public void I_can_access_the_files_routing_controller() {
 
         assertNotNull("the files routing controller should be available.", filesRoutingController);
-    }
-
-    @Test
-    public void I_can_access_the_files_controller_advice() {
-
-        assertNotNull("the files routing controller should be available.", filesControllerAdvice);
     }
 
     @Test

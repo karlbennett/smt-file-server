@@ -48,4 +48,9 @@ public abstract class AbstractTestFileSystemElement implements TestFileSystemEle
     public java.io.File getFile() {
         return file;
     }
+
+    @Override
+    public String toString() {
+        return absolutePath;
+    }
 }
