@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import shiver.me.timbers.file.io.InvalidPathException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,8 +19,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
 
 import static java.lang.String.format;
@@ -30,7 +27,7 @@ import static org.springframework.http.HttpStatus.REQUESTED_RANGE_NOT_SATISFIABL
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
 import static shiver.me.timbers.file.server.GlobalControllerAdvice.buildError;
-import static shiver.me.timbers.file.server.Requests.getAbsolutePathAttribute;
+import static shiver.me.timbers.file.server.Requests.getAbsoluteFile;
 
 /**
  * Controller for mapping the file and directory requests.
@@ -54,25 +51,11 @@ public class FileController {
             @Override
             public void setAsText(String text) throws IllegalArgumentException {
 
-                final String absolutePath = getAbsolutePathAttribute(request);
+                final File file = getAbsoluteFile(request);
 
-                final long fileSize = fileSize(absolutePath);
-
-                setValue(new Ranges(text, fileSize));
+                setValue(new Ranges(text, file.length()));
             }
         });
-    }
-
-    private static long fileSize(String absolutePath) {
-
-        try {
-
-            return Files.size(Paths.get(absolutePath));
-
-        } catch (IOException e) {
-
-            throw new InvalidPathException(e);
-        }
     }
 
     @RequestMapping(method = {GET, HEAD})

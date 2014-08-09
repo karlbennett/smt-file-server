@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE;
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_TWO;
 import static shiver.me.timbers.file.io.FileConstants.FILE_TWO;
-import static shiver.me.timbers.file.server.FilesRoutingController.ABSOLUTE_PATH;
+import static shiver.me.timbers.file.server.Requests.FILE;
 import static shiver.me.timbers.file.server.ServerConstants.ERROR_MESSAGE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -44,7 +44,7 @@ public class DirectoryControllerTest {
     @Test
     public void I_can_request_a_directory() throws Exception {
 
-        mockMvc.perform(get("/directory").requestAttr(ABSOLUTE_PATH, DIRECTORY_ONE.getAbsolutePath()))
+        mockMvc.perform(get("/directory").requestAttr(FILE, DIRECTORY_ONE.getFile()))
                 .andExpect(status().isOk())
                 .andExpect(header().string(ACCEPT_RANGES, ACCEPT_RANGES_VALUE))
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))
@@ -64,7 +64,7 @@ public class DirectoryControllerTest {
     public void I_cannot_request_a_directory_without_a_path() throws Exception {
 
         mockMvc.perform(get("/directory"))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isBadRequest())
                 .andExpect(header().string(ACCEPT_RANGES, ACCEPT_RANGES_VALUE))
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.error").value(ERROR_MESSAGE));

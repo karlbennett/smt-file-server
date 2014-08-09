@@ -5,7 +5,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import shiver.me.timbers.file.io.InvalidPathException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -24,18 +23,18 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
  */
 public class Requests {
 
-    public static final String ABSOLUTE_PATH = "absolutePath";
+    public static final String FILE = "file";
 
     private static final DateTimeFormatter HTTP_DATE = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss zzz");
 
-    public static String getAbsolutePathAttribute(HttpServletRequest request) {
+    public static File getAbsoluteFile(HttpServletRequest request) {
 
-        final Object path = request.getAttribute(ABSOLUTE_PATH);
+        final Object file = request.getAttribute(FILE);
 
-        if (null == path) {
-            throw new InvalidPathException("No path provided.");
+        if (null == file) {
+            throw new NoFileException();
         }
-        return path.toString();
+        return (File) file;
     }
 
     public static void addFileHeaders(HttpHeaders headers, File file) throws IOException {

@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 
 public class ServerConstants {
 
-    public static final String ERROR_MESSAGE = "No path provided.";
+    public static final String ERROR_MESSAGE = "No file provided.";
 
     public static DateFormat dateFormat() {
 

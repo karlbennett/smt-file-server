@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import shiver.me.timbers.file.io.InvalidPathException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -22,7 +21,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 import static shiver.me.timbers.file.server.Requests.addFileHeaders;
-import static shiver.me.timbers.file.server.Requests.getAbsolutePathAttribute;
+import static shiver.me.timbers.file.server.Requests.getAbsoluteFile;
 import static shiver.me.timbers.file.server.ServerConstants.dateFormat;
 
 public class RequestsTest {
@@ -44,25 +43,26 @@ public class RequestsTest {
     @Test
     public void I_can_get_the_absolute_path_attribute() {
 
-        final String absolutePath = "/some/absolute/path";
-        final HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getAttribute("absolutePath")).thenReturn(absolutePath);
+        final File file = mock(File.class);
 
-        assertEquals("the absolute path should be correct.", absolutePath, getAbsolutePathAttribute(request));
+        final HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getAttribute("file")).thenReturn(file);
+
+        assertEquals("the absolute path should be correct.", file, getAbsoluteFile(request));
     }
 
-    @Test(expected = InvalidPathException.class)
+    @Test(expected = NoFileException.class)
     public void I_cannot_get_the_absolute_path_attribute_when_it_is_null() {
 
         final HttpServletRequest request = mock(HttpServletRequest.class);
 
-        getAbsolutePathAttribute(request);
+        getAbsoluteFile(request);
     }
 
     @Test(expected = NullPointerException.class)
     public void I_cannot_get_the_absolute_path_attribute_when_the_request_is_null() {
 
-        getAbsolutePathAttribute(null);
+        getAbsoluteFile(null);
     }
 
     @Test

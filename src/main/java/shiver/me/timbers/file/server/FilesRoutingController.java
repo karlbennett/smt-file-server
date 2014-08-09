@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
+import static shiver.me.timbers.file.server.Requests.FILE;
 
 /**
  * Controller for routing the request to either a directory or file request.
@@ -19,8 +20,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
  */
 @Controller
 public class FilesRoutingController {
-
-    public static final String ABSOLUTE_PATH = "absolutePath";
 
     @Autowired
     private String rootPath;
@@ -34,7 +33,7 @@ public class FilesRoutingController {
         // We add the path to a request attribute not a query parameter because this cannot be set in an incoming HTTP
         // request, that means arbitrary paths cannot be sent into the /directory and /file endpoints to access any path
         // in the file system.
-        request.setAttribute(ABSOLUTE_PATH, file.getPath());
+        request.setAttribute(FILE, file);
 
         if (file.isDirectory()) {
             return "forward:/directory";
