@@ -17,6 +17,8 @@ public class Range {
 
     private final long start;
     private final long end;
+    private final long size;
+    private final boolean valid;
 
     /**
      * @param range    must be in the format "\d*-\d*" where at least one of the numbers on either side is present.
@@ -34,6 +36,20 @@ public class Range {
         startBoundaryMustBeLessThanTheFileSize();
 
         this.end = deriveEnd(range);
+
+        this.size = deriveSize();
+
+        this.valid = deriveValid();
+    }
+
+    public Range(long start, long end, long fileSize) {
+
+        this.range = formatRange(start, end);
+        this.fileSize = fileSize;
+        this.start = start;
+        this.end = end;
+        this.size = deriveSize();
+        this.valid = deriveValid();
     }
 
     private void validRangeHeaderMustBeSupplied() {
@@ -101,6 +117,14 @@ public class Range {
         }
     }
 
+    private long deriveSize() {
+        return end - start + 1;
+    }
+
+    private boolean deriveValid() {
+        return start <= end;
+    }
+
     public long getStart() {
         return start;
     }
@@ -109,13 +133,24 @@ public class Range {
         return end;
     }
 
-    public boolean isValid() {
+    public long getSize() {
+        return size;
+    }
 
-        return start <= end;
+    public boolean isValid() {
+        return valid;
+    }
+
+    public long getFileSize() {
+        return fileSize;
     }
 
     @Override
     public String toString() {
+        return formatRange(start, end);
+    }
+
+    private static String formatRange(long start, long end) {
         return format("%d-%d", start, end);
     }
 

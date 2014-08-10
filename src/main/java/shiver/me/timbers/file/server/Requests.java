@@ -26,6 +26,9 @@ public class Requests {
     public static final String DIRECTORY = "directory";
     public static final String FILE = "file";
 
+    public static final String RANGE = "Range";
+    public static final String CONTENT_RANGE = "Content-Range";
+
     private static final DateTimeFormatter HTTP_DATE = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss zzz");
 
     @SuppressWarnings("unchecked")

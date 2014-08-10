@@ -43,7 +43,7 @@ public class DirectorySteps {
     public static void The_directory_should_have_correct_equality(FileSystemElementCreator creator) {
 
         The_file_system_element_should_have_correct_equality(creator.create(CURRENT_DIRECTORY_ABSOLUTE_PATH),
-                creator.create(CURRENT_DIRECTORY_ABSOLUTE_PATH));
+                creator.create(CURRENT_DIRECTORY_ABSOLUTE_PATH), creator);
     }
 
     public static void The_directory_should_have_the_correct_to_string_value(FileSystemElementCreator creator) {

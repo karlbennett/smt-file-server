@@ -9,8 +9,6 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static shiver.me.timbers.Constants.OBJECT_MAPPER;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 
@@ -32,11 +30,12 @@ public class FileSystemElementSteps {
     public static void The_file_system_element_should_have_correct_equality(FileSystemElementCreator creator) {
 
         The_file_system_element_should_have_correct_equality(creator.create(FILE_ONE.getAbsolutePath()),
-                creator.create(FILE_ONE.getAbsolutePath()));
+                creator.create(FILE_ONE.getAbsolutePath()), creator);
     }
 
     public static void The_file_system_element_should_have_correct_equality(FileSystemElement left,
-                                                                            FileSystemElement right) {
+                                                                            FileSystemElement right,
+                                                                            FileSystemElementCreator creator) {
 
         assertEquals("the file system element should be equal to it's self.", left, left);
 
@@ -45,23 +44,14 @@ public class FileSystemElementSteps {
         assertEquals("the file system element hash codes should be equal.", left.hashCode(), right.hashCode());
 
         assertNotEquals("the file system element should not be equal to an element with a different name.", left,
-                mockFileSystemElement("different", left.getModified()));
+                creator.mock("different", left.getModified()));
 
         assertNotEquals("the file system element should not be equal to an element with a different modified date.",
-                left, mockFileSystemElement(left.getName(), new Date()));
+                left, creator.mock(left.getName(), new Date()));
 
         assertNotEquals("the file system element should not be equal to object.", left, new Object());
 
         assertNotEquals("the file system element should not be equal to null.", left, null);
-    }
-
-    private static FileSystemElement mockFileSystemElement(String name, Date modified) {
-
-        final FileSystemElement mock = mock(FileSystemElement.class);
-        when(mock.getName()).thenReturn(name);
-        when(mock.getModified()).thenReturn(modified);
-
-        return mock;
     }
 
     public static void The_file_system_element_should_have_the_correct_to_string_value(TestFileSystemElement expected,

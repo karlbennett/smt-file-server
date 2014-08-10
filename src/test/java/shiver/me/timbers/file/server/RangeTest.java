@@ -13,6 +13,26 @@ public class RangeTest {
     private static final long FILE_SIZE = 10000L;
 
     @Test
+    public void I_can_get_the_file_size() {
+
+        final long fileSize = 2;
+
+        assertEquals("the files size should be correct.", fileSize, new Range(0, 1, fileSize).getFileSize());
+    }
+
+    @Test
+    public void I_can_create_a_range_with_a_start_and_end() {
+
+        final Range range1 = new Range(0, 499, FILE_SIZE);
+
+        assertRangeIsCorrect(0, 499, range1);
+
+        final Range range2 = new Range(500, 999, FILE_SIZE);
+
+        assertRangeIsCorrect(500, 999, range2);
+    }
+
+    @Test
     public void I_can_parse_a_range_value() {
 
         final Range range1 = new Range("0-499", FILE_SIZE);
@@ -162,7 +182,7 @@ public class RangeTest {
         final long fileSize = 5;
 
         final Range left = new Range(format("%d-%d", start, end), fileSize);
-        final Range right = new Range(format("%d-%d", start, end), fileSize);
+        final Range right = new Range(start, end, fileSize);
 
         assertEquals("the range should be equal to it's self.", left, left);
 
@@ -188,6 +208,7 @@ public class RangeTest {
 
         assertEquals("range start should be correct.", start, range.getStart());
         assertEquals("range end should be correct.", end, range.getEnd());
+        assertEquals("range size should be correct.", end - start + 1, range.getSize());
         assertTrue("range should be valid.", range.isValid());
     }
 }

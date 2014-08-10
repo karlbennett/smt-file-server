@@ -22,7 +22,6 @@ import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE;
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_TWO;
 import static shiver.me.timbers.file.io.FileConstants.FILE_TWO;
 import static shiver.me.timbers.file.server.Requests.DIRECTORY;
-import static shiver.me.timbers.file.server.ServerConstants.ERROR_MESSAGE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FilesConfiguration.class)
@@ -68,6 +67,6 @@ public class DirectoryControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(header().string(ACCEPT_RANGES, ACCEPT_RANGES_VALUE))
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.error").value(ERROR_MESSAGE));
+                .andExpect(jsonPath("$.error").value("No directory provided."));
     }
 }

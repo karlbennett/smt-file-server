@@ -4,40 +4,49 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.AbstractHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import shiver.me.timbers.file.io.File;
 
 import java.io.IOException;
+import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.apache.commons.io.IOUtils.copy;
 import static shiver.me.timbers.file.server.Requests.addFileHeaders;
 
 /**
- * This http message converter converts a file type into a valid response while also adding all the required headers.
+ * This http message converter converts a {@link File} type into a valid response while also adding all the required
+ * headers.
  *
  * @author Karl Bennett
  */
-public class FileHttpMessageConverter extends AbstractHttpMessageConverter<File> {
+public class FileHttpMessageConverter<F extends File> implements HttpMessageConverter<F> {
 
-    public FileHttpMessageConverter() {
-        super(MediaType.ALL);
+    @Override
+    public boolean canRead(Class<?> clazz, MediaType mediaType) {
+        return false;
     }
 
     @Override
-    protected boolean supports(Class<?> clazz) {
+    public boolean canWrite(Class<?> clazz, MediaType mediaType) {
         return File.class.isAssignableFrom(clazz);
     }
 
     @Override
-    protected File readInternal(Class<? extends File> clazz, HttpInputMessage inputMessage)
+    public List<MediaType> getSupportedMediaTypes() {
+        return singletonList(MediaType.ALL);
+    }
+
+    @Override
+    public F read(Class<? extends F> clazz, HttpInputMessage inputMessage)
             throws IOException, HttpMessageNotReadableException {
         throw new UnsupportedOperationException(" This is not required.");
     }
 
     @Override
-    protected void writeInternal(File file, HttpOutputMessage outputMessage)
+    public void write(F file, MediaType contentType, HttpOutputMessage outputMessage)
             throws IOException, HttpMessageNotWritableException {
 
         final HttpHeaders headers = outputMessage.getHeaders();

@@ -35,13 +35,14 @@ import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SEVEN;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SIX;
 import static shiver.me.timbers.file.server.Requests.FILE;
-import static shiver.me.timbers.file.server.ServerConstants.ERROR_MESSAGE;
 import static shiver.me.timbers.file.server.ServerConstants.dateFormat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FilesConfiguration.class)
 @WebAppConfiguration("classpath:")
 public class FileControllerTest {
+
+    private static final String NO_FILE_ERROR_MESSAGE = "No file provided.";
 
     @Autowired
     private WebApplicationContext wac;
@@ -107,7 +108,7 @@ public class FileControllerTest {
         mockMvc.perform(get("/file"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.error").value(ERROR_MESSAGE));
+                .andExpect(jsonPath("$.error").value(NO_FILE_ERROR_MESSAGE));
     }
 
     @Test
@@ -144,7 +145,7 @@ public class FileControllerTest {
         mockMvc.perform(get("/file").header("Range", "bytes=6-12"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.error").value(ERROR_MESSAGE));
+                .andExpect(jsonPath("$.error").value(NO_FILE_ERROR_MESSAGE));
     }
 
     @Test

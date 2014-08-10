@@ -1,8 +1,10 @@
 package shiver.me.timbers.file.io;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.IOException;
+import java.util.Date;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
@@ -176,6 +178,16 @@ public class JavaDirectoryTest {
         @Override
         public FileSystemElement create(String path) {
             return new JavaDirectory(path);
+        }
+
+        @Override
+        public FileSystemElement mock(String name, Date modified) {
+
+            final Directory mock = Mockito.mock(Directory.class);
+            when(mock.getName()).thenReturn(name);
+            when(mock.getModified()).thenReturn(modified);
+
+            return mock;
         }
     }
 }

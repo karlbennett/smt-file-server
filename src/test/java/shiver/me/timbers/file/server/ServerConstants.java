@@ -5,8 +5,6 @@ import java.text.SimpleDateFormat;
 
 public class ServerConstants {
 
-    public static final String ERROR_MESSAGE = "No file provided.";
-
     public static DateFormat dateFormat() {
 
         return new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");

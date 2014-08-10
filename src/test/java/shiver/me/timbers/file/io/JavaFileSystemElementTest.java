@@ -1,8 +1,10 @@
 package shiver.me.timbers.file.io;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.IOException;
+import java.util.Date;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -131,6 +133,16 @@ public class JavaFileSystemElementTest {
         @Override
         public FileSystemElement create(String path) {
             return new JavaFileSystemElement(path);
+        }
+
+        @Override
+        public FileSystemElement mock(String name, Date modified) {
+
+            final FileSystemElement mock = Mockito.mock(FileSystemElement.class);
+            when(mock.getName()).thenReturn(name);
+            when(mock.getModified()).thenReturn(modified);
+
+            return mock;
         }
     }
 }

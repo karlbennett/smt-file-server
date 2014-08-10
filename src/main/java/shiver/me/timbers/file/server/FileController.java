@@ -1,6 +1,5 @@
 package shiver.me.timbers.file.server;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
@@ -14,12 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import shiver.me.timbers.file.io.File;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.beans.PropertyEditorSupport;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.util.Map;
 
 import static java.lang.String.format;
@@ -29,7 +24,9 @@ import static org.springframework.http.HttpStatus.REQUESTED_RANGE_NOT_SATISFIABL
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
 import static shiver.me.timbers.file.server.GlobalControllerAdvice.buildError;
+import static shiver.me.timbers.file.server.Requests.CONTENT_RANGE;
 import static shiver.me.timbers.file.server.Requests.FILE;
+import static shiver.me.timbers.file.server.Requests.RANGE;
 import static shiver.me.timbers.file.server.Requests.getAttribute;
 
 /**
@@ -40,11 +37,6 @@ import static shiver.me.timbers.file.server.Requests.getAttribute;
 @RestController
 @RequestMapping("/file")
 public class FileController {
-
-    private static final int DEFAULT_BUFFER_SIZE = 10240;
-
-    private static final String RANGE = "Range";
-    private static final String CONTENT_RANGE = "Content-Range";
 
     @InitBinder
     public void initBinder(final HttpServletRequest request, WebDataBinder binder) throws IOException {
@@ -85,10 +77,10 @@ public class FileController {
 
     @RequestMapping(method = {GET, HEAD}, headers = RANGE)
     @ResponseStatus(PARTIAL_CONTENT)
-    public File file(@RequestHeader(value = RANGE) Ranges ranges, File file, HttpServletResponse response)
+    public File file(@RequestHeader(value = RANGE) Ranges ranges, File file)
             throws IOException {
 
-        return file;
+        return new RangeFile(file, ranges.get(0));
     }
 
     @ExceptionHandler
@@ -96,6 +88,16 @@ public class FileController {
     public Map<String, String> noFileProvided(NoFileException e) {
 
         return buildError(e);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> requestedRangeNotSatisfiable(RequestedRangeNotSatisfiableException e) {
+
+        final HttpHeaders headers = new HttpHeaders();
+
+        headers.set(CONTENT_RANGE, format("bytes */%d", e.getFileSize()));
+
+        return new ResponseEntity<>(buildError(e), headers, REQUESTED_RANGE_NOT_SATISFIABLE);
     }
 
     /**
@@ -109,63 +111,5 @@ public class FileController {
         public NoFileException() {
             super("No file provided.");
         }
-    }
-
-    private static void addContentRange(Ranges ranges, java.io.File file, HttpHeaders headers) {
-
-        headers.set(CONTENT_RANGE, format("bytes %s/%d", ranges.get(0), file.length()));
-    }
-
-    private static void addContentRange(Ranges ranges, java.io.File file, HttpServletResponse response) {
-
-        response.setHeader(CONTENT_RANGE, format("bytes %s/%d", ranges.get(0), file.length()));
-    }
-
-    private void copy(long start, long end, java.io.File file, HttpServletResponse response) throws IOException {
-
-        final long length = end - start + 1;
-
-        if (file.length() <= length) {
-
-            copyToResponse(file, response);
-
-            return;
-        }
-
-        try (
-                final RandomAccessFile input = new RandomAccessFile(file, "r");
-                final OutputStream output = response.getOutputStream()
-        ) {
-
-            input.seek(start);
-
-            final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-            int read;
-
-            long toRead = length;
-
-            while ((read = input.read(buffer)) > 0 && (toRead -= read) > 0) {
-                output.write(buffer, 0, read);
-            }
-
-            output.write(buffer, 0, (int) toRead + read);
-        }
-    }
-
-    private static void copyToResponse(java.io.File file, HttpServletResponse response) throws IOException {
-        try (OutputStream out = response.getOutputStream()) {
-
-            IOUtils.copy(new FileInputStream(file), out);
-        }
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<Map<String, String>> requestedRangeNotSatisfiable(RequestedRangeNotSatisfiableException e) {
-
-        final HttpHeaders headers = new HttpHeaders();
-
-        headers.set(CONTENT_RANGE, format("bytes */%d", e.getFileSize()));
-
-        return new ResponseEntity<>(buildError(e), headers, REQUESTED_RANGE_NOT_SATISFIABLE);
     }
 }

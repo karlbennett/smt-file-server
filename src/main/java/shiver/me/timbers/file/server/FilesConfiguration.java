@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -29,13 +28,14 @@ public class FilesConfiguration extends WebMvcConfigurationSupport {
     @Bean
     public static String rootPath() throws IOException {
 
-        return new File("").getCanonicalPath();
+        return new java.io.File("").getCanonicalPath();
     }
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 
-        converters.add(new FileHttpMessageConverter());
+        converters.add(new RangeFileHttpMessageConverter());
+        converters.add(new FileHttpMessageConverter<>());
 
         addDefaultHttpMessageConverters(converters);
     }

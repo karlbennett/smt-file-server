@@ -1,24 +1,22 @@
 package shiver.me.timbers.file.io;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.IOException;
+import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static shiver.me.timbers.file.io.DirectoryConstants.CURRENT_DIRECTORY;
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE;
-import static shiver.me.timbers.file.io.FileConstants.FILE_FOUR;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
-import static shiver.me.timbers.file.io.FileConstants.FILE_THREE;
-import static shiver.me.timbers.file.io.FileConstants.FILE_TWO;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_be_able_to_be_serialised;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_correct_equality;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_the_correct_to_string_value;
+import static shiver.me.timbers.file.io.FileSteps.The_file_should_produce_an_input_stream;
 import static shiver.me.timbers.file.io.FileSteps.The_files_extension_should_be_correct;
+import static shiver.me.timbers.file.io.FileSteps.The_files_input_stream_should_contain;
 import static shiver.me.timbers.file.io.FileSteps.The_files_modification_date_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_name_should_be_correct;
 import static shiver.me.timbers.file.io.JavaFile.getInputStream;
@@ -115,19 +113,13 @@ public class JavaFileTest {
     @Test
     public void I_can_get_a_files_input_stream() {
 
-        The_file_should_produce_an_input_stream(new JavaFile(FILE_ONE.getAbsolutePath()));
-        The_file_should_produce_an_input_stream(new JavaFile(FILE_TWO.getAbsolutePath()));
-        The_file_should_produce_an_input_stream(new JavaFile(FILE_THREE.getAbsolutePath()));
-        The_file_should_produce_an_input_stream(new JavaFile(FILE_FOUR.getAbsolutePath()));
+        The_file_should_produce_an_input_stream(new JavaFileCreator());
     }
 
     @Test
     public void I_can_read_a_files_input_stream() {
 
-        The_files_input_stream_should_pread_to(FILE_ONE.getContent(), new JavaFile(FILE_ONE.getAbsolutePath()));
-        The_files_input_stream_should_pread_to(FILE_TWO.getContent(), new JavaFile(FILE_TWO.getAbsolutePath()));
-        The_files_input_stream_should_pread_to(FILE_THREE.getContent(), new JavaFile(FILE_THREE.getAbsolutePath()));
-        The_files_input_stream_should_pread_to(FILE_FOUR.getContent(), new JavaFile(FILE_FOUR.getAbsolutePath()));
+        The_files_input_stream_should_contain(new JavaFileCreator());
     }
 
     @Test(expected = InvalidPathException.class)
@@ -136,28 +128,29 @@ public class JavaFileTest {
         getInputStream(new java.io.File(FILE_ONE.getAbsolutePath() + '\u0000'));
     }
 
-    private static void The_file_should_produce_an_input_stream(File file) {
-
-        assertNotNull("the file should produce an input stream.", file.getInputStream());
-    }
-
-    private static void The_files_input_stream_should_pread_to(String text, File file) {
-
-        try {
-
-            assertEquals("the files text should be correct.", text, IOUtils.toString(file.getInputStream()));
-
-        } catch (IOException e) {
-
-            throw new AssertionError(e);
-        }
-    }
-
     private static class JavaFileCreator implements FileCreator {
 
         @Override
         public File create(String path) {
             return new JavaFile(path);
+        }
+
+        @Override
+        public FileSystemElement mock(String name, Date modified) {
+
+            return mock(name, modified, "txt", 100);
+        }
+
+        @Override
+        public File mock(String name, Date modified, String extension, long size) {
+
+            final File mock = Mockito.mock(File.class);
+            when(mock.getName()).thenReturn(name);
+            when(mock.getModified()).thenReturn(modified);
+            when(mock.getExtension()).thenReturn(extension);
+            when(mock.getSize()).thenReturn(size);
+
+            return mock;
         }
     }
 }

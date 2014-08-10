@@ -1,11 +1,12 @@
 package shiver.me.timbers.file.io;
 
-import java.util.Date;
+import org.apache.commons.io.IOUtils;
+
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertNotNull;
 import static shiver.me.timbers.file.io.FileConstants.FILE_EIGHT;
 import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_FOUR;
@@ -76,31 +77,20 @@ public class FileSteps {
     public static void The_file_should_have_correct_equality(FileCreator creator) {
 
         The_file_should_have_correct_equality(creator.create(FILE_ONE.getAbsolutePath()),
-                creator.create(FILE_ONE.getAbsolutePath()));
+                creator.create(FILE_ONE.getAbsolutePath()), creator);
     }
 
-    public static void The_file_should_have_correct_equality(File left, final File right) {
+    public static void The_file_should_have_correct_equality(File left, final File right, FileCreator creator) {
 
-        The_file_system_element_should_have_correct_equality(left, right);
+        The_file_system_element_should_have_correct_equality(left, right, creator);
 
-        final File mock1 = mockFile(left.getName(), left.getModified(), "different", left.getSize());
+        final File mock1 = creator.mock(left.getName(), left.getModified(), "different", left.getSize());
 
         assertNotEquals("the file should not be equal to a file with a different extension.", left, mock1);
 
-        final File mock2 = mockFile(left.getName(), left.getModified(), left.getExtension(), -1);
+        final File mock2 = creator.mock(left.getName(), left.getModified(), left.getExtension(), -1);
 
         assertNotEquals("the file should not be equal to a file with a different size.", left, mock2);
-    }
-
-    private static File mockFile(String name, Date modified, String extension, long size) {
-
-        final File mock = mock(File.class);
-        when(mock.getName()).thenReturn(name);
-        when(mock.getModified()).thenReturn(modified);
-        when(mock.getExtension()).thenReturn(extension);
-        when(mock.getSize()).thenReturn(size);
-
-        return mock;
     }
 
     public static void The_file_should_have_the_correct_to_string_value(FileSystemElementCreator creator) {
@@ -141,5 +131,38 @@ public class FileSteps {
                 FILE_SEVEN.getName(), FILE_SEVEN.getExtension(), Long.toString(FILE_SEVEN.getModified().getTime()));
         The_file_system_element_should_be_able_to_be_serialised(creator.create(FILE_EIGHT.getAbsolutePath()),
                 FILE_EIGHT.getName(), FILE_EIGHT.getExtension(), Long.toString(FILE_EIGHT.getModified().getTime()));
+    }
+
+    public static void The_file_should_produce_an_input_stream(FileCreator creator) {
+
+        The_file_should_produce_an_input_stream(creator.create(FILE_ONE.getAbsolutePath()));
+        The_file_should_produce_an_input_stream(creator.create(FILE_TWO.getAbsolutePath()));
+        The_file_should_produce_an_input_stream(creator.create(FILE_THREE.getAbsolutePath()));
+        The_file_should_produce_an_input_stream(creator.create(FILE_FOUR.getAbsolutePath()));
+    }
+
+    private static void The_file_should_produce_an_input_stream(File file) {
+
+        assertNotNull("the file should produce an input stream.", file.getInputStream());
+    }
+
+    public static void The_files_input_stream_should_contain(FileCreator creator) {
+
+        The_files_input_stream_should_read_to(FILE_ONE.getContent(), creator.create(FILE_ONE.getAbsolutePath()));
+        The_files_input_stream_should_read_to(FILE_TWO.getContent(), creator.create(FILE_TWO.getAbsolutePath()));
+        The_files_input_stream_should_read_to(FILE_THREE.getContent(), creator.create(FILE_THREE.getAbsolutePath()));
+        The_files_input_stream_should_read_to(FILE_FOUR.getContent(), creator.create(FILE_FOUR.getAbsolutePath()));
+    }
+
+    private static void The_files_input_stream_should_read_to(String text, File file) {
+
+        try {
+
+            assertEquals("the files text should be correct.", text, IOUtils.toString(file.getInputStream()));
+
+        } catch (IOException e) {
+
+            throw new AssertionError(e);
+        }
     }
 }

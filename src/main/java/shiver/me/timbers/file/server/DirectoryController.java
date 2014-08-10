@@ -60,7 +60,7 @@ public class DirectoryController {
     private static class NoDirectoryException extends RuntimeException {
 
         public NoDirectoryException() {
-            super("No file provided.");
+            super("No directory provided.");
         }
     }
 }
