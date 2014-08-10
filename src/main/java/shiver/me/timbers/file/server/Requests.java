@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import shiver.me.timbers.file.io.File;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -26,6 +27,17 @@ public class Requests {
     public static final String FILE = "file";
 
     private static final DateTimeFormatter HTTP_DATE = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss zzz");
+
+    @SuppressWarnings("unchecked")
+    public static <A> A getAttribute(String name, HttpServletRequest request, Creator<RuntimeException> creator) {
+
+        final Object attribute = request.getAttribute(name);
+
+        if (null == attribute) {
+            throw creator.create();
+        }
+        return (A) attribute;
+    }
 
     public static void addFileHeaders(HttpHeaders headers, File file) throws IOException {
 

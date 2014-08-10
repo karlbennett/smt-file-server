@@ -30,6 +30,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
 import static shiver.me.timbers.file.server.GlobalControllerAdvice.buildError;
 import static shiver.me.timbers.file.server.Requests.FILE;
+import static shiver.me.timbers.file.server.Requests.getAttribute;
 
 /**
  * Controller for mapping the file and directory requests.
@@ -68,12 +69,12 @@ public class FileController {
 
     private static File getFileFrom(HttpServletRequest request) {
 
-        final Object file = request.getAttribute(FILE);
-
-        if (null == file) {
-            throw new NoFileException();
-        }
-        return (File) file;
+        return getAttribute(FILE, request, new Creator<RuntimeException>() {
+            @Override
+            public RuntimeException create() {
+                return new NoFileException();
+            }
+        });
     }
 
     @RequestMapping(method = {GET, HEAD})

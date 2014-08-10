@@ -16,6 +16,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static shiver.me.timbers.file.server.GlobalControllerAdvice.buildError;
 import static shiver.me.timbers.file.server.Requests.DIRECTORY;
+import static shiver.me.timbers.file.server.Requests.getAttribute;
 
 /**
  * Controller for mapping the file and directory requests.
@@ -27,19 +28,14 @@ import static shiver.me.timbers.file.server.Requests.DIRECTORY;
 public class DirectoryController {
 
     @ModelAttribute
-    public Directory file(HttpServletRequest request) {
+    public Directory directory(HttpServletRequest request) {
 
-        return getDirectoryFrom(request);
-    }
-
-    private static Directory getDirectoryFrom(HttpServletRequest request) {
-
-        final Object file = request.getAttribute(DIRECTORY);
-
-        if (null == file) {
-            throw new NoDirectoryException();
-        }
-        return (Directory) file;
+        return getAttribute(DIRECTORY, request, new Creator<RuntimeException>() {
+            @Override
+            public RuntimeException create() {
+                return new NoDirectoryException();
+            }
+        });
     }
 
     @RequestMapping(method = GET, produces = APPLICATION_JSON_VALUE)
@@ -50,14 +46,14 @@ public class DirectoryController {
 
     @ExceptionHandler
     @ResponseStatus(BAD_REQUEST)
-    public Map<String, String> noFileProvided(NoDirectoryException e) {
+    public Map<String, String> noDirectoryProvided(NoDirectoryException e) {
 
         return buildError(e);
     }
 
     /**
      * This exception is thrown when the {@link Requests#DIRECTORY} attribute isn't added to the
-     * {@link javax.servlet.http.HttpServletRequest} that is sent into the {@link #getDirectoryFrom} method.
+     * {@link javax.servlet.http.HttpServletRequest} that is sent into the {@link #directory} method.
      *
      * @author Karl Bennett
      */
