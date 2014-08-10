@@ -1,4 +1,4 @@
-package shiver.me.timbers.file.server;
+package shiver.me.timbers.file.server.servlet;
 
 import org.springframework.web.servlet.DispatcherServlet;
 
@@ -22,7 +22,7 @@ import javax.servlet.annotation.WebServlet;
                 // Tell Spring where the Java configuration file is.
                 @WebInitParam(
                         name = "contextConfigLocation",
-                        value = "shiver.me.timbers.file.server.FilesConfiguration"
+                        value = "shiver.me.timbers.file.server.spring.FilesConfiguration"
                 )},
         asyncSupported = true
 )

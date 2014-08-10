@@ -1,4 +1,4 @@
-package shiver.me.timbers.file.server;
+package shiver.me.timbers.file.server.spring;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import shiver.me.timbers.file.io.JavaFile;
 import shiver.me.timbers.file.io.TestFile;
+import shiver.me.timbers.file.server.servlet.AcceptRangesFilter;
 
 import java.util.Arrays;
 
@@ -34,8 +35,8 @@ import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SEVEN;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SIX;
-import static shiver.me.timbers.file.server.Requests.FILE;
 import static shiver.me.timbers.file.server.ServerConstants.dateFormat;
+import static shiver.me.timbers.file.server.spring.Requests.FILE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FilesConfiguration.class)

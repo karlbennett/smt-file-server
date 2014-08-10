@@ -1,4 +1,4 @@
-package shiver.me.timbers.file.server;
+package shiver.me.timbers.file.server.spring;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,4 +1,4 @@
-package shiver.me.timbers.file.server;
+package shiver.me.timbers.file.server.servlet;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

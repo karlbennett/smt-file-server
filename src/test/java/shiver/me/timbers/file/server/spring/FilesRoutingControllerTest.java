@@ -1,4 +1,4 @@
-package shiver.me.timbers.file.server;
+package shiver.me.timbers.file.server.spring;
 
 import org.junit.Before;
 import org.junit.Test;

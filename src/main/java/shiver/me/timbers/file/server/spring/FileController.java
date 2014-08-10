@@ -1,4 +1,4 @@
-package shiver.me.timbers.file.server;
+package shiver.me.timbers.file.server.spring;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import shiver.me.timbers.file.io.File;
+import shiver.me.timbers.file.server.Creator;
+import shiver.me.timbers.file.server.RangeFile;
+import shiver.me.timbers.file.server.Ranges;
+import shiver.me.timbers.file.server.RequestedRangeNotSatisfiableException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.beans.PropertyEditorSupport;
@@ -23,11 +27,11 @@ import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 import static org.springframework.http.HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
-import static shiver.me.timbers.file.server.GlobalControllerAdvice.buildError;
-import static shiver.me.timbers.file.server.Requests.CONTENT_RANGE;
-import static shiver.me.timbers.file.server.Requests.FILE;
-import static shiver.me.timbers.file.server.Requests.RANGE;
-import static shiver.me.timbers.file.server.Requests.getAttribute;
+import static shiver.me.timbers.file.server.spring.GlobalControllerAdvice.buildError;
+import static shiver.me.timbers.file.server.spring.Requests.CONTENT_RANGE;
+import static shiver.me.timbers.file.server.spring.Requests.FILE;
+import static shiver.me.timbers.file.server.spring.Requests.RANGE;
+import static shiver.me.timbers.file.server.spring.Requests.getAttribute;
 
 /**
  * Controller for mapping the file and directory requests.

@@ -1,11 +1,11 @@
-package shiver.me.timbers.file.server;
+package shiver.me.timbers.file.server.spring;
 
 import org.junit.Test;
 import shiver.me.timbers.file.io.InvalidPathException;
 
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
-import static shiver.me.timbers.file.server.GlobalControllerAdvice.buildError;
+import static shiver.me.timbers.file.server.spring.GlobalControllerAdvice.buildError;
 
 public class GlobalControllerAdviceTest {
 

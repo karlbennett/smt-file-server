@@ -1,4 +1,4 @@
-package shiver.me.timbers.file.server;
+package shiver.me.timbers.file.server.spring;
 
 import org.apache.commons.io.FilenameUtils;
 import org.joda.time.format.DateTimeFormat;
@@ -6,6 +6,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import shiver.me.timbers.file.io.File;
+import shiver.me.timbers.file.server.Creator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;

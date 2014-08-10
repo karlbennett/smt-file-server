@@ -1,10 +1,11 @@
-package shiver.me.timbers.file.server;
+package shiver.me.timbers.file.server.spring;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import shiver.me.timbers.file.io.File;
+import shiver.me.timbers.file.server.Creator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -19,9 +20,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
-import static shiver.me.timbers.file.server.Requests.addFileHeaders;
-import static shiver.me.timbers.file.server.Requests.getAttribute;
 import static shiver.me.timbers.file.server.ServerConstants.dateFormat;
+import static shiver.me.timbers.file.server.spring.Requests.addFileHeaders;
+import static shiver.me.timbers.file.server.spring.Requests.getAttribute;
 
 public class RequestsTest {
 

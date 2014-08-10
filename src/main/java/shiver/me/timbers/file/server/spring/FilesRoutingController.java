@@ -1,4 +1,4 @@
-package shiver.me.timbers.file.server;
+package shiver.me.timbers.file.server.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,8 +13,8 @@ import java.io.IOException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
-import static shiver.me.timbers.file.server.Requests.DIRECTORY;
-import static shiver.me.timbers.file.server.Requests.FILE;
+import static shiver.me.timbers.file.server.spring.Requests.DIRECTORY;
+import static shiver.me.timbers.file.server.spring.Requests.FILE;
 
 /**
  * Controller for routing the request to either a directory or file request.
