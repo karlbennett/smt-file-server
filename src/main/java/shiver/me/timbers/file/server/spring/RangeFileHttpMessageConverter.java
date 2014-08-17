@@ -4,7 +4,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotWritableException;
-import shiver.me.timbers.file.server.Range;
 import shiver.me.timbers.file.server.RangeFile;
 
 import java.io.IOException;
@@ -30,18 +29,21 @@ public class RangeFileHttpMessageConverter extends FileHttpMessageConverter<Rang
             throws IOException, HttpMessageNotWritableException {
         final HttpHeaders headers = outputMessage.getHeaders();
 
+        checkRangeFileIsValid(file);
+
         addContentRange(headers, file);
 
         super.write(file, contentType, outputMessage);
     }
 
+    private static void checkRangeFileIsValid(RangeFile file) {
+        if (!file.getRange().isValid()) {
+            throw new IllegalArgumentException("The within the range file must be valid.");
+        }
+    }
+
     private static void addContentRange(HttpHeaders headers, RangeFile file) {
 
-        final Range range = file.getRange();
-
-        if (range.isValid()) {
-
-            headers.set(CONTENT_RANGE, format("bytes %s/%d", file.getRange(), file.getSize()));
-        }
+        headers.set(CONTENT_RANGE, format("bytes %s/%d", file.getRange(), file.getSize()));
     }
 }

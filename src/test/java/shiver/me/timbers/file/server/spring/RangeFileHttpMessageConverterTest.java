@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
+import shiver.me.timbers.file.server.Range;
 import shiver.me.timbers.file.server.RangeFile;
 
 import java.io.ByteArrayOutputStream;
@@ -69,6 +70,18 @@ public class RangeFileHttpMessageConverterTest {
 
         // Range end is inclusive while String.substring end is exclusive.
         assertEquals("the files content should be correct.", FILE_ONE.getContent().substring(6, 11), output.toString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void I_cannot_write_a_range_file_with_an_invalid_range() throws IOException {
+
+        final Range range = mock(Range.class);
+        when(range.isValid()).thenReturn(false);
+
+        final RangeFile file = mock(RangeFile.class);
+        when(file.getRange()).thenReturn(range);
+
+        MESSAGE_CONVERTER.write(file, null, mock(HttpOutputMessage.class));
     }
 
     @Test(expected = NullPointerException.class)
