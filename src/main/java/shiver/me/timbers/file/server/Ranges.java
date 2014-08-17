@@ -4,6 +4,8 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.String.format;
+
 /**
  * This class parses a Range header ({@code Range: bytes=0-499,500-999,1000-1499}) value into a list of {@link Range}s.
  *
@@ -22,7 +24,9 @@ public class Ranges extends AbstractList<Range> {
 
         for (Range range : ranges) {
 
-            startBoundaryMustBeLessThanTheFileSize(range, fileSize);
+            fileSizeMustBeCorrect(fileSize, range);
+
+            startBoundaryMustBeLessThanTheFileSize(fileSize, range);
 
             setOverallValidityWith(range);
 
@@ -56,7 +60,19 @@ public class Ranges extends AbstractList<Range> {
         }
     }
 
-    private static void startBoundaryMustBeLessThanTheFileSize(Range range, long fileSize) {
+    private static void fileSizeMustBeCorrect(long fileSize, Range range) {
+
+        if (fileSize != range.getFileSize()) {
+            throw new IllegalArgumentException(
+                    format("all ranges must have the correct file size. Expected %d, Actual %d",
+                            fileSize,
+                            range.getFileSize()
+                    )
+            );
+        }
+    }
+
+    private static void startBoundaryMustBeLessThanTheFileSize(long fileSize, Range range) {
 
         if (fileSize < range.getStart()) {
             throw new RequestedRangeNotSatisfiableException(range.toString(), fileSize);

@@ -15,6 +15,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RangesTest {
 
@@ -52,6 +54,22 @@ public class RangesTest {
 
         assertEquals("the ranges should contain all the ranges.", RANGE_LIST,
                 new Ranges(FILE_SIZE, RANGE_LIST.get(0), RANGE_LIST.get(1), RANGE_LIST.get(2)));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void I_cannot_create_ranges_with_a_range_with_an_invalid_file_size() {
+
+        new Ranges(FILE_SIZE, RANGE_LIST.get(0), new Range(0, 1, 2), RANGE_LIST.get(2));
+    }
+
+    @Test(expected = RequestedRangeNotSatisfiableException.class)
+    public void I_cannot_create_ranges_with_a_range_with_an_invalid_start() {
+
+        final Range range = mock(Range.class);
+        when(range.getFileSize()).thenReturn(FILE_SIZE);
+        when(range.getStart()).thenReturn(FILE_SIZE + 1);
+
+        new Ranges(FILE_SIZE, RANGE_LIST.get(0), range, RANGE_LIST.get(2));
     }
 
     @Test
