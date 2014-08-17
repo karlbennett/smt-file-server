@@ -2,11 +2,13 @@ package shiver.me.timbers.file.server;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import shiver.me.timbers.file.io.DefaultFileContentGetter;
 import shiver.me.timbers.file.io.File;
 import shiver.me.timbers.file.io.FileCreator;
 import shiver.me.timbers.file.io.FileSystemElement;
 import shiver.me.timbers.file.io.InvalidPathException;
 import shiver.me.timbers.file.io.JavaFile;
+import shiver.me.timbers.file.io.TestFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -106,6 +108,26 @@ public class RangeFileTest {
     }
 
     @Test
+    public void I_can_read_a_files_partial_input_stream() {
+
+        final long start = 5;
+        final long end = 10;
+
+        The_files_input_stream_should_contain(
+                new DefaultFileContentGetter<String>() {
+                    @Override
+                    public String get(TestFile<String> target) {
+
+                        final String content = super.get(target);
+
+                        return content.substring((int) start, (int) end + 1);
+                    }
+                },
+                new RangeFileCreator(start, end)
+        );
+    }
+
+    @Test
     public void I_can_read_a_range_files_input_stream_that_contains_an_invalid_range() {
 
         The_files_input_stream_should_contain(new InvalidRangeFileCreator());
@@ -126,12 +148,31 @@ public class RangeFileTest {
 
     private static class RangeFileCreator implements FileCreator {
 
+        private final long start;
+        private final long end;
+        private final boolean useDefaults;
+
+        private RangeFileCreator() {
+            this.start = 0;
+            this.end = 0;
+            this.useDefaults = true;
+        }
+
+        private RangeFileCreator(long start, long end) {
+            this.start = start;
+            this.end = end;
+            this.useDefaults = false;
+        }
+
         @Override
         public File create(String path) {
 
             final File file = new JavaFile(path);
 
-            return new RangeFile(file, new Range(0, file.getSize(), file.getSize()));
+            final long start = useDefaults ? 0 : this.start;
+            final long end = useDefaults ? file.getSize() : this.end;
+
+            return new RangeFile(file, new Range(start, end, file.getSize()));
         }
 
         @Override

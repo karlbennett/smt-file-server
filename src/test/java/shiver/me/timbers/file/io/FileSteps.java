@@ -148,10 +148,16 @@ public class FileSteps {
 
     public static void The_files_input_stream_should_contain(FileCreator creator) {
 
-        The_files_input_stream_should_read_to(FILE_ONE.getContent(), creator.create(FILE_ONE.getAbsolutePath()));
-        The_files_input_stream_should_read_to(FILE_TWO.getContent(), creator.create(FILE_TWO.getAbsolutePath()));
-        The_files_input_stream_should_read_to(FILE_THREE.getContent(), creator.create(FILE_THREE.getAbsolutePath()));
-        The_files_input_stream_should_read_to(FILE_FOUR.getContent(), creator.create(FILE_FOUR.getAbsolutePath()));
+        The_files_input_stream_should_contain(new DefaultFileContentGetter<String>(), creator);
+    }
+
+    public static void The_files_input_stream_should_contain(DefaultFileContentGetter<String> getter,
+                                                             FileCreator creator) {
+
+        The_files_input_stream_should_read_to(getter.get(FILE_ONE), creator.create(FILE_ONE.getAbsolutePath()));
+        The_files_input_stream_should_read_to(getter.get(FILE_TWO), creator.create(FILE_TWO.getAbsolutePath()));
+        The_files_input_stream_should_read_to(getter.get(FILE_THREE), creator.create(FILE_THREE.getAbsolutePath()));
+        The_files_input_stream_should_read_to(getter.get(FILE_FOUR), creator.create(FILE_FOUR.getAbsolutePath()));
     }
 
     private static void The_files_input_stream_should_read_to(String text, File file) {
