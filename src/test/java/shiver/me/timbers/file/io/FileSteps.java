@@ -4,9 +4,12 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static shiver.me.timbers.file.io.FileConstants.FILE_EIGHT;
 import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_FOUR;
@@ -115,22 +118,23 @@ public class FileSteps {
 
     public static void The_file_should_be_able_to_be_serialised(FileSystemElementCreator creator) {
 
-        The_file_system_element_should_be_able_to_be_serialised(creator.create(FILE_ONE.getAbsolutePath()),
-                FILE_ONE.getName(), FILE_ONE.getExtension(), Long.toString(FILE_ONE.getModified().getTime()));
-        The_file_system_element_should_be_able_to_be_serialised(creator.create(FILE_TWO.getAbsolutePath()),
-                FILE_TWO.getName(), FILE_TWO.getExtension(), Long.toString(FILE_TWO.getModified().getTime()));
-        The_file_system_element_should_be_able_to_be_serialised(creator.create(FILE_THREE.getAbsolutePath()),
-                FILE_THREE.getName(), FILE_THREE.getExtension(), Long.toString(FILE_THREE.getModified().getTime()));
-        The_file_system_element_should_be_able_to_be_serialised(creator.create(FILE_FOUR.getAbsolutePath()),
-                FILE_FOUR.getName(), FILE_FOUR.getExtension(), Long.toString(FILE_FOUR.getModified().getTime()));
-        The_file_system_element_should_be_able_to_be_serialised(creator.create(FILE_FIVE.getAbsolutePath()),
-                FILE_FIVE.getName(), FILE_FIVE.getExtension(), Long.toString(FILE_FIVE.getModified().getTime()));
-        The_file_system_element_should_be_able_to_be_serialised(creator.create(FILE_SIX.getAbsolutePath()),
-                FILE_SIX.getName(), FILE_SIX.getExtension(), Long.toString(FILE_SIX.getModified().getTime()));
-        The_file_system_element_should_be_able_to_be_serialised(creator.create(FILE_SEVEN.getAbsolutePath()),
-                FILE_SEVEN.getName(), FILE_SEVEN.getExtension(), Long.toString(FILE_SEVEN.getModified().getTime()));
-        The_file_system_element_should_be_able_to_be_serialised(creator.create(FILE_EIGHT.getAbsolutePath()),
-                FILE_EIGHT.getName(), FILE_EIGHT.getExtension(), Long.toString(FILE_EIGHT.getModified().getTime()));
+        The_file_should_be_able_to_be_serialised(FILE_ONE, creator);
+        The_file_should_be_able_to_be_serialised(FILE_TWO, creator);
+        The_file_should_be_able_to_be_serialised(FILE_THREE, creator);
+        The_file_should_be_able_to_be_serialised(FILE_FOUR, creator);
+        The_file_should_be_able_to_be_serialised(FILE_FIVE, creator);
+        The_file_should_be_able_to_be_serialised(FILE_SIX, creator);
+        The_file_should_be_able_to_be_serialised(FILE_SEVEN, creator);
+        The_file_should_be_able_to_be_serialised(FILE_EIGHT, creator);
+    }
+
+    public static void The_file_should_be_able_to_be_serialised(TestFile file, FileSystemElementCreator creator) {
+
+        final String serialisedFile = The_file_system_element_should_be_able_to_be_serialised(
+                creator.create(file.getAbsolutePath()), file.getName(), file.getExtension(),
+                Long.toString(file.getModified().getTime()));
+
+        assertThat("the input stream should never be serialised.", serialisedFile, not(containsString("inputStream")));
     }
 
     public static void The_file_should_produce_an_input_stream(FileCreator creator) {

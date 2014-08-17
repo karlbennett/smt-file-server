@@ -1,5 +1,6 @@
 package shiver.me.timbers.file.server;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.io.input.BoundedInputStream;
 import shiver.me.timbers.file.io.File;
 import shiver.me.timbers.file.io.InvalidPathException;
@@ -51,6 +52,7 @@ public class RangeFile implements File {
         return file.getSize();
     }
 
+    @JsonIgnore
     @Override
     public InputStream getInputStream() {
 
@@ -86,7 +88,6 @@ public class RangeFile implements File {
     public Range getRange() {
         return range;
     }
-
 
     @Override
     public String toString() {
