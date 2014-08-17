@@ -42,7 +42,7 @@ public class FileHttpMessageConverter<F extends File> implements HttpMessageConv
     @Override
     public F read(Class<? extends F> clazz, HttpInputMessage inputMessage)
             throws IOException, HttpMessageNotReadableException {
-        throw new UnsupportedOperationException(" This is not required.");
+        throw new UnsupportedOperationException("This is not required.");
     }
 
     @Override
