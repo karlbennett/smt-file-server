@@ -62,7 +62,7 @@ public class FileSystemElementSteps {
     }
 
     public static String The_file_system_element_should_be_able_to_be_serialised(FileSystemElement element,
-                                                                               String... values) {
+                                                                                 String... values) {
 
         try {
 

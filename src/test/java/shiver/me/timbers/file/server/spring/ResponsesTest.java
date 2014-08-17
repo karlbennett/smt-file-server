@@ -17,7 +17,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 import static shiver.me.timbers.file.server.ServerConstants.dateFormat;
-import static shiver.me.timbers.file.server.spring.Responses.*;
+import static shiver.me.timbers.file.server.spring.Responses.addFileHeaders;
 
 public class ResponsesTest {
 
