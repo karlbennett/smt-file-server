@@ -48,6 +48,13 @@ public class RangesTest {
     }
 
     @Test
+    public void I_can_create_ranges_with_an_array_of_ranges() {
+
+        assertEquals("the ranges should contain all the ranges.", RANGE_LIST,
+                new Ranges(FILE_SIZE, RANGE_LIST.get(0), RANGE_LIST.get(1), RANGE_LIST.get(2)));
+    }
+
+    @Test
     public void I_can_parse_some_ranges() {
 
         assertThat("some ranges should be produced.", ranges, hasSize(greaterThan(0)));
@@ -77,7 +84,7 @@ public class RangesTest {
 
         assertEquals("correct ranges should be produced.", asList(RANGE_LIST.get(0), wrongRange, RANGE_LIST.get(2)),
                 ranges);
-        assertTrue("ranges should be valid.", ranges.isValid());
+        assertFalse("ranges should be invalid.", ranges.isValid());
     }
 
     @Test

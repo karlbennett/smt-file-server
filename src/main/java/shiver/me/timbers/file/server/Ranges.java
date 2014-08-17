@@ -14,7 +14,21 @@ public class Ranges extends AbstractList<Range> {
     private static final String BYTES = "bytes=";
 
     private final List<Range> ranges;
-    private boolean valid = false;
+    private boolean valid = true;
+
+    public Ranges(long fileSize, Range... ranges) {
+
+        this.ranges = new ArrayList<>(ranges.length);
+
+        for (Range range : ranges) {
+
+            startBoundaryMustBeLessThanTheFileSize(range, fileSize);
+
+            setOverallValidityWith(range);
+
+            this.ranges.add(range);
+        }
+    }
 
     /**
      * @param rangeHeaderValue must be in the format "bytes=(\d*-\d*)*" where at least one of the numbers on either side
@@ -36,11 +50,16 @@ public class Ranges extends AbstractList<Range> {
 
             final Range range = new Range(rangeString, fileSize);
 
-            if (range.isValid()) {
-                valid = true;
-            }
+            setOverallValidityWith(range);
 
             this.ranges.add(range);
+        }
+    }
+
+    private static void startBoundaryMustBeLessThanTheFileSize(Range range, long fileSize) {
+
+        if (fileSize < range.getStart()) {
+            throw new RequestedRangeNotSatisfiableException(range.toString(), fileSize);
         }
     }
 
@@ -55,6 +74,13 @@ public class Ranges extends AbstractList<Range> {
 
         if (1 == rangeStrings.length && "".equals(rangeStrings[0])) {
             throw new RequestedRangeNotSatisfiableException(rangeHeaderValue, fileSize);
+        }
+    }
+
+    private void setOverallValidityWith(Range range) {
+
+        if (!range.isValid()) {
+            valid = false;
         }
     }
 

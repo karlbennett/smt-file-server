@@ -1,5 +1,6 @@
 package shiver.me.timbers.file.server;
 
+import shiver.me.timbers.file.io.File;
 import shiver.me.timbers.file.io.JavaFile;
 import shiver.me.timbers.file.io.TestFile;
 
@@ -16,5 +17,29 @@ public class RangeFiles {
         final long size = file.getSize();
 
         return new RangeFile(new JavaFile(path), new Range(start, end, size));
+    }
+
+    public static RangesFile buildRangesFile(TestFile file) {
+
+        return buildRangesFile(file, 0, file.getSize());
+    }
+
+    public static RangesFile buildRangesFile(TestFile file, long start, long end) {
+
+        final String path = file.getAbsolutePath();
+
+        return new RangesFile(new JavaFile(path), buildRanges(file, start, end));
+    }
+
+    public static Ranges buildRanges(File file, long start, long end) {
+
+        final long fileSize = file.getSize();
+
+        return buildRanges(start, end, fileSize);
+    }
+
+    public static Ranges buildRanges(long start, long end, long fileSize) {
+
+        return new Ranges(fileSize, new Range(start, end, fileSize));
     }
 }

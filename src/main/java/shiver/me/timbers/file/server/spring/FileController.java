@@ -84,6 +84,11 @@ public class FileController {
     public File file(@RequestHeader(value = RANGE) Ranges ranges, File file)
             throws IOException {
 
+        // We must ignore any invalid range headers.
+        if (!ranges.isValid()) {
+            return file;
+        }
+
         return new RangeFile(file, ranges.get(0));
     }
 

@@ -38,6 +38,15 @@ public class RangeFileTest {
         new RangeFile(null, mock(Range.class));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void I_cannot_create_a_range_file_with_an_invalid_range() {
+
+        final Range range = mock(Range.class);
+        when(range.isValid()).thenReturn(false);
+
+        new RangeFile(mock(File.class), range);
+    }
+
     @Test(expected = RequestedRangeNotSatisfiableException.class)
     public void I_cannot_create_a_range_file_with_a_range_with_an_invalid_file_size() {
 
@@ -127,12 +136,6 @@ public class RangeFileTest {
         );
     }
 
-    @Test
-    public void I_can_read_a_range_files_input_stream_that_contains_an_invalid_range() {
-
-        The_files_input_stream_should_contain(new InvalidRangeFileCreator());
-    }
-
     @Test(expected = InvalidPathException.class)
     public void I_cannot_skip_an_invalid_input_stream() throws IOException {
 
@@ -191,27 +194,6 @@ public class RangeFileTest {
             when(mock.getSize()).thenReturn(size);
 
             return mock;
-        }
-    }
-
-    private static class InvalidRangeFileCreator implements FileCreator {
-
-        @Override
-        public File create(String path) {
-
-            final File file = new JavaFile(path);
-
-            return new RangeFile(file, new Range(1, 0, file.getSize()));
-        }
-
-        @Override
-        public FileSystemElement mock(String name, Date modified) {
-            return mock(name, modified, null, 0);
-        }
-
-        @Override
-        public File mock(String name, Date modified, String extension, long size) {
-            throw new UnsupportedOperationException("no mock required for an invalid range file.");
         }
     }
 }

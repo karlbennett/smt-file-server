@@ -29,6 +29,10 @@ public class RangeFile implements File {
             throw new NullPointerException("A range file must not have a null range.");
         }
 
+        if (!range.isValid()) {
+            throw new IllegalArgumentException("A range file must have a valid range.");
+        }
+
         if (file.getSize() != range.getFileSize()) {
             throw new RequestedRangeNotSatisfiableException(range.toString(), file.getSize());
         }
@@ -50,19 +54,11 @@ public class RangeFile implements File {
     @Override
     public InputStream getInputStream() {
 
-        if (rangeIsInvalid()) {
-            return file.getInputStream();
-        }
-
         final InputStream input = file.getInputStream();
 
         skip(input, range.getStart());
 
         return new BoundedInputStream(input, range.getSize());
-    }
-
-    private boolean rangeIsInvalid() {
-        return !range.isValid();
     }
 
     private static void skip(InputStream input, long bytes) {
