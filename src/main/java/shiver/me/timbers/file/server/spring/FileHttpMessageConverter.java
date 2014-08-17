@@ -14,7 +14,7 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.apache.commons.io.IOUtils.copy;
-import static shiver.me.timbers.file.server.spring.Requests.addFileHeaders;
+import static shiver.me.timbers.file.server.spring.Responses.addFileHeaders;
 
 /**
  * This http message converter converts a {@link File} type into a valid response while also adding all the required
