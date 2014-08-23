@@ -89,7 +89,7 @@ public class FileHttpMessageConverterSteps {
 
     private static HttpOutputMessage mockHttpOutputMessage(OutputStream output) throws IOException {
 
-        final HttpHeaders headers = mock(HttpHeaders.class);
+        final HttpHeaders headers = new HttpHeaders();
 
         final HttpOutputMessage message = mock(HttpOutputMessage.class);
         when(message.getHeaders()).thenReturn(headers);
