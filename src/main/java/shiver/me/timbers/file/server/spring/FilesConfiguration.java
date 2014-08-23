@@ -34,6 +34,7 @@ public class FilesConfiguration extends WebMvcConfigurationSupport {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 
+        converters.add(new RangesFileHttpMessageConverter());
         converters.add(new RangeFileHttpMessageConverter());
         converters.add(new FileHttpMessageConverter<>());
 

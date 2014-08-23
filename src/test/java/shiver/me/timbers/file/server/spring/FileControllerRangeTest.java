@@ -8,6 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -19,11 +20,14 @@ import shiver.me.timbers.file.server.servlet.AcceptRangesFilter;
 import java.util.Arrays;
 
 import static java.lang.String.format;
-import static org.mockito.Matchers.contains;
-import static org.mockito.Matchers.matches;
+import static java.util.AbstractMap.SimpleEntry;
+import static java.util.Map.Entry;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.http.HttpMethod.HEAD;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -32,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static shiver.me.timbers.file.io.FileConstants.FILE_EIGHT;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
+import static shiver.me.timbers.file.server.spring.Controllers.buildContent;
 import static shiver.me.timbers.file.server.spring.Requests.FILE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -192,7 +197,7 @@ public class FileControllerRangeTest {
     @Test
     public void I_can_request_a_partial_file_with_multiple_ranges() throws Exception {
 
-        final String boundary = "MULTI_PART_BOUNDARY";
+        final String boundaryPrefix = "MULTI_PART_BOUNDARY";
 
         final int start1 = 0;
         final int end1 = 5;
@@ -201,26 +206,43 @@ public class FileControllerRangeTest {
         final int end2 = 10;
 
         final int start3 = 12;
-        final int end3 = 14;
+        final int end3 = 13;
 
-        final String content = FILE_ONE.getContent();
-
-        mockMvcHeadersForFile(
+        final MvcResult result = mockMvcHeadersForFile(
                 get("/file")
                         .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", format("bytes=%d-%d,%d-%d,%d-%d", start1, end1, start2, end2, start3, end3)),
                 FILE_ONE
         ).andExpect(status().isPartialContent())
                 .andExpect(content().contentTypeCompatibleWith("multipart/byteranges"))
-                .andExpect(header().string("Content-Type", contains(format("boundary=%s", boundary))))
-                .andExpect(content().string(matches(format("^%s$", content.substring(start1, end1 + 1)))))
-                .andExpect(content().string(matches(format("^%s$", content.substring(start2, end2 + 1)))))
-                .andExpect(content().string(matches(format("^%s$", content.substring(start3, end3 + 1)))));
+                .andExpect(header().string("Content-Type", containsString(format("boundary=%s", boundaryPrefix))))
+                .andReturn();
+
+        final String boundary = extractBoundary(result);
+
+        final String content = buildContent(
+                FILE_ONE,
+                TEXT_PLAIN_VALUE,
+                Arrays.<Entry<Integer, Integer>>asList(
+                        new SimpleEntry<>(start1, end1),
+                        new SimpleEntry<>(start2, end2),
+                        new SimpleEntry<>(start3, end3)
+                ),
+                boundary);
+
+        assertEquals("the response body should contain multiparts", content, result.getResponse().getContentAsString());
     }
 
     private ResultActions mockMvcHeadersForFile(MockHttpServletRequestBuilder requestBuilder, TestFile file)
             throws Exception {
 
         return Controllers.mockMvcHeadersForFile(mockMvc, requestBuilder, file);
+    }
+
+    private static String extractBoundary(MvcResult result) {
+
+        final String contentType = result.getResponse().getContentType();
+
+        return contentType.replace("multipart/byteranges;boundary=", "");
     }
 }

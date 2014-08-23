@@ -5,8 +5,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
 import shiver.me.timbers.file.io.File;
-import shiver.me.timbers.file.io.TestFile;
-import shiver.me.timbers.file.server.Range;
 import shiver.me.timbers.file.server.RangeFile;
 import shiver.me.timbers.file.server.Ranges;
 import shiver.me.timbers.file.server.RangesFile;
@@ -14,7 +12,11 @@ import shiver.me.timbers.file.server.RangesFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
 
+import static java.util.AbstractMap.SimpleEntry;
+import static java.util.Map.Entry;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -22,6 +24,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 import static shiver.me.timbers.file.server.RangeFiles.buildRanges;
 import static shiver.me.timbers.file.server.RangeFiles.buildRangesFile;
+import static shiver.me.timbers.file.server.spring.Controllers.buildContent;
 import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_can_check_that_the_message_converter_supports_all_media_types;
 import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_can_check_that_the_type_that_the_message_converter_supports;
 import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_cannot_read_the_supported_type;
@@ -55,11 +58,10 @@ public class RangesFileHttpMessageConverterTest {
     @Test
     public void I_can_write_a_file() throws IOException {
 
-        final long fileSize = FILE_ONE.getSize();
+        final List<Entry<Integer, Integer>> ranges = Arrays.<Entry<Integer, Integer>>asList(
+                new SimpleEntry<>(5, 8), new SimpleEntry<>(0, 4), new SimpleEntry<>(10, 13));
 
-        final RangesFile rangeFiles = buildRangesFile(FILE_ONE,
-                buildRanges(FILE_ONE,
-                        new Range(5, 8, fileSize), new Range(0, 4, fileSize), new Range(10, 13, fileSize)));
+        final RangesFile rangeFiles = buildRangesFile(FILE_ONE, buildRanges(FILE_ONE, ranges));
 
         final OutputStream output = new ByteArrayOutputStream();
 
@@ -73,7 +75,7 @@ public class RangesFileHttpMessageConverterTest {
 
         final String boundary = extractBoundary(headers);
 
-        final String expectedContent = buildContent(FILE_ONE, TEXT_PLAIN_VALUE, rangeFiles.getRanges(), boundary);
+        final String expectedContent = buildContent(FILE_ONE, TEXT_PLAIN_VALUE, ranges, boundary);
 
         assertEquals("the files content should be correct.", expectedContent, output.toString());
     }
@@ -108,28 +110,8 @@ public class RangesFileHttpMessageConverterTest {
         I_cannot_write_input_to_a_null_message(MESSAGE_CONVERTER, buildRangesFile(FILE_ONE));
     }
 
-    private static String extractBoundary(HttpHeaders headers) {
+    public static String extractBoundary(HttpHeaders headers) {
 
         return headers.getContentType().getParameter("boundary");
-    }
-
-    private static String buildContent(TestFile<String> file, String mediaType, Ranges ranges, String boundary) {
-
-        final StringBuilder content = new StringBuilder();
-
-        for (Range range : ranges) {
-
-            content.append("\n");
-            content.append("--").append(boundary).append("\n");
-            content.append("Content-Type: ").append(mediaType).append("\n");
-            content.append("Content-Range: bytes ").append(range).append("/").append(file.getSize()).append("\n");
-            content.append("\n");
-            content.append(file.getContent().substring((int) range.getStart(), (int) range.getEnd() + 1));
-        }
-
-        content.append("\n");
-        content.append("--").append(boundary).append("--").append("\n");
-
-        return content.toString();
     }
 }

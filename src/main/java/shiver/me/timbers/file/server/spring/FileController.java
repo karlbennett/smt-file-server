@@ -14,6 +14,7 @@ import shiver.me.timbers.file.io.File;
 import shiver.me.timbers.file.server.Creator;
 import shiver.me.timbers.file.server.RangeFile;
 import shiver.me.timbers.file.server.Ranges;
+import shiver.me.timbers.file.server.RangesFile;
 import shiver.me.timbers.file.server.RequestedRangeNotSatisfiableException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -89,7 +90,12 @@ public class FileController {
             return file;
         }
 
-        return new RangeFile(file, ranges.get(0));
+        if (1 == ranges.size()) {
+
+            return new RangeFile(file, ranges.get(0));
+        }
+
+        return new RangesFile(file, ranges);
     }
 
     @ExceptionHandler

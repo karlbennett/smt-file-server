@@ -4,6 +4,11 @@ import shiver.me.timbers.file.io.File;
 import shiver.me.timbers.file.io.JavaFile;
 import shiver.me.timbers.file.io.TestFile;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Map.Entry;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -59,6 +64,18 @@ public class RangeFiles {
     public static Ranges buildRanges(File file, Range... ranges) {
 
         return new Ranges(file.getSize(), ranges);
+    }
+
+    public static Ranges buildRanges(File file, List<Entry<Integer, Integer>> ranges) {
+
+        final List<Range> rangeList = new ArrayList<>(ranges.size());
+
+        for (Map.Entry<Integer, Integer> range : ranges) {
+
+            rangeList.add(new Range(range.getKey(), range.getValue(), file.getSize()));
+        }
+
+        return new Ranges(file.getSize(), rangeList.toArray(new Range[rangeList.size()]));
     }
 
     public static Range mockRange(File file, long start, long end) {
