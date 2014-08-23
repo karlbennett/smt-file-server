@@ -145,6 +145,9 @@ public class Range {
         return fileSize;
     }
 
+    /**
+     * @return the range value formatted to the header values standard e.g. "{{start}}-{{end}}"
+     */
     @Override
     public String toString() {
         return formatRange(start, end);
