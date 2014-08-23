@@ -1,24 +1,25 @@
 package shiver.me.timbers.file.server.spring;
 
 import org.junit.Test;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
+import shiver.me.timbers.file.io.File;
 import shiver.me.timbers.file.server.Range;
 import shiver.me.timbers.file.server.RangeFile;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 import static shiver.me.timbers.file.server.RangeFiles.buildRangeFile;
+import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_can_check_that_the_message_converter_supports_all_media_types;
+import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_can_check_that_the_type_that_the_message_converter_supports;
+import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_can_write_the_supported_type;
+import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_cannot_read_the_supported_type;
+import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_cannot_write_input_to_a_null_message;
+import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_cannot_write_input_to_a_null_output_stream;
+import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_cannot_write_null_input;
 
 public class RangeFileHttpMessageConverterTest {
 
@@ -27,49 +28,33 @@ public class RangeFileHttpMessageConverterTest {
     @Test
     public void I_can_check_that_the_file_message_converter_supports_range_files_only() {
 
-        assertFalse("the RangeFile type should not be supported for read.",
-                MESSAGE_CONVERTER.canRead(RangeFile.class, null));
-        assertTrue("the RangeFile type should be supported for write.",
-                MESSAGE_CONVERTER.canWrite(RangeFile.class, null));
+        I_can_check_that_the_type_that_the_message_converter_supports(MESSAGE_CONVERTER, RangeFile.class,
+                File.class, java.io.File.class, String.class, Object.class);
+    }
 
-        assertFalse("the String type should not be supported for read.", MESSAGE_CONVERTER.canRead(String.class, null));
-        assertFalse("the String type should not be supported for write.",
-                MESSAGE_CONVERTER.canWrite(String.class, null));
+    @Test
+    public void I_can_check_that_the_file_message_converter_supports_all_media_types() {
 
-        assertFalse("the Object type should not be supported for read.", MESSAGE_CONVERTER.canRead(Object.class, null));
-        assertFalse("the Object type should not be supported for write.",
-                MESSAGE_CONVERTER.canWrite(Object.class, null));
+        I_can_check_that_the_message_converter_supports_all_media_types(MESSAGE_CONVERTER);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void I_cannot_read_a_file() throws IOException {
 
-        MESSAGE_CONVERTER.read(RangeFile.class, mock(HttpInputMessage.class));
+        I_cannot_read_the_supported_type(MESSAGE_CONVERTER, RangeFile.class);
     }
 
     @Test
     public void I_can_write_a_file() throws IOException {
 
-        final OutputStream output = new ByteArrayOutputStream();
-
-        final HttpOutputMessage message = mockHttpOutputMessage(output);
-
-        MESSAGE_CONVERTER.write(buildRangeFile(FILE_ONE), null, message);
-
-        assertEquals("the files content should be correct.", FILE_ONE.getContent(), output.toString());
+        I_can_write_the_supported_type(MESSAGE_CONVERTER, FILE_ONE.getContent(), buildRangeFile(FILE_ONE));
     }
 
     @Test
     public void I_can_write_a_partial_file() throws IOException {
 
-        final OutputStream output = new ByteArrayOutputStream();
-
-        final HttpOutputMessage message = mockHttpOutputMessage(output);
-
-        MESSAGE_CONVERTER.write(buildRangeFile(FILE_ONE, 6, 10), null, message);
-
-        // Range end is inclusive while String.substring end is exclusive.
-        assertEquals("the files content should be correct.", FILE_ONE.getContent().substring(6, 11), output.toString());
+        I_can_write_the_supported_type(MESSAGE_CONVERTER, FILE_ONE.getContent().substring(6, 11),
+                buildRangeFile(FILE_ONE, 6, 10));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -87,33 +72,18 @@ public class RangeFileHttpMessageConverterTest {
     @Test(expected = NullPointerException.class)
     public void I_cannot_write_a_null_file() throws IOException {
 
-        MESSAGE_CONVERTER.write(null, null, mockHttpOutputMessage(new ByteArrayOutputStream()));
+        I_cannot_write_null_input(MESSAGE_CONVERTER);
     }
 
     @Test(expected = NullPointerException.class)
     public void I_cannot_write_a_file_to_a_null_output_stream() throws IOException {
 
-        final HttpHeaders headers = mock(HttpHeaders.class);
-
-        final HttpOutputMessage message = mock(HttpOutputMessage.class);
-        when(message.getHeaders()).thenReturn(headers);
-
-        MESSAGE_CONVERTER.write(buildRangeFile(FILE_ONE), null, message);
+        I_cannot_write_input_to_a_null_output_stream(MESSAGE_CONVERTER, buildRangeFile(FILE_ONE));
     }
 
     @Test(expected = NullPointerException.class)
     public void I_cannot_write_a_file_to_a_null_message() throws IOException {
 
-        MESSAGE_CONVERTER.write(buildRangeFile(FILE_ONE), null, null);
-    }
-
-    private static HttpOutputMessage mockHttpOutputMessage(OutputStream output) throws IOException {
-
-        final HttpHeaders headers = mock(HttpHeaders.class);
-
-        final HttpOutputMessage message = mock(HttpOutputMessage.class);
-        when(message.getHeaders()).thenReturn(headers);
-        when(message.getBody()).thenReturn(output);
-        return message;
+        I_cannot_write_input_to_a_null_message(MESSAGE_CONVERTER, buildRangeFile(FILE_ONE));
     }
 }
