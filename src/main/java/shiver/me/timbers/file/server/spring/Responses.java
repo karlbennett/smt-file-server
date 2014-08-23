@@ -22,6 +22,8 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
  */
 public class Responses {
 
+    public static final String CONTENT_RANGE = "Content-Range";
+
     private static final DateTimeFormatter HTTP_DATE = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss zzz");
 
     public static void addFileHeaders(HttpHeaders headers, File file) throws IOException {

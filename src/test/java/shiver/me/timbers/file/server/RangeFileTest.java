@@ -1,21 +1,12 @@
 package shiver.me.timbers.file.server;
 
 import org.junit.Test;
-import org.mockito.Mockito;
-import shiver.me.timbers.file.io.DefaultFileContentGetter;
 import shiver.me.timbers.file.io.File;
-import shiver.me.timbers.file.io.FileCreator;
-import shiver.me.timbers.file.io.FileSystemElement;
 import shiver.me.timbers.file.io.InvalidPathException;
-import shiver.me.timbers.file.io.JavaFile;
-import shiver.me.timbers.file.io.TestFile;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 
 import static org.junit.Assert.assertNotEquals;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
@@ -28,6 +19,8 @@ import static shiver.me.timbers.file.io.FileSteps.The_files_extension_should_be_
 import static shiver.me.timbers.file.io.FileSteps.The_files_input_stream_should_contain;
 import static shiver.me.timbers.file.io.FileSteps.The_files_modification_date_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_name_should_be_correct;
+import static shiver.me.timbers.file.server.RangeFileSteps.I_can_read_a_files_partial_input_stream;
+import static shiver.me.timbers.file.server.RangeFileSteps.I_cannot_skip_an_invalid_input_stream;
 import static shiver.me.timbers.file.server.RangeFiles.buildRangeFile;
 
 public class RangeFileTest {
@@ -117,83 +110,14 @@ public class RangeFileTest {
     }
 
     @Test
-    public void I_can_read_a_files_partial_input_stream() {
+    public void I_can_read_a_range_files_partial_input_stream() {
 
-        final long start = 5;
-        final long end = 10;
-
-        The_files_input_stream_should_contain(
-                new DefaultFileContentGetter<String>() {
-                    @Override
-                    public String get(TestFile<String> target) {
-
-                        final String content = super.get(target);
-
-                        return content.substring((int) start, (int) end + 1);
-                    }
-                },
-                new RangeFileCreator(start, end)
-        );
+        I_can_read_a_files_partial_input_stream(new RangeFileCreator());
     }
 
     @Test(expected = InvalidPathException.class)
-    public void I_cannot_skip_an_invalid_input_stream() throws IOException {
+    public void I_cannot_skip_a_range_files_invalid_input_stream() throws IOException {
 
-        final InputStream input = mock(InputStream.class);
-        when(input.skip(anyLong())).thenThrow(new IOException("test IO exception."));
-
-        final File file = mock(File.class);
-        when(file.getInputStream()).thenReturn(input);
-        when(file.getSize()).thenReturn(2L);
-
-        new RangeFile(file, new Range(0, 1, file.getSize())).getInputStream();
-    }
-
-    private static class RangeFileCreator implements FileCreator {
-
-        private final long start;
-        private final long end;
-        private final boolean useDefaults;
-
-        private RangeFileCreator() {
-            this.start = 0;
-            this.end = 0;
-            this.useDefaults = true;
-        }
-
-        private RangeFileCreator(long start, long end) {
-            this.start = start;
-            this.end = end;
-            this.useDefaults = false;
-        }
-
-        @Override
-        public File create(String path) {
-
-            final File file = new JavaFile(path);
-
-            final long start = useDefaults ? 0 : this.start;
-            final long end = useDefaults ? file.getSize() : this.end;
-
-            return new RangeFile(file, new Range(start, end, file.getSize()));
-        }
-
-        @Override
-        public FileSystemElement mock(String name, Date modified) {
-
-            return mock(name, modified, "txt", 100);
-        }
-
-        @Override
-        public File mock(String name, Date modified, String extension, long size) {
-
-            final RangeFile mock = Mockito.mock(RangeFile.class);
-            when(mock.getName()).thenReturn(name);
-            when(mock.getModified()).thenReturn(modified);
-            when(mock.getExtension()).thenReturn(extension);
-            when(mock.getSize()).thenReturn(size);
-
-            return mock;
-        }
+        I_cannot_skip_an_invalid_input_stream(new RangeFileCreator());
     }
 }

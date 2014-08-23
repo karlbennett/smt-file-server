@@ -1,10 +1,8 @@
 package shiver.me.timbers.file.io;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.util.Date;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -128,29 +126,11 @@ public class JavaFileTest {
         getInputStream(new java.io.File(FILE_ONE.getAbsolutePath() + '\u0000'));
     }
 
-    private static class JavaFileCreator implements FileCreator {
+    private static class JavaFileCreator extends AbstractFileCreator {
 
         @Override
         public File create(String path) {
             return new JavaFile(path);
-        }
-
-        @Override
-        public FileSystemElement mock(String name, Date modified) {
-
-            return mock(name, modified, "txt", 100);
-        }
-
-        @Override
-        public File mock(String name, Date modified, String extension, long size) {
-
-            final File mock = Mockito.mock(File.class);
-            when(mock.getName()).thenReturn(name);
-            when(mock.getModified()).thenReturn(modified);
-            when(mock.getExtension()).thenReturn(extension);
-            when(mock.getSize()).thenReturn(size);
-
-            return mock;
         }
     }
 }

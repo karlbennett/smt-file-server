@@ -25,7 +25,7 @@ public class RangeFileHttpMessageConverterTest {
     private static final HttpMessageConverter<RangeFile> MESSAGE_CONVERTER = new RangeFileHttpMessageConverter();
 
     @Test
-    public void I_can_check_that_the_file_message_converter_supports_files_only() {
+    public void I_can_check_that_the_file_message_converter_supports_range_files_only() {
 
         assertFalse("the RangeFile type should not be supported for read.",
                 MESSAGE_CONVERTER.canRead(RangeFile.class, null));

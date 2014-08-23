@@ -1,24 +1,15 @@
 package shiver.me.timbers.file.server;
 
 import org.junit.Test;
-import org.mockito.Mockito;
-import shiver.me.timbers.file.io.DefaultFileContentGetter;
 import shiver.me.timbers.file.io.File;
-import shiver.me.timbers.file.io.FileCreator;
-import shiver.me.timbers.file.io.FileSystemElement;
 import shiver.me.timbers.file.io.InvalidPathException;
-import shiver.me.timbers.file.io.JavaFile;
-import shiver.me.timbers.file.io.TestFile;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
@@ -31,8 +22,11 @@ import static shiver.me.timbers.file.io.FileSteps.The_files_extension_should_be_
 import static shiver.me.timbers.file.io.FileSteps.The_files_input_stream_should_contain;
 import static shiver.me.timbers.file.io.FileSteps.The_files_modification_date_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_name_should_be_correct;
+import static shiver.me.timbers.file.server.RangeFileSteps.I_can_read_a_files_partial_input_stream;
+import static shiver.me.timbers.file.server.RangeFileSteps.I_cannot_skip_an_invalid_input_stream;
 import static shiver.me.timbers.file.server.RangeFiles.buildRanges;
 import static shiver.me.timbers.file.server.RangeFiles.buildRangesFile;
+import static shiver.me.timbers.file.server.RangeFiles.mockRange;
 
 public class RangesFileTest {
 
@@ -106,6 +100,10 @@ public class RangesFileTest {
 
         assertNotEquals("the ranges file should not be equal to a range file with a different range.",
                 buildRangesFile(FILE_ONE, 0, 1), buildRangesFile(FILE_ONE, 0, 2));
+
+        assertNotEquals("the ranges file should not be equal to a range file with a different ranges.",
+                buildRangesFile(FILE_ONE, buildRanges(FILE_ONE, mockRange(FILE_ONE, 0, 1), mockRange(FILE_ONE, 2, 3))),
+                buildRangesFile(FILE_ONE, buildRanges(FILE_ONE, mockRange(FILE_ONE, 4, 5), mockRange(FILE_ONE, 6, 7))));
     }
 
     @Test
@@ -133,38 +131,15 @@ public class RangesFileTest {
     }
 
     @Test
-    public void I_can_read_a_files_partial_input_stream() {
+    public void I_can_read_a_ranges_files_partial_input_stream() {
 
-        final long start = 5;
-        final long end = 10;
-
-        The_files_input_stream_should_contain(
-                new DefaultFileContentGetter<String>() {
-                    @Override
-                    public String get(TestFile<String> target) {
-
-                        final String content = super.get(target);
-
-                        return content.substring((int) start, (int) end + 1);
-                    }
-                },
-                new RangesFileCreator(start, end)
-        );
+        I_can_read_a_files_partial_input_stream(new RangesFileCreator());
     }
 
     @Test(expected = InvalidPathException.class)
-    public void I_cannot_skip_an_invalid_input_stream() throws IOException {
+    public void I_cannot_skip_a_ranges_files_invalid_input_stream() throws IOException {
 
-        final InputStream input = mock(InputStream.class);
-        when(input.skip(anyLong())).thenThrow(new IOException("test IO exception."));
-
-        final long fileSize = 2L;
-
-        final File file = mock(File.class);
-        when(file.getInputStream()).thenReturn(input);
-        when(file.getSize()).thenReturn(fileSize);
-
-        new RangesFile(file, buildRanges(file, 0, 1)).getInputStream();
+        I_cannot_skip_an_invalid_input_stream(new RangesFileCreator());
     }
 
     @Test
@@ -181,7 +156,15 @@ public class RangesFileTest {
     }
 
     @Test
-    public void I_can_get_all_the_contains_range_files() throws IOException {
+    public void I_can_get_all_the_contained_ranges() throws IOException {
+
+        final Ranges ranges = buildRanges(FILE_ONE);
+
+        assertEquals("the ranges file ranges should be correct.", ranges, new RangesFile(FILE_ONE, ranges).getRanges());
+    }
+
+    @Test
+    public void I_can_get_all_the_contained_range_files() throws IOException {
 
         final Ranges ranges = buildRanges(FILE_ONE);
 
@@ -204,53 +187,21 @@ public class RangesFileTest {
                 new RangesFile(FILE_ONE, ranges), hasSize(ranges.size()));
     }
 
-    private static class RangesFileCreator implements FileCreator {
-
-        private final long start;
-        private final long end;
-        private final boolean useDefaults;
+    private static class RangesFileCreator extends RangeFileCreator {
 
         private RangesFileCreator() {
-            this.start = 0;
-            this.end = 0;
-            this.useDefaults = true;
         }
 
-        private RangesFileCreator(long start, long end) {
-            this.start = start;
-            this.end = end;
-            this.useDefaults = false;
+        @SuppressWarnings("unchecked")
+        @Override
+        public <R extends File> Class<R> type() {
+            return (Class<R>) RangesFile.class;
         }
 
         @Override
-        public File create(String path) {
+        protected File create(File file, long start, long end) {
 
-            final File file = new JavaFile(path);
-
-            final long start = useDefaults ? 0 : this.start;
-            final long end = useDefaults ? file.getSize() : this.end;
-
-            final long fileSize = file.getSize();
-
-            return new RangesFile(file, buildRanges(start, end, fileSize));
-        }
-
-        @Override
-        public FileSystemElement mock(String name, Date modified) {
-
-            return mock(name, modified, "txt", 100);
-        }
-
-        @Override
-        public File mock(String name, Date modified, String extension, long size) {
-
-            final RangesFile mock = Mockito.mock(RangesFile.class);
-            when(mock.getName()).thenReturn(name);
-            when(mock.getModified()).thenReturn(modified);
-            when(mock.getExtension()).thenReturn(extension);
-            when(mock.getSize()).thenReturn(size);
-
-            return mock;
+            return new RangesFile(file, buildRanges(start, end, file.getSize()));
         }
     }
 }

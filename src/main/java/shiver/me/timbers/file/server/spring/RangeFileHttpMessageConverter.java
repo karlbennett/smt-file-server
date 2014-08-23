@@ -9,7 +9,7 @@ import shiver.me.timbers.file.server.RangeFile;
 import java.io.IOException;
 
 import static java.lang.String.format;
-import static shiver.me.timbers.file.server.spring.Requests.CONTENT_RANGE;
+import static shiver.me.timbers.file.server.spring.Responses.CONTENT_RANGE;
 
 /**
  * This http message converter converts a {@link shiver.me.timbers.file.server.RangeFile} type into a valid response while also adding all the

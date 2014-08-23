@@ -17,6 +17,7 @@ import java.util.List;
 public class RangesFile extends AbstractList<RangeFile> implements File {
 
     private final File file;
+    private final Ranges ranges;
     private final List<RangeFile> rangeFiles;
     private final RangeFile firstRangeFile;
 
@@ -39,10 +40,11 @@ public class RangesFile extends AbstractList<RangeFile> implements File {
         }
 
         this.file = file;
+        this.ranges = ranges;
 
         this.rangeFiles = new ArrayList<>(ranges.size());
 
-        for (Range range : ranges) {
+        for (Range range : this.ranges) {
 
             this.rangeFiles.add(new RangeFile(file, range));
         }
@@ -75,6 +77,10 @@ public class RangesFile extends AbstractList<RangeFile> implements File {
     @Override
     public Date getModified() {
         return file.getModified();
+    }
+
+    public Ranges getRanges() {
+        return ranges;
     }
 
     @Override

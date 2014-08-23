@@ -28,10 +28,10 @@ import static org.springframework.http.HttpStatus.REQUESTED_RANGE_NOT_SATISFIABL
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
 import static shiver.me.timbers.file.server.spring.GlobalControllerAdvice.buildError;
-import static shiver.me.timbers.file.server.spring.Requests.CONTENT_RANGE;
 import static shiver.me.timbers.file.server.spring.Requests.FILE;
 import static shiver.me.timbers.file.server.spring.Requests.RANGE;
 import static shiver.me.timbers.file.server.spring.Requests.getAttribute;
+import static shiver.me.timbers.file.server.spring.Responses.CONTENT_RANGE;
 
 /**
  * Controller for mapping the file and directory requests.

@@ -29,9 +29,14 @@ public class RangeFiles {
 
     public static RangesFile buildRangesFile(TestFile file, long start, long end) {
 
+        return buildRangesFile(file, buildRanges(file, start, end));
+    }
+
+    public static RangesFile buildRangesFile(TestFile file, Ranges ranges) {
+
         final String path = file.getAbsolutePath();
 
-        return new RangesFile(new JavaFile(path), buildRanges(file, start, end));
+        return new RangesFile(new JavaFile(path), ranges);
     }
 
     public static Ranges buildRanges(File file, long start, long end) {

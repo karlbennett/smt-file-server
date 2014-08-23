@@ -15,7 +15,6 @@ public class Requests {
     public static final String FILE = "file";
 
     public static final String RANGE = "Range";
-    public static final String CONTENT_RANGE = "Content-Range";
 
     @SuppressWarnings("unchecked")
     public static <A> A getAttribute(String name, HttpServletRequest request, Creator<RuntimeException> creator) {
