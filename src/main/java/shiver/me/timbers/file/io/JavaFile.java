@@ -5,7 +5,10 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static java.lang.String.format;
 
@@ -14,6 +17,7 @@ public class JavaFile extends JavaFileSystemElement implements File {
     private final java.io.File file;
     private final String extension;
     private final long size;
+    private final String mimeType;
 
     public JavaFile(String path) {
         this(new java.io.File(path));
@@ -33,19 +37,59 @@ public class JavaFile extends JavaFileSystemElement implements File {
         }
 
         this.file = canonicalFile;
-        this.extension = shouldHaveExtension(canonicalFile) ? FilenameUtils.getExtension(canonicalFile.getName()) : "";
+        this.extension = deriveExtension(canonicalFile);
         this.size = file.length();
+        this.mimeType = inspectMediaType(canonicalFile, this.extension);
+    }
+
+    private static String deriveExtension(java.io.File canonicalFile) {
+
+        final String extension = FilenameUtils.getExtension(canonicalFile.getName());
+
+        return shouldHaveExtension(canonicalFile, extension) ? extension : "";
     }
 
 
-    private static boolean shouldHaveExtension(java.io.File file) {
+    private static boolean shouldHaveExtension(java.io.File file, String extension) {
+
+        final String fileNameMinusExtension = file.getName().replace(extension, "");
 
         // Handles when a filename starts with a '.' and has no there extension e.g. .gitignore
-        if (".".equals(file.getName().replace(FilenameUtils.getExtension(file.getName()), ""))) {
+        if (".".equals(fileNameMinusExtension)) {
             return false;
         }
 
         return true;
+    }
+
+    private static String inspectMediaType(java.io.File file, String extension) {
+
+        final String mimeType = probeMimeType(file);
+
+        // It seem that at the moment Files.probeContentType(Paths) returns a mime type of "text/plain" for JSON files.
+        if (isJsonFile(mimeType, extension)) {
+
+            return "application/json";
+        }
+
+        return mimeType;
+    }
+
+    static String probeMimeType(java.io.File file) {
+
+        try {
+
+            return Files.probeContentType(Paths.get(file.getCanonicalPath()));
+
+        } catch (IOException e) {
+
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static boolean isJsonFile(String mimeType, String extension) {
+
+        return "text/plain".equals(mimeType) && "json".equalsIgnoreCase(extension);
     }
 
     @Override
@@ -56,6 +100,11 @@ public class JavaFile extends JavaFileSystemElement implements File {
     @Override
     public long getSize() {
         return size;
+    }
+
+    @Override
+    public String getMimeType() {
+        return mimeType;
     }
 
     @JsonIgnore
@@ -79,24 +128,31 @@ public class JavaFile extends JavaFileSystemElement implements File {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(Object o) {
 
-        if (this == object) {
+        if (this == o) {
             return true;
         }
-        if (!(object instanceof File)) {
-            return false;
-        }
-        if (!super.equals(object)) {
+
+        if (!(o instanceof File)) {
             return false;
         }
 
-        File file = (File) object;
-
-        if (size != file.getSize()) {
+        if (!super.equals(o)) {
             return false;
         }
-        if (!extension.equals(file.getExtension())) {
+
+        final File that = (File) o;
+
+        if (size != that.getSize()) {
+            return false;
+        }
+
+        if (!extension.equals(that.getExtension())) {
+            return false;
+        }
+
+        if (!mimeType.equals(that.getMimeType())) {
             return false;
         }
 
@@ -109,6 +165,7 @@ public class JavaFile extends JavaFileSystemElement implements File {
         int result = super.hashCode();
         result = 31 * result + extension.hashCode();
         result = 31 * result + (int) (size ^ (size >>> 32));
+        result = 31 * result + mimeType.hashCode();
 
         return result;
     }

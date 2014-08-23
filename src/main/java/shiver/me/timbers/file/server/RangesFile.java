@@ -62,6 +62,11 @@ public class RangesFile extends AbstractList<RangeFile> implements File {
         return file.getSize();
     }
 
+    @Override
+    public String getMimeType() {
+        return file.getMimeType();
+    }
+
     @JsonIgnore
     @Override
     public InputStream getInputStream() {

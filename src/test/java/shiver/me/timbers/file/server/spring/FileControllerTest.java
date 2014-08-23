@@ -18,9 +18,6 @@ import shiver.me.timbers.file.server.servlet.AcceptRangesFilter;
 
 import static org.springframework.http.HttpMethod.HEAD;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
-import static org.springframework.http.MediaType.IMAGE_PNG;
-import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -54,48 +51,37 @@ public class FileControllerTest {
     public void I_can_check_a_file() throws Exception {
 
         mockMvcForFile(request(HEAD, "/file").requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath())), FILE_ONE)
-                .andExpect(content().contentType(TEXT_PLAIN))
                 .andExpect(content().string(""));
     }
 
     @Test
     public void I_can_request_a_file() throws Exception {
 
-        mockMvcForFile(FILE_ONE)
-                .andExpect(content().contentType(TEXT_PLAIN))
-                .andExpect(content().string(FILE_ONE.getContent()));
+        mockMvcForStringFile(FILE_ONE);
     }
 
     @Test
     public void I_can_request_a_json_file() throws Exception {
 
-        mockMvcForFile(FILE_FIVE)
-                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
-                .andExpect(content().string(FILE_FIVE.getContent()));
+        mockMvcForStringFile(FILE_FIVE);
     }
 
     @Test
     public void I_can_request_an_xml_file() throws Exception {
 
-        mockMvcForFile(FILE_SIX)
-                .andExpect(content().contentTypeCompatibleWith(APPLICATION_XML_VALUE))
-                .andExpect(content().string(FILE_SIX.getContent()));
+        mockMvcForStringFile(FILE_SIX);
     }
 
     @Test
     public void I_can_request_a_png_file() throws Exception {
 
-        mockMvcForFile(FILE_SEVEN)
-                .andExpect(content().contentTypeCompatibleWith(IMAGE_PNG))
-                .andExpect(content().bytes(FILE_SEVEN.getContent()));
+        mockMvcForBinaryFile(FILE_SEVEN);
     }
 
     @Test
     public void I_can_request_a_video_file() throws Exception {
 
-        mockMvcForFile(FILE_EIGHT)
-                .andExpect(content().contentTypeCompatibleWith("video/mp4"))
-                .andExpect(content().bytes(FILE_EIGHT.getContent()));
+        mockMvcForBinaryFile(FILE_EIGHT);
     }
 
     @Test
@@ -105,6 +91,16 @@ public class FileControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.error").value(NO_FILE_ERROR_MESSAGE));
+    }
+
+    private ResultActions mockMvcForStringFile(TestFile<String> file) throws Exception {
+
+        return mockMvcForFile(file).andExpect(content().string(file.getContent()));
+    }
+
+    private ResultActions mockMvcForBinaryFile(TestFile<byte[]> file) throws Exception {
+
+        return mockMvcForFile(file).andExpect(content().bytes(file.getContent()));
     }
 
     private ResultActions mockMvcForFile(TestFile file) throws Exception {
@@ -121,6 +117,7 @@ public class FileControllerTest {
     private ResultActions mockMvcHeadersForFile(MockHttpServletRequestBuilder requestBuilder, TestFile file)
             throws Exception {
 
-        return Controllers.mockMvcHeadersForFile(mockMvc, requestBuilder, file);
+        return Controllers.mockMvcHeadersForFile(mockMvc, requestBuilder, file)
+                .andExpect(content().contentTypeCompatibleWith(file.getMediaType()));
     }
 }

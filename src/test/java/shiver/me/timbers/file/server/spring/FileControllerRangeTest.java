@@ -26,8 +26,6 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.http.HttpMethod.HEAD;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.TEXT_PLAIN;
-import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -66,7 +64,7 @@ public class FileControllerRangeTest {
                 FILE_ONE
         ).andExpect(status().isPartialContent())
                 .andExpect(header().string("Content-Range", format("bytes 0-10/%d", FILE_ONE.getSize())))
-                .andExpect(content().contentType(TEXT_PLAIN))
+                .andExpect(content().contentType(FILE_ONE.getMediaType()))
                 .andExpect(content().string(""));
     }
 
@@ -80,7 +78,7 @@ public class FileControllerRangeTest {
                 FILE_ONE
         ).andExpect(status().isPartialContent())
                 .andExpect(header().string("Content-Range", format("bytes 6-12/%d", FILE_ONE.getSize())))
-                .andExpect(content().contentType(TEXT_PLAIN))
+                .andExpect(content().contentType(FILE_ONE.getMediaType()))
                 .andExpect(content().string("ile one"));
     }
 
@@ -103,7 +101,7 @@ public class FileControllerRangeTest {
                 FILE_ONE
         ).andExpect(status().isPartialContent())
                 .andExpect(header().string("Content-Range", format("bytes 6-13/%d", FILE_ONE.getSize())))
-                .andExpect(content().contentType(TEXT_PLAIN))
+                .andExpect(content().contentType(FILE_ONE.getMediaType()))
                 .andExpect(content().string("ile one."));
     }
 
@@ -117,7 +115,7 @@ public class FileControllerRangeTest {
                 FILE_ONE
         ).andExpect(status().isPartialContent())
                 .andExpect(header().string("Content-Range", format("bytes 0-13/%d", FILE_ONE.getSize())))
-                .andExpect(content().contentType(TEXT_PLAIN))
+                .andExpect(content().contentType(FILE_ONE.getMediaType()))
                 .andExpect(content().string(FILE_ONE.getContent()));
     }
 
@@ -134,7 +132,7 @@ public class FileControllerRangeTest {
                 FILE_EIGHT
         ).andExpect(status().isPartialContent())
                 .andExpect(header().string("Content-Range", format("bytes %d-%d/%d", start, end, FILE_EIGHT.getSize())))
-                .andExpect(content().contentType("video/mp4"))
+                .andExpect(content().contentType(FILE_EIGHT.getMediaType()))
                 .andExpect(content().bytes(Arrays.copyOfRange(FILE_EIGHT.getContent(), start, end + 1)));
     }
 
@@ -149,7 +147,7 @@ public class FileControllerRangeTest {
                 FILE_ONE
         ).andExpect(status().isPartialContent())
                 .andExpect(header().doesNotExist("Content-Range"))
-                .andExpect(content().contentType(TEXT_PLAIN))
+                .andExpect(content().contentType(FILE_ONE.getMediaType()))
                 .andExpect(content().string(""));
     }
 
@@ -164,7 +162,7 @@ public class FileControllerRangeTest {
                 FILE_ONE
         ).andExpect(status().isPartialContent())
                 .andExpect(header().doesNotExist("Content-Range"))
-                .andExpect(content().contentType(TEXT_PLAIN))
+                .andExpect(content().contentType(FILE_ONE.getMediaType()))
                 .andExpect(content().string(FILE_ONE.getContent()));
     }
 
@@ -222,7 +220,7 @@ public class FileControllerRangeTest {
 
         final String content = buildContent(
                 FILE_ONE,
-                TEXT_PLAIN_VALUE,
+                FILE_ONE.getMimeType(),
                 Arrays.<Entry<Integer, Integer>>asList(
                         new SimpleEntry<>(start1, end1),
                         new SimpleEntry<>(start2, end2),

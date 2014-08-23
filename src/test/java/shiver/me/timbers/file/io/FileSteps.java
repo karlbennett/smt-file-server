@@ -56,6 +56,39 @@ public class FileSteps {
         assertEquals("the extension of the file should be correct.", extension, file.getExtension());
     }
 
+    public static void The_files_size_should_be_correct(FileCreator creator) {
+
+        The_files_size_should_be_correct(FILE_ONE.getSize(), creator.create(FILE_ONE.getAbsolutePath()));
+        The_files_size_should_be_correct(FILE_TWO.getSize(), creator.create(FILE_TWO.getAbsolutePath()));
+        The_files_size_should_be_correct(FILE_THREE.getSize(), creator.create(FILE_THREE.getAbsolutePath()));
+        The_files_size_should_be_correct(FILE_FOUR.getSize(), creator.create(FILE_FOUR.getAbsolutePath()));
+        The_files_size_should_be_correct(FILE_FIVE.getSize(), creator.create(FILE_FIVE.getAbsolutePath()));
+        The_files_size_should_be_correct(FILE_SIX.getSize(), creator.create(FILE_SIX.getAbsolutePath()));
+        The_files_size_should_be_correct(FILE_SEVEN.getSize(), creator.create(FILE_SEVEN.getAbsolutePath()));
+        The_files_size_should_be_correct(FILE_EIGHT.getSize(), creator.create(FILE_EIGHT.getAbsolutePath()));
+    }
+
+    public static void The_files_size_should_be_correct(long size, File file) {
+
+        assertEquals("the size of the file should be correct.", size, file.getSize());
+    }
+
+    public static void The_files_mime_type_should_be_correct(FileCreator creator) {
+
+        The_files_mime_type_should_be_correct(FILE_ONE.getMimeType(), creator.create(FILE_ONE.getAbsolutePath()));
+        The_files_mime_type_should_be_correct(FILE_TWO.getMimeType(), creator.create(FILE_TWO.getAbsolutePath()));
+        The_files_mime_type_should_be_correct(FILE_THREE.getMimeType(), creator.create(FILE_THREE.getAbsolutePath()));
+        The_files_mime_type_should_be_correct(FILE_FOUR.getMimeType(), creator.create(FILE_FOUR.getAbsolutePath()));
+        The_files_mime_type_should_be_correct(FILE_FIVE.getMimeType(), creator.create(FILE_FIVE.getAbsolutePath()));
+        The_files_mime_type_should_be_correct(FILE_SIX.getMimeType(), creator.create(FILE_SIX.getAbsolutePath()));
+        The_files_mime_type_should_be_correct(FILE_SEVEN.getMimeType(), creator.create(FILE_SEVEN.getAbsolutePath()));
+        The_files_mime_type_should_be_correct(FILE_EIGHT.getMimeType(), creator.create(FILE_EIGHT.getAbsolutePath()));
+    }
+
+    public static void The_files_mime_type_should_be_correct(String mimeType, File file) {
+
+        assertEquals("the size of the mime type should be correct.", mimeType, file.getMimeType());
+    }
 
     public static void The_files_modification_date_should_be_correct(FileSystemElementCreator creator) {
 
@@ -87,13 +120,20 @@ public class FileSteps {
 
         The_file_system_element_should_have_correct_equality(left, right, creator);
 
-        final File mock1 = creator.mock(left.getName(), left.getModified(), "different", left.getSize());
+        final File mock1 = creator.mock(left.getName(), left.getModified(), "different", left.getSize(),
+                left.getMimeType());
 
         assertNotEquals("the file should not be equal to a file with a different extension.", left, mock1);
 
-        final File mock2 = creator.mock(left.getName(), left.getModified(), left.getExtension(), -1);
+        final File mock2 = creator.mock(left.getName(), left.getModified(), left.getExtension(), -1,
+                left.getMimeType());
 
         assertNotEquals("the file should not be equal to a file with a different size.", left, mock2);
+
+        final File mock3 = creator.mock(left.getName(), left.getModified(), left.getExtension(), left.getSize(),
+                "different");
+
+        assertNotEquals("the file should not be equal to a file with a different mime type.", left, mock3);
     }
 
     public static void The_file_should_have_the_correct_to_string_value(FileSystemElementCreator creator) {

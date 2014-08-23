@@ -4,6 +4,7 @@ import shiver.me.timbers.Utils;
 
 import java.util.Date;
 
+import static java.lang.String.format;
 import static shiver.me.timbers.Constants.CURRENT_DIRECTORY_ABSOLUTE_PATH;
 
 public abstract class AbstractTestFileSystemElement implements TestFileSystemElement {
@@ -51,6 +52,6 @@ public abstract class AbstractTestFileSystemElement implements TestFileSystemEle
 
     @Override
     public String toString() {
-        return absolutePath;
+        return format("{ \"name\" : \"%s\", \"modified\" : \"%tc\" }", name, modified);
     }
 }

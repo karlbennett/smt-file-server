@@ -6,5 +6,5 @@ public interface FileCreator extends FileSystemElementCreator {
 
     public File create(String path);
 
-    public File mock(String name, Date modified, String extension, long size);
+    public File mock(String name, Date modified, String extension, long size, String mimeType);
 }

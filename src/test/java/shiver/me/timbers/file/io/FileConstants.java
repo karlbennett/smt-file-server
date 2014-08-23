@@ -1,6 +1,7 @@
 package shiver.me.timbers.file.io;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.http.MediaType;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,47 +9,54 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
+import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
+import static org.springframework.http.MediaType.parseMediaType;
 import static shiver.me.timbers.Constants.TEST_PROPERTIES;
 
 public class FileConstants {
 
     public static final TestFile<String> TEST_PROPERTIES_FILE = new TextFile(
-            TEST_PROPERTIES.getProperty("absolutePath.testProperties"), "properties");
+            TEST_PROPERTIES.getProperty("absolutePath.testProperties"), TEXT_PLAIN_VALUE, "properties");
 
     public static final TestFile<String> FILE_ONE = new TextFile(
-            TEST_PROPERTIES.getProperty("absolutePath.fileOne"), "txt");
+            TEST_PROPERTIES.getProperty("absolutePath.fileOne"), TEXT_PLAIN_VALUE, "txt");
 
     public static final TestFile<String> FILE_TWO = new TextFile(
-            TEST_PROPERTIES.getProperty("absolutePath.fileTwo"), "");
+            TEST_PROPERTIES.getProperty("absolutePath.fileTwo"), TEXT_PLAIN_VALUE, "");
 
     public static final TestFile<String> FILE_THREE = new TextFile(
-            TEST_PROPERTIES.getProperty("absolutePath.fileThree"), "txt");
+            TEST_PROPERTIES.getProperty("absolutePath.fileThree"), TEXT_PLAIN_VALUE, "txt");
 
     public static final TestFile<String> FILE_FOUR = new TextFile(
-            TEST_PROPERTIES.getProperty("absolutePath.fileFour"), "txt");
+            TEST_PROPERTIES.getProperty("absolutePath.fileFour"), TEXT_PLAIN_VALUE, "txt");
 
     public static final TestFile<String> FILE_FIVE = new TextFile(
-            TEST_PROPERTIES.getProperty("absolutePath.fileFive"), "json");
+            TEST_PROPERTIES.getProperty("absolutePath.fileFive"), APPLICATION_JSON_VALUE, "json");
 
     public static final TestFile<String> FILE_SIX = new TextFile(
-            TEST_PROPERTIES.getProperty("absolutePath.fileSix"), "xml");
+            TEST_PROPERTIES.getProperty("absolutePath.fileSix"), APPLICATION_XML_VALUE, "xml");
 
     public static final TestFile<byte[]> FILE_SEVEN = new BinaryFile(
-            TEST_PROPERTIES.getProperty("absolutePath.fileSeven"), "png");
+            TEST_PROPERTIES.getProperty("absolutePath.fileSeven"), IMAGE_PNG_VALUE, "png");
 
     public static final TestFile<byte[]> FILE_EIGHT = new BinaryFile(
-            TEST_PROPERTIES.getProperty("absolutePath.fileEight"), "mp4");
+            TEST_PROPERTIES.getProperty("absolutePath.fileEight"), "video/mp4", "mp4");
 
 
     private static abstract class AbstractTestFile<C> extends AbstractTestFileSystemElement implements TestFile<C> {
 
         private final String extension;
         private final long size;
+        private final String mimeType;
 
-        protected AbstractTestFile(String absolutePath, String extension) {
+        protected AbstractTestFile(String absolutePath, String mimeType, String extension) {
             super(absolutePath);
 
             this.extension = extension;
+            this.mimeType = mimeType;
             this.size = fileSize(absolutePath);
         }
 
@@ -75,6 +83,16 @@ public class FileConstants {
         }
 
         @Override
+        public String getMimeType() {
+            return mimeType;
+        }
+
+        @Override
+        public MediaType getMediaType() {
+            return parseMediaType(mimeType);
+        }
+
+        @Override
         public InputStream getInputStream() {
             throw new UnsupportedOperationException("A test file does not have an input stream.");
         }
@@ -84,8 +102,8 @@ public class FileConstants {
 
         private final String content;
 
-        private TextFile(String absolutePath, String extension) {
-            super(absolutePath, extension);
+        private TextFile(String absolutePath, String mimeType, String extension) {
+            super(absolutePath, mimeType, extension);
 
             this.content = readFileToString(absolutePath);
         }
@@ -112,8 +130,8 @@ public class FileConstants {
 
         private final byte[] content;
 
-        private BinaryFile(String absolutePath, String extension) {
-            super(absolutePath, extension);
+        private BinaryFile(String absolutePath, String mimeType, String extension) {
+            super(absolutePath, mimeType, extension);
 
             this.content = readFileToByteArray(absolutePath);
         }

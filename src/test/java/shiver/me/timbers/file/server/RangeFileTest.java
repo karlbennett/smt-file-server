@@ -17,8 +17,10 @@ import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_the_corre
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_produce_an_input_stream;
 import static shiver.me.timbers.file.io.FileSteps.The_files_extension_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_input_stream_should_contain;
+import static shiver.me.timbers.file.io.FileSteps.The_files_mime_type_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_modification_date_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_name_should_be_correct;
+import static shiver.me.timbers.file.io.FileSteps.The_files_size_should_be_correct;
 import static shiver.me.timbers.file.server.RangeFileSteps.I_can_read_a_files_partial_input_stream;
 import static shiver.me.timbers.file.server.RangeFileSteps.I_cannot_skip_an_invalid_input_stream;
 import static shiver.me.timbers.file.server.RangeFiles.buildRangeFile;
@@ -62,15 +64,27 @@ public class RangeFileTest {
     }
 
     @Test
+    public void I_can_get_a_files_modification_date() {
+
+        The_files_modification_date_should_be_correct(new RangeFileCreator());
+    }
+
+    @Test
     public void I_can_get_a_files_extension() {
 
         The_files_extension_should_be_correct(new RangeFileCreator());
     }
 
     @Test
-    public void I_can_get_a_files_modification_date() {
+    public void I_can_get_a_files_size() {
 
-        The_files_modification_date_should_be_correct(new RangeFileCreator());
+        The_files_size_should_be_correct(new RangeFileCreator());
+    }
+
+    @Test
+    public void I_can_get_a_files_mime_type() {
+
+        The_files_mime_type_should_be_correct(new RangeFileCreator());
     }
 
     @Test

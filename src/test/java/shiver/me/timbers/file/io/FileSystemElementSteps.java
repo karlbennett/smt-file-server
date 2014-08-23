@@ -57,7 +57,7 @@ public class FileSystemElementSteps {
     public static void The_file_system_element_should_have_the_correct_to_string_value(TestFileSystemElement expected,
                                                                                        FileSystemElement actual) {
 
-        assertEquals("the file system elements toString value should be correct.", expected.getAbsolutePath(),
+        assertEquals("the file system elements toString value should be correct.", expected.toString(),
                 actual.toString());
     }
 

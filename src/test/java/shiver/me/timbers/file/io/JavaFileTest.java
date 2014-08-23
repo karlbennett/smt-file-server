@@ -15,8 +15,10 @@ import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_the_corre
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_produce_an_input_stream;
 import static shiver.me.timbers.file.io.FileSteps.The_files_extension_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_input_stream_should_contain;
+import static shiver.me.timbers.file.io.FileSteps.The_files_mime_type_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_modification_date_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_name_should_be_correct;
+import static shiver.me.timbers.file.io.FileSteps.The_files_size_should_be_correct;
 import static shiver.me.timbers.file.io.JavaFile.getInputStream;
 
 public class JavaFileTest {
@@ -72,10 +74,25 @@ public class JavaFileTest {
         new JavaFile("");
     }
 
+    @Test(expected = RuntimeException.class)
+    public void I_cannot_probe_the_mime_type_of_an_invalid_file() throws IOException {
+
+        final java.io.File file = mock(java.io.File.class);
+        when(file.getCanonicalPath()).thenThrow(new IOException("text probe mime type exception."));
+
+        JavaFile.probeMimeType(file);
+    }
+
     @Test
     public void I_can_get_a_files_name() {
 
         The_files_name_should_be_correct(new JavaFileCreator());
+    }
+
+    @Test
+    public void I_can_get_a_files_modification_date() {
+
+        The_files_modification_date_should_be_correct(new JavaFileCreator());
     }
 
     @Test
@@ -85,9 +102,15 @@ public class JavaFileTest {
     }
 
     @Test
-    public void I_can_get_a_files_modification_date() {
+    public void I_can_get_a_files_size() {
 
-        The_files_modification_date_should_be_correct(new JavaFileCreator());
+        The_files_size_should_be_correct(new JavaFileCreator());
+    }
+
+    @Test
+    public void I_can_get_a_files_mime_type() {
+
+        The_files_mime_type_should_be_correct(new JavaFileCreator());
     }
 
     @Test
