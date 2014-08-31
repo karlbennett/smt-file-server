@@ -151,6 +151,12 @@ public class RangeTest {
     }
 
     @Test(expected = RequestedRangeNotSatisfiableException.class)
+    public void I_cannot_create_a_range_with_a_start_value_greater_than_the_file_length() {
+
+        new Range(10001, 10002, FILE_SIZE);
+    }
+
+    @Test(expected = RequestedRangeNotSatisfiableException.class)
     public void I_cannot_parse_a_range_with_only_a_start_value_greater_than_the_file_length() {
 
         new Range("10001-", FILE_SIZE);

@@ -29,10 +29,9 @@ public class Range {
         this.range = range;
         this.fileSize = fileSize;
 
-        validRangeHeaderMustBeSupplied();
+        validRangeStringMustBeSupplied();
 
         this.start = deriveStart(range);
-
         startBoundaryMustBeLessThanTheFileSize();
 
         this.end = deriveEnd(range);
@@ -46,13 +45,16 @@ public class Range {
 
         this.range = formatRange(start, end);
         this.fileSize = fileSize;
+
         this.start = start;
+        startBoundaryMustBeLessThanTheFileSize();
+
         this.end = end;
         this.size = deriveSize();
         this.valid = deriveValid();
     }
 
-    private void validRangeHeaderMustBeSupplied() {
+    private void validRangeStringMustBeSupplied() {
 
         if (null == range || !range.contains(HYPHEN)) {
             throw new RequestedRangeNotSatisfiableException(range, fileSize);
