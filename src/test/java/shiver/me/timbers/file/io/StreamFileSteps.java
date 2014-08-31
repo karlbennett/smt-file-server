@@ -13,7 +13,7 @@ import static shiver.me.timbers.file.io.FileConstants.FILE_TWO;
 
 public class StreamFileSteps {
 
-    public static <S extends StreamFile> void The_file_should_produce_an_input_stream(FileCreator<S> creator) {
+    public static void The_file_should_produce_an_input_stream(StreamFileCreator creator) {
 
         The_file_should_produce_an_input_stream(creator.create(FILE_ONE.getAbsolutePath()));
         The_file_should_produce_an_input_stream(creator.create(FILE_TWO.getAbsolutePath()));
@@ -26,13 +26,13 @@ public class StreamFileSteps {
         assertNotNull("the file should produce an input stream.", file.getInputStream());
     }
 
-    public static <S extends StreamFile> void The_files_input_stream_should_contain(FileCreator<S> creator) {
+    public static void The_files_input_stream_should_contain(StreamFileCreator creator) {
 
         The_files_input_stream_should_contain(new DefaultFileContentGetter<String>(), creator);
     }
 
-    public static <S extends StreamFile> void The_files_input_stream_should_contain(
-            DefaultFileContentGetter<String> getter, FileCreator<S> creator) {
+    public static void The_files_input_stream_should_contain(
+            DefaultFileContentGetter<String> getter, StreamFileCreator creator) {
 
         The_files_input_stream_should_read_to(getter.get(FILE_ONE), creator.create(FILE_ONE.getAbsolutePath()));
         The_files_input_stream_should_read_to(getter.get(FILE_TWO), creator.create(FILE_TWO.getAbsolutePath()));
