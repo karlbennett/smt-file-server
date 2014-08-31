@@ -64,6 +64,15 @@ public class FilesRoutingControllerTest {
     }
 
     @Test
+    public void I_cannot_route_to_a_path_above_the_root_directory() throws Exception {
+
+        mockMvc.perform(get("../"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.error").value(ERROR_MESSAGE));
+    }
+
+    @Test
     public void I_cannot_route_to_an_invalid_path() throws Exception {
 
         mockMvc.perform(get("invalid"))

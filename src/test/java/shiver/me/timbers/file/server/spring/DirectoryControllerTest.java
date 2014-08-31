@@ -55,7 +55,18 @@ public class DirectoryControllerTest {
                 .andExpect(jsonPath("$.files[0].name").value(FILE_TWO.getName()))
                 .andExpect(jsonPath("$.files[0].modified").value(FILE_TWO.getModified().getTime()))
                 .andExpect(jsonPath("$.files[0].extension").value(FILE_TWO.getExtension()))
-                .andExpect(jsonPath("$.files[0].size").value((int) FILE_TWO.getSize()));
+                .andExpect(jsonPath("$.files[0].size").value((int) FILE_TWO.getSize()))
+                .andExpect(jsonPath("$.files[0].mimeType").value(FILE_TWO.getMimeType()));
+    }
+
+    @Test
+    public void I_can_request_a_directory_above_the_root_directory() throws Exception {
+
+        // The path boundary check is done in the FilesRoutingController so it should not be possible to get here with
+        // an illegal path so no check is carried out in this controller.
+        mockMvc.perform(get("/directory").requestAttr(DIRECTORY, new JavaDirectory("../")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON_VALUE));
     }
 
     @Test

@@ -15,8 +15,7 @@ import java.util.List;
  * @author Karl Bennett
  */
 @Configuration
-// Tell Spring which package to look in for controller classes. This has been done by providing a class from the
-// required package.
+// Tell Spring which package to look in for controller classes.
 @ComponentScan("shiver.me.timbers.file.server")
 // Spring MVC is enabled by extending WebMvcConfigurationSupport
 public class FilesConfiguration extends WebMvcConfigurationSupport {

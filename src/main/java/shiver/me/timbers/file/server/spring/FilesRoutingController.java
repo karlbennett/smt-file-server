@@ -32,6 +32,11 @@ public class FilesRoutingController {
 
         final File file = new File(rootPath, request.getPathInfo()).getCanonicalFile();
 
+        if (pathOutsideOfRootDirectory(file)) {
+
+            throw new InvalidPathException();
+        }
+
         if (file.isDirectory()) {
 
             request.setAttribute(DIRECTORY, new JavaDirectory(file));
@@ -47,5 +52,9 @@ public class FilesRoutingController {
         }
 
         throw new InvalidPathException();
+    }
+
+    private boolean pathOutsideOfRootDirectory(File file) {
+        return !file.getPath().contains(rootPath);
     }
 }

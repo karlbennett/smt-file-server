@@ -15,11 +15,13 @@ import org.springframework.web.context.WebApplicationContext;
 import shiver.me.timbers.file.io.JavaStreamFile;
 import shiver.me.timbers.file.io.TestFile;
 
+import static java.lang.String.format;
 import static org.springframework.http.HttpMethod.HEAD;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static shiver.me.timbers.file.io.FileConstants.FILE_EIGHT;
@@ -27,6 +29,7 @@ import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SEVEN;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SIX;
+import static shiver.me.timbers.file.server.ServerConstants.dateFormat;
 import static shiver.me.timbers.file.server.spring.Requests.FILE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -81,6 +84,22 @@ public class FileControllerTest {
     public void I_can_request_a_video_file() throws Exception {
 
         mockMvcForBinaryFile(FILE_EIGHT);
+    }
+
+    @Test
+    public void I_can_request_a_file_above_the_root_directory() throws Exception {
+
+        final JavaStreamFile file = new JavaStreamFile("../pom.xml");
+
+        // The path boundary check is done in the FilesRoutingController so it should not be possible to get here with
+        // an illegal path so no check is carried out in this controller.
+        mockMvc.perform(get("/file").requestAttr(FILE, file))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(file.getMimeType()))
+                .andExpect(header().string("Accept-Ranges", "bytes"))
+                .andExpect(header().string("ETag", format("\"%s_%d_%d\"", file.getName(), file.getSize(),
+                        file.getModified().getTime())))
+                .andExpect(header().string("Last-Modified", dateFormat().format(file.getModified())));
     }
 
     @Test
