@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static shiver.me.timbers.file.server.spring.Requests.getAttribute;
+import static shiver.me.timbers.file.server.spring.Requests.getAttributeFrom;
 
 public class RequestsTest {
 
@@ -21,7 +21,7 @@ public class RequestsTest {
         final HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getAttribute(name)).thenReturn(value);
 
-        assertEquals("the correct value should be returned.", value, getAttribute(name, request, null));
+        assertEquals("the correct value should be returned.", value, getAttributeFrom(name, request, null));
     }
 
     @Test(expected = TestException.class)
@@ -29,7 +29,7 @@ public class RequestsTest {
 
         final HttpServletRequest request = mock(HttpServletRequest.class);
 
-        getAttribute("attribute", request, new Creator<RuntimeException>() {
+        getAttributeFrom("attribute", request, new Creator<RuntimeException>() {
             @Override
             public RuntimeException create() {
                 return new TestException();
@@ -40,7 +40,7 @@ public class RequestsTest {
     @Test(expected = NullPointerException.class)
     public void I_cannot_get_an_attribute_from_a_null_request() {
 
-        getAttribute("attribute", null, null);
+        getAttributeFrom("attribute", null, null);
     }
 
     @Test

@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.io.IOException;
@@ -38,5 +39,13 @@ public class FilesConfiguration extends WebMvcConfigurationSupport {
         converters.add(new StreamFileHttpMessageConverter<>());
 
         addDefaultHttpMessageConverters(converters);
+    }
+
+    @Override
+    protected void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+
+        argumentResolvers.add(new DirectoryArgumentResolver());
+        argumentResolvers.add(new StreamFileArgumentResolver());
+        argumentResolvers.add(new RangesArgumentResolver());
     }
 }

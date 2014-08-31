@@ -1,5 +1,7 @@
 package shiver.me.timbers.file.server.spring;
 
+import shiver.me.timbers.file.io.Directory;
+import shiver.me.timbers.file.io.StreamFile;
 import shiver.me.timbers.file.server.Creator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,8 +18,28 @@ public class Requests {
 
     public static final String RANGE = "Range";
 
+    public static Directory getDirectoryFrom(HttpServletRequest request) {
+        // FIXME: Need unit tests.
+        return getAttributeFrom(DIRECTORY, request, new Creator<RuntimeException>() {
+            @Override
+            public RuntimeException create() {
+                return new NoDirectoryException();
+            }
+        });
+    }
+
+    public static StreamFile getFileFrom(HttpServletRequest request) {
+        // FIXME: Need unit tests.
+        return getAttributeFrom(FILE, request, new Creator<RuntimeException>() {
+            @Override
+            public RuntimeException create() {
+                return new NoFileException();
+            }
+        });
+    }
+
     @SuppressWarnings("unchecked")
-    public static <A> A getAttribute(String name, HttpServletRequest request, Creator<RuntimeException> creator) {
+    public static <A> A getAttributeFrom(String name, HttpServletRequest request, Creator<RuntimeException> creator) {
 
         final Object attribute = request.getAttribute(name);
 
