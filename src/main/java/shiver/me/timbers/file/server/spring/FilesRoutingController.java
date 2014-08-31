@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import shiver.me.timbers.file.io.InvalidPathException;
 import shiver.me.timbers.file.io.JavaDirectory;
-import shiver.me.timbers.file.io.JavaFile;
+import shiver.me.timbers.file.io.JavaStreamFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -41,7 +41,7 @@ public class FilesRoutingController {
 
         if (file.isFile()) {
 
-            request.setAttribute(FILE, new JavaFile(file));
+            request.setAttribute(FILE, new JavaStreamFile(file));
 
             return "forward:/file";
         }

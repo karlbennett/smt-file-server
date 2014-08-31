@@ -1,7 +1,7 @@
 package shiver.me.timbers.file.server;
 
 import shiver.me.timbers.file.io.File;
-import shiver.me.timbers.file.io.JavaFile;
+import shiver.me.timbers.file.io.JavaStreamFile;
 import shiver.me.timbers.file.io.TestFile;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class RangeFiles {
         final String path = file.getAbsolutePath();
         final long size = file.getSize();
 
-        return new RangeFile(new JavaFile(path), new Range(start, end, size));
+        return new RangeFile(new JavaStreamFile(path), new Range(start, end, size));
     }
 
     public static RangesFile buildRangesFile(TestFile file) {
@@ -41,7 +41,7 @@ public class RangeFiles {
 
         final String path = file.getAbsolutePath();
 
-        return new RangesFile(new JavaFile(path), ranges);
+        return new RangesFile(new JavaStreamFile(path), ranges);
     }
 
     public static Ranges buildRanges(File file, long start, long end) {
@@ -56,7 +56,7 @@ public class RangeFiles {
         return new Ranges(fileSize, new Range(start, end, fileSize));
     }
 
-    public static Ranges buildRanges(File file) {
+    public static Ranges buildRangesWithMocks(File file) {
 
         return buildRanges(file, mockRange(file, 0, 5), mockRange(file, 7, 10), mockRange(file, 12, 14));
     }

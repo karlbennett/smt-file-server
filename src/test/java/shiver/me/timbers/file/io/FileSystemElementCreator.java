@@ -2,9 +2,9 @@ package shiver.me.timbers.file.io;
 
 import java.util.Date;
 
-public interface FileSystemElementCreator {
+public interface FileSystemElementCreator<F extends FileSystemElement> {
 
-    public FileSystemElement create(String path);
+    public F create(String path);
 
-    public FileSystemElement mock(String name, Date modified);
+    public F mock(String name, Date modified);
 }

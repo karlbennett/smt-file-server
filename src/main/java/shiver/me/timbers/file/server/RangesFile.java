@@ -1,9 +1,8 @@
 package shiver.me.timbers.file.server;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import shiver.me.timbers.file.io.File;
+import shiver.me.timbers.file.io.StreamFile;
 
-import java.io.InputStream;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,9 +18,8 @@ public class RangesFile extends AbstractList<RangeFile> implements File {
     private final File file;
     private final Ranges ranges;
     private final List<RangeFile> rangeFiles;
-    private final RangeFile firstRangeFile;
 
-    public RangesFile(File file, Ranges ranges) {
+    public RangesFile(StreamFile file, Ranges ranges) {
 
         if (null == file) {
             throw new NullPointerException("A ranges file must not have a null file.");
@@ -48,8 +46,6 @@ public class RangesFile extends AbstractList<RangeFile> implements File {
 
             this.rangeFiles.add(new RangeFile(file, range));
         }
-
-        this.firstRangeFile = this.rangeFiles.get(0);
     }
 
     @Override
@@ -65,13 +61,6 @@ public class RangesFile extends AbstractList<RangeFile> implements File {
     @Override
     public String getMimeType() {
         return file.getMimeType();
-    }
-
-    @JsonIgnore
-    @Override
-    public InputStream getInputStream() {
-
-        return firstRangeFile.getInputStream();
     }
 
     @Override

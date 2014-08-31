@@ -36,7 +36,7 @@ public class FilesConfiguration extends WebMvcConfigurationSupport {
 
         converters.add(new RangesFileHttpMessageConverter());
         converters.add(new RangeFileHttpMessageConverter());
-        converters.add(new FileHttpMessageConverter<>());
+        converters.add(new StreamFileHttpMessageConverter<>());
 
         addDefaultHttpMessageConverters(converters);
     }

@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import shiver.me.timbers.file.io.JavaFile;
+import shiver.me.timbers.file.io.JavaStreamFile;
 import shiver.me.timbers.file.io.TestFile;
 import shiver.me.timbers.file.server.servlet.AcceptRangesFilter;
 
@@ -50,7 +50,7 @@ public class FileControllerTest {
     @Test
     public void I_can_check_a_file() throws Exception {
 
-        mockMvcForFile(request(HEAD, "/file").requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath())), FILE_ONE)
+        mockMvcForFile(request(HEAD, "/file").requestAttr(FILE, new JavaStreamFile(FILE_ONE.getAbsolutePath())), FILE_ONE)
                 .andExpect(content().string(""));
     }
 
@@ -105,7 +105,7 @@ public class FileControllerTest {
 
     private ResultActions mockMvcForFile(TestFile file) throws Exception {
 
-        return mockMvcForFile(get("/file").requestAttr(FILE, new JavaFile(file.getAbsolutePath())), file);
+        return mockMvcForFile(get("/file").requestAttr(FILE, new JavaStreamFile(file.getAbsolutePath())), file);
     }
 
     private ResultActions mockMvcForFile(MockHttpServletRequestBuilder requestBuilder, TestFile file) throws Exception {

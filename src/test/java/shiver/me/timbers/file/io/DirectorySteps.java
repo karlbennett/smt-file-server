@@ -1,5 +1,7 @@
 package shiver.me.timbers.file.io;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import static shiver.me.timbers.Constants.CURRENT_DIRECTORY_ABSOLUTE_PATH;
 import static shiver.me.timbers.file.io.DirectoryConstants.CURRENT_DIRECTORY;
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_FOUR;
@@ -60,7 +62,8 @@ public class DirectorySteps {
                 creator.create(DIRECTORY_FOUR.getAbsolutePath()));
     }
 
-    public static void The_directory_should_be_able_to_be_serialised(FileSystemElementCreator creator) {
+    public static void The_directory_should_be_able_to_be_serialised(FileSystemElementCreator creator)
+            throws JsonProcessingException {
 
         The_file_system_element_should_be_able_to_be_serialised(creator.create(CURRENT_DIRECTORY.getAbsolutePath()),
                 CURRENT_DIRECTORY.getName(), "", Long.toString(CURRENT_DIRECTORY.getModified().getTime()));

@@ -1,14 +1,11 @@
 package shiver.me.timbers.file.io;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static shiver.me.timbers.file.io.FileConstants.FILE_EIGHT;
 import static shiver.me.timbers.file.io.FileConstants.FILE_FIVE;
@@ -156,7 +153,8 @@ public class FileSteps {
                 creator.create(FILE_EIGHT.getAbsolutePath()));
     }
 
-    public static void The_file_should_be_able_to_be_serialised(FileSystemElementCreator creator) {
+    public static void The_file_should_be_able_to_be_serialised(FileSystemElementCreator creator)
+            throws JsonProcessingException {
 
         The_file_should_be_able_to_be_serialised(FILE_ONE, creator);
         The_file_should_be_able_to_be_serialised(FILE_TWO, creator);
@@ -168,51 +166,13 @@ public class FileSteps {
         The_file_should_be_able_to_be_serialised(FILE_EIGHT, creator);
     }
 
-    public static void The_file_should_be_able_to_be_serialised(TestFile file, FileSystemElementCreator creator) {
+    public static void The_file_should_be_able_to_be_serialised(TestFile file, FileSystemElementCreator creator)
+            throws JsonProcessingException {
 
         final String serialisedFile = The_file_system_element_should_be_able_to_be_serialised(
                 creator.create(file.getAbsolutePath()), file.getName(), file.getExtension(),
                 Long.toString(file.getModified().getTime()));
 
         assertThat("the input stream should never be serialised.", serialisedFile, not(containsString("inputStream")));
-    }
-
-    public static void The_file_should_produce_an_input_stream(FileCreator creator) {
-
-        The_file_should_produce_an_input_stream(creator.create(FILE_ONE.getAbsolutePath()));
-        The_file_should_produce_an_input_stream(creator.create(FILE_TWO.getAbsolutePath()));
-        The_file_should_produce_an_input_stream(creator.create(FILE_THREE.getAbsolutePath()));
-        The_file_should_produce_an_input_stream(creator.create(FILE_FOUR.getAbsolutePath()));
-    }
-
-    private static void The_file_should_produce_an_input_stream(File file) {
-
-        assertNotNull("the file should produce an input stream.", file.getInputStream());
-    }
-
-    public static void The_files_input_stream_should_contain(FileCreator creator) {
-
-        The_files_input_stream_should_contain(new DefaultFileContentGetter<String>(), creator);
-    }
-
-    public static void The_files_input_stream_should_contain(DefaultFileContentGetter<String> getter,
-                                                             FileCreator creator) {
-
-        The_files_input_stream_should_read_to(getter.get(FILE_ONE), creator.create(FILE_ONE.getAbsolutePath()));
-        The_files_input_stream_should_read_to(getter.get(FILE_TWO), creator.create(FILE_TWO.getAbsolutePath()));
-        The_files_input_stream_should_read_to(getter.get(FILE_THREE), creator.create(FILE_THREE.getAbsolutePath()));
-        The_files_input_stream_should_read_to(getter.get(FILE_FOUR), creator.create(FILE_FOUR.getAbsolutePath()));
-    }
-
-    private static void The_files_input_stream_should_read_to(String text, File file) {
-
-        try {
-
-            assertEquals("the files text should be correct.", text, IOUtils.toString(file.getInputStream()));
-
-        } catch (IOException e) {
-
-            throw new AssertionError(e);
-        }
     }
 }

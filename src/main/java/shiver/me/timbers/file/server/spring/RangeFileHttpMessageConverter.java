@@ -17,7 +17,7 @@ import static shiver.me.timbers.file.server.spring.Responses.CONTENT_RANGE;
  *
  * @author Karl Bennett
  */
-public class RangeFileHttpMessageConverter extends FileHttpMessageConverter<RangeFile> {
+public class RangeFileHttpMessageConverter extends StreamFileHttpMessageConverter<RangeFile> {
 
     @Override
     public boolean canWrite(Class<?> clazz, MediaType mediaType) {

@@ -1,8 +1,11 @@
 package shiver.me.timbers.file.server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 import shiver.me.timbers.file.io.File;
 import shiver.me.timbers.file.io.InvalidPathException;
+import shiver.me.timbers.file.io.StreamFile;
+import shiver.me.timbers.file.io.StreamFileCreator;
 
 import java.io.IOException;
 
@@ -14,13 +17,13 @@ import static shiver.me.timbers.file.io.FileConstants.FILE_TWO;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_be_able_to_be_serialised;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_correct_equality;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_the_correct_to_string_value;
-import static shiver.me.timbers.file.io.FileSteps.The_file_should_produce_an_input_stream;
 import static shiver.me.timbers.file.io.FileSteps.The_files_extension_should_be_correct;
-import static shiver.me.timbers.file.io.FileSteps.The_files_input_stream_should_contain;
 import static shiver.me.timbers.file.io.FileSteps.The_files_mime_type_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_modification_date_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_name_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_size_should_be_correct;
+import static shiver.me.timbers.file.io.StreamFileSteps.The_file_should_produce_an_input_stream;
+import static shiver.me.timbers.file.io.StreamFileSteps.The_files_input_stream_should_contain;
 import static shiver.me.timbers.file.server.RangeFileSteps.I_can_read_a_files_partial_input_stream;
 import static shiver.me.timbers.file.server.RangeFileSteps.I_cannot_skip_an_invalid_input_stream;
 import static shiver.me.timbers.file.server.RangeFiles.buildRangeFile;
@@ -39,13 +42,13 @@ public class RangeFileTest {
         final Range range = mock(Range.class);
         when(range.isValid()).thenReturn(false);
 
-        new RangeFile(mock(File.class), range);
+        new RangeFile(mock(StreamFile.class), range);
     }
 
     @Test(expected = RequestedRangeNotSatisfiableException.class)
     public void I_cannot_create_a_range_file_with_a_range_with_an_invalid_file_size() {
 
-        final File file = mock(File.class);
+        final StreamFile file = mock(StreamFile.class);
         when(file.getSize()).thenReturn(3L);
 
         new RangeFile(file, new Range(0, 1, 2));
@@ -54,7 +57,7 @@ public class RangeFileTest {
     @Test(expected = NullPointerException.class)
     public void I_cannot_create_a_range_file_with_a_null_range() {
 
-        new RangeFile(mock(File.class), null);
+        new RangeFile(mock(StreamFile.class), null);
     }
 
     @Test
@@ -106,7 +109,7 @@ public class RangeFileTest {
     }
 
     @Test
-    public void I_can_serialise_a_file() {
+    public void I_can_serialise_a_file() throws JsonProcessingException {
 
         The_file_should_be_able_to_be_serialised(new RangeFileCreator());
     }
@@ -133,5 +136,28 @@ public class RangeFileTest {
     public void I_cannot_skip_a_range_files_invalid_input_stream() throws IOException {
 
         I_cannot_skip_an_invalid_input_stream(new RangeFileCreator());
+    }
+
+    public class RangeFileCreator extends AbstractPartialFileCreator<RangeFile>
+            implements StreamFileCreator<RangeFile> {
+
+        public RangeFileCreator() {
+        }
+
+        public RangeFileCreator(long start, long end) {
+            super(start, end);
+        }
+
+        @Override
+        public RangeFile create(StreamFile file, long start, long end) {
+
+            return new RangeFile(file, new Range(start, end, file.getSize()));
+        }
+
+        @SuppressWarnings("unchecked")
+        public <R extends File> Class<R> type() {
+
+            return (Class<R>) RangeFile.class;
+        }
     }
 }

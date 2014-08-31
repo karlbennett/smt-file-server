@@ -1,5 +1,6 @@
 package shiver.me.timbers.file.io;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,14 +13,11 @@ import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_be_able_to_be_serialised;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_correct_equality;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_the_correct_to_string_value;
-import static shiver.me.timbers.file.io.FileSteps.The_file_should_produce_an_input_stream;
 import static shiver.me.timbers.file.io.FileSteps.The_files_extension_should_be_correct;
-import static shiver.me.timbers.file.io.FileSteps.The_files_input_stream_should_contain;
 import static shiver.me.timbers.file.io.FileSteps.The_files_mime_type_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_modification_date_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_name_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_size_should_be_correct;
-import static shiver.me.timbers.file.io.JavaFile.getInputStream;
 
 public class JavaFileTest {
 
@@ -126,30 +124,12 @@ public class JavaFileTest {
     }
 
     @Test
-    public void I_can_serialise_a_file() {
+    public void I_can_serialise_a_file() throws JsonProcessingException {
 
         The_file_should_be_able_to_be_serialised(new JavaFileCreator());
     }
 
-    @Test
-    public void I_can_get_a_files_input_stream() {
-
-        The_file_should_produce_an_input_stream(new JavaFileCreator());
-    }
-
-    @Test
-    public void I_can_read_a_files_input_stream() {
-
-        The_files_input_stream_should_contain(new JavaFileCreator());
-    }
-
-    @Test(expected = InvalidPathException.class)
-    public void I_cannot_read_an_invalid_files_input_stream() throws IOException {
-
-        getInputStream(new java.io.File(FILE_ONE.getAbsolutePath() + '\u0000'));
-    }
-
-    private static class JavaFileCreator extends AbstractFileCreator {
+    private static class JavaFileCreator extends AbstractFileCreator<File> {
 
         @Override
         public File create(String path) {

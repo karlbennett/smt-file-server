@@ -1,8 +1,9 @@
 package shiver.me.timbers.file.server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 import shiver.me.timbers.file.io.File;
-import shiver.me.timbers.file.io.InvalidPathException;
+import shiver.me.timbers.file.io.StreamFile;
 
 import java.io.IOException;
 
@@ -17,17 +18,14 @@ import static shiver.me.timbers.file.io.FileConstants.FILE_TWO;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_be_able_to_be_serialised;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_correct_equality;
 import static shiver.me.timbers.file.io.FileSteps.The_file_should_have_the_correct_to_string_value;
-import static shiver.me.timbers.file.io.FileSteps.The_file_should_produce_an_input_stream;
 import static shiver.me.timbers.file.io.FileSteps.The_files_extension_should_be_correct;
-import static shiver.me.timbers.file.io.FileSteps.The_files_input_stream_should_contain;
 import static shiver.me.timbers.file.io.FileSteps.The_files_mime_type_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_modification_date_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_name_should_be_correct;
 import static shiver.me.timbers.file.io.FileSteps.The_files_size_should_be_correct;
-import static shiver.me.timbers.file.server.RangeFileSteps.I_can_read_a_files_partial_input_stream;
-import static shiver.me.timbers.file.server.RangeFileSteps.I_cannot_skip_an_invalid_input_stream;
 import static shiver.me.timbers.file.server.RangeFiles.buildRanges;
 import static shiver.me.timbers.file.server.RangeFiles.buildRangesFile;
+import static shiver.me.timbers.file.server.RangeFiles.buildRangesWithMocks;
 import static shiver.me.timbers.file.server.RangeFiles.mockRange;
 
 public class RangesFileTest {
@@ -44,7 +42,7 @@ public class RangesFileTest {
         final Ranges ranges = mock(Ranges.class);
         when(ranges.size()).thenReturn(0);
 
-        new RangesFile(mock(File.class), ranges);
+        new RangesFile(mock(StreamFile.class), ranges);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -54,7 +52,7 @@ public class RangesFileTest {
         when(ranges.size()).thenReturn(1);
         when(ranges.isValid()).thenReturn(false);
 
-        new RangesFile(mock(File.class), ranges);
+        new RangesFile(mock(StreamFile.class), ranges);
     }
 
     @Test(expected = RequestedRangeNotSatisfiableException.class)
@@ -62,7 +60,7 @@ public class RangesFileTest {
 
         final long fileSize = 3L;
 
-        final File file = mock(File.class);
+        final StreamFile file = mock(StreamFile.class);
         when(file.getSize()).thenReturn(fileSize);
 
         new RangesFile(file, buildRanges(0, 1, 2));
@@ -71,7 +69,7 @@ public class RangesFileTest {
     @Test(expected = NullPointerException.class)
     public void I_cannot_create_a_ranges_file_with_a_null_range() {
 
-        new RangesFile(mock(File.class), null);
+        new RangesFile(mock(StreamFile.class), null);
     }
 
     @Test
@@ -127,39 +125,15 @@ public class RangesFileTest {
     }
 
     @Test
-    public void I_can_serialise_a_file() {
+    public void I_can_serialise_a_file() throws JsonProcessingException {
 
         The_file_should_be_able_to_be_serialised(new RangesFileCreator());
     }
 
     @Test
-    public void I_can_get_a_files_input_stream() {
-
-        The_file_should_produce_an_input_stream(new RangesFileCreator());
-    }
-
-    @Test
-    public void I_can_read_a_files_input_stream() {
-
-        The_files_input_stream_should_contain(new RangesFileCreator());
-    }
-
-    @Test
-    public void I_can_read_a_ranges_files_partial_input_stream() {
-
-        I_can_read_a_files_partial_input_stream(new RangesFileCreator());
-    }
-
-    @Test(expected = InvalidPathException.class)
-    public void I_cannot_skip_a_ranges_files_invalid_input_stream() throws IOException {
-
-        I_cannot_skip_an_invalid_input_stream(new RangesFileCreator());
-    }
-
-    @Test
     public void I_can_iterate_over_the_contained_range_files() throws IOException {
 
-        final Ranges ranges = buildRanges(FILE_ONE);
+        final Ranges ranges = buildRangesWithMocks(FILE_ONE);
 
         int index = 0;
 
@@ -172,7 +146,7 @@ public class RangesFileTest {
     @Test
     public void I_can_get_all_the_contained_ranges() throws IOException {
 
-        final Ranges ranges = buildRanges(FILE_ONE);
+        final Ranges ranges = buildRangesWithMocks(FILE_ONE);
 
         assertEquals("the ranges file ranges should be correct.", ranges, new RangesFile(FILE_ONE, ranges).getRanges());
     }
@@ -180,7 +154,7 @@ public class RangesFileTest {
     @Test
     public void I_can_get_all_the_contained_range_files() throws IOException {
 
-        final Ranges ranges = buildRanges(FILE_ONE);
+        final Ranges ranges = buildRangesWithMocks(FILE_ONE);
 
         final RangesFile file = new RangesFile(FILE_ONE, ranges);
 
@@ -195,27 +169,24 @@ public class RangesFileTest {
     @Test
     public void I_can_get_the_size_of_a_ranges_file() throws IOException {
 
-        final Ranges ranges = buildRanges(FILE_ONE);
+        final Ranges ranges = buildRangesWithMocks(FILE_ONE);
 
         assertThat("the ranges file should contain the correct number of range files.",
                 new RangesFile(FILE_ONE, ranges), hasSize(ranges.size()));
     }
 
-    private static class RangesFileCreator extends RangeFileCreator {
+    private static class RangesFileCreator extends AbstractPartialFileCreator<RangesFile> {
 
-        private RangesFileCreator() {
+        @Override
+        public RangesFile create(StreamFile file, long start, long end) {
+
+            return new RangesFile(file, buildRanges(start, end, file.getSize()));
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public <R extends File> Class<R> type() {
             return (Class<R>) RangesFile.class;
-        }
-
-        @Override
-        protected File create(File file, long start, long end) {
-
-            return new RangesFile(file, buildRanges(start, end, file.getSize()));
         }
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import shiver.me.timbers.file.io.File;
+import shiver.me.timbers.file.io.StreamFile;
 import shiver.me.timbers.file.server.Creator;
 import shiver.me.timbers.file.server.RangeFile;
 import shiver.me.timbers.file.server.Ranges;
@@ -59,12 +60,12 @@ public class FileController {
     }
 
     @ModelAttribute
-    public File file(HttpServletRequest request) {
+    public StreamFile file(HttpServletRequest request) {
 
         return getFileFrom(request);
     }
 
-    private static File getFileFrom(HttpServletRequest request) {
+    private static StreamFile getFileFrom(HttpServletRequest request) {
 
         return getAttribute(FILE, request, new Creator<RuntimeException>() {
             @Override
@@ -75,14 +76,14 @@ public class FileController {
     }
 
     @RequestMapping(method = {GET, HEAD})
-    public File file(File file) throws IOException {
+    public StreamFile file(StreamFile file) throws IOException {
 
         return file;
     }
 
     @RequestMapping(method = {GET, HEAD}, headers = RANGE)
     @ResponseStatus(PARTIAL_CONTENT)
-    public File file(@RequestHeader(value = RANGE) Ranges ranges, File file)
+    public File file(@RequestHeader(value = RANGE) Ranges ranges, StreamFile file)
             throws IOException {
 
         // We must ignore any invalid range headers.

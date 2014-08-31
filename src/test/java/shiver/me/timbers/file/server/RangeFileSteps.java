@@ -1,6 +1,6 @@
 package shiver.me.timbers.file.server;
 
-import shiver.me.timbers.file.io.File;
+import shiver.me.timbers.file.io.StreamFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,11 +8,11 @@ import java.io.InputStream;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static shiver.me.timbers.file.io.FileSteps.The_files_input_stream_should_contain;
+import static shiver.me.timbers.file.io.StreamFileSteps.The_files_input_stream_should_contain;
 
 public class RangeFileSteps {
 
-    public static void I_can_read_a_files_partial_input_stream(RangeFileCreator creator) {
+    public static <S extends StreamFile> void I_can_read_a_files_partial_input_stream(AbstractPartialFileCreator<S> creator) {
 
         final int start = 5;
         final int end = 10;
@@ -22,12 +22,13 @@ public class RangeFileSteps {
         The_files_input_stream_should_contain(new RangeFileContentGetter(start, end), creator);
     }
 
-    public static void I_cannot_skip_an_invalid_input_stream(RangeFileCreator creator) throws IOException {
+    public static <S extends StreamFile> void I_cannot_skip_an_invalid_input_stream(AbstractPartialFileCreator<S> creator)
+            throws IOException {
 
         final InputStream input = mock(InputStream.class);
         when(input.skip(anyLong())).thenThrow(new IOException("test IO exception."));
 
-        final File file = mock(File.class);
+        final StreamFile file = mock(StreamFile.class);
         when(file.getInputStream()).thenReturn(input);
         when(file.getSize()).thenReturn(2L);
 

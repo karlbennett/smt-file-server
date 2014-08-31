@@ -24,16 +24,18 @@ import static shiver.me.timbers.file.server.spring.Responses.addFileHeaders;
  *
  * @author Karl Bennett
  */
-public class RangesFileHttpMessageConverter extends FileHttpMessageConverter<RangesFile> {
+public class RangesFileHttpMessageConverter extends AbstractFileHttpMessageConverter<RangesFile> {
 
     @Override
     public boolean canWrite(Class<?> clazz, MediaType mediaType) {
+
         return RangesFile.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void write(RangesFile rangesFile, MediaType messageContentType, HttpOutputMessage outputMessage)
             throws IOException, HttpMessageNotWritableException {
+
         final HttpHeaders headers = outputMessage.getHeaders();
 
         checkRangeFileIsValid(rangesFile);
@@ -84,6 +86,7 @@ public class RangesFileHttpMessageConverter extends FileHttpMessageConverter<Ran
     }
 
     private static void writeBoundary(String boundary, OutputStream body) throws IOException {
+
         writeNewLine(body);
         IOUtils.write("--", body);
         IOUtils.write(boundary, body);
@@ -91,6 +94,7 @@ public class RangesFileHttpMessageConverter extends FileHttpMessageConverter<Ran
     }
 
     private static void writeContentRange(OutputStream body, RangeFile file) throws IOException {
+
         IOUtils.write("Content-Range: bytes ", body);
         IOUtils.write(file.getRange().toString(), body);
         IOUtils.write("/", body);
@@ -99,16 +103,19 @@ public class RangesFileHttpMessageConverter extends FileHttpMessageConverter<Ran
     }
 
     private static void writeContentType(MediaType contentType, OutputStream body) throws IOException {
+
         IOUtils.write("Content-Type: ", body);
         IOUtils.write(contentType.toString(), body);
         writeNewLine(body);
     }
 
     private static void writeNewLine(OutputStream body) throws IOException {
+
         IOUtils.write("\n", body);
     }
 
     private static void writeBoundaryEnd(String boundary, OutputStream body) throws IOException {
+
         writeNewLine(body);
         IOUtils.write("--", body);
         IOUtils.write(boundary, body);

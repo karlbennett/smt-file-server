@@ -2,8 +2,8 @@ package shiver.me.timbers.file.server;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.io.input.BoundedInputStream;
-import shiver.me.timbers.file.io.File;
 import shiver.me.timbers.file.io.InvalidPathException;
+import shiver.me.timbers.file.io.StreamFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,12 +15,12 @@ import java.util.Date;
  *
  * @author Karl Bennett
  */
-public class RangeFile implements File {
+public class RangeFile implements StreamFile {
 
-    private final File file;
+    private final StreamFile file;
     private final Range range;
 
-    public RangeFile(File file, Range range) {
+    public RangeFile(StreamFile file, Range range) {
 
         if (null == file) {
             throw new NullPointerException("A range file must not have a null file.");

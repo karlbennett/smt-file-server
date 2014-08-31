@@ -1,5 +1,6 @@
 package shiver.me.timbers.file.io;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -117,13 +118,13 @@ public class JavaFileSystemElementTest {
     }
 
     @Test
-    public void I_can_serialise_a_file() {
+    public void I_can_serialise_a_file() throws JsonProcessingException {
 
         The_file_should_be_able_to_be_serialised(new JavaFileSystemElementCreator());
     }
 
     @Test
-    public void I_can_serialise_a_directory() {
+    public void I_can_serialise_a_directory() throws JsonProcessingException {
 
         The_directory_should_be_able_to_be_serialised(new JavaFileSystemElementCreator());
     }

@@ -7,16 +7,17 @@ import java.util.Date;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
-public abstract class AbstractFileCreator implements FileCreator {
+public abstract class AbstractFileCreator<F extends File> implements FileCreator<F> {
 
     @Override
-    public FileSystemElement mock(String name, Date modified) {
+    public F mock(String name, Date modified) {
 
         return mock(name, modified, "txt", 100, TEXT_PLAIN_VALUE);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public File mock(String name, Date modified, String extension, long size, String mimeType) {
+    public F mock(String name, Date modified, String extension, long size, String mimeType) {
 
         final File mock = Mockito.mock(type());
         when(mock.getName()).thenReturn(name);
@@ -24,7 +25,7 @@ public abstract class AbstractFileCreator implements FileCreator {
         when(mock.getExtension()).thenReturn(extension);
         when(mock.getSize()).thenReturn(size);
 
-        return mock;
+        return (F) mock;
     }
 
     @SuppressWarnings("unchecked")

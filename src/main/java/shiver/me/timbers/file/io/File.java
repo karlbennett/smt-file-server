@@ -1,7 +1,5 @@
 package shiver.me.timbers.file.io;
 
-import java.io.InputStream;
-
 /**
  * A {@link FileSystemElement} that can have it's contents read.
  *
@@ -14,6 +12,4 @@ public interface File extends FileSystemElement {
     public long getSize();
 
     public String getMimeType();
-
-    public InputStream getInputStream();
 }

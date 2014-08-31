@@ -1,20 +1,13 @@
 package shiver.me.timbers.file.io;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static java.lang.String.format;
-
 public class JavaFile extends JavaFileSystemElement implements File {
 
-    private final java.io.File file;
     private final String extension;
     private final long size;
     private final String mimeType;
@@ -36,7 +29,6 @@ public class JavaFile extends JavaFileSystemElement implements File {
             throw new InvalidPathException("The supplied path is to a directory not a file.");
         }
 
-        this.file = canonicalFile;
         this.extension = deriveExtension(canonicalFile);
         this.size = file.length();
         this.mimeType = inspectMediaType(canonicalFile, this.extension);
@@ -105,26 +97,6 @@ public class JavaFile extends JavaFileSystemElement implements File {
     @Override
     public String getMimeType() {
         return mimeType;
-    }
-
-    @JsonIgnore
-    @Override
-    public InputStream getInputStream() {
-
-        return getInputStream(file);
-    }
-
-    static InputStream getInputStream(java.io.File file) {
-
-        try {
-
-            return new FileInputStream(file);
-
-        } catch (FileNotFoundException e) {
-
-            throw new InvalidPathException(
-                    format("Could not get the input stream for a file with path: %s", file.getPath()), e);
-        }
     }
 
     @Override

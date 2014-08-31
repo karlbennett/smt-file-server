@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import shiver.me.timbers.file.io.JavaFile;
+import shiver.me.timbers.file.io.JavaStreamFile;
 import shiver.me.timbers.file.io.TestFile;
 import shiver.me.timbers.file.server.servlet.AcceptRangesFilter;
 
@@ -59,7 +59,7 @@ public class FileControllerRangeTest {
 
         mockMvcHeadersForFile(
                 request(HEAD, "/file")
-                        .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
+                        .requestAttr(FILE, new JavaStreamFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", "bytes=0-10"),
                 FILE_ONE
         ).andExpect(status().isPartialContent())
@@ -73,7 +73,7 @@ public class FileControllerRangeTest {
 
         mockMvcHeadersForFile(
                 get("/file")
-                        .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
+                        .requestAttr(FILE, new JavaStreamFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", "bytes=6-12"),
                 FILE_ONE
         ).andExpect(status().isPartialContent())
@@ -96,7 +96,7 @@ public class FileControllerRangeTest {
 
         mockMvcHeadersForFile(
                 get("/file")
-                        .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
+                        .requestAttr(FILE, new JavaStreamFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", "bytes=6-1000000"),
                 FILE_ONE
         ).andExpect(status().isPartialContent())
@@ -110,7 +110,7 @@ public class FileControllerRangeTest {
 
         mockMvcHeadersForFile(
                 get("/file")
-                        .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
+                        .requestAttr(FILE, new JavaStreamFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", "bytes=0-1000000"),
                 FILE_ONE
         ).andExpect(status().isPartialContent())
@@ -127,7 +127,7 @@ public class FileControllerRangeTest {
 
         mockMvcHeadersForFile(
                 get("/file")
-                        .requestAttr(FILE, new JavaFile(FILE_EIGHT.getAbsolutePath()))
+                        .requestAttr(FILE, new JavaStreamFile(FILE_EIGHT.getAbsolutePath()))
                         .header("Range", format("bytes=%d-%d", start, end)),
                 FILE_EIGHT
         ).andExpect(status().isPartialContent())
@@ -142,7 +142,7 @@ public class FileControllerRangeTest {
 
         mockMvcHeadersForFile(
                 request(HEAD, "/file")
-                        .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
+                        .requestAttr(FILE, new JavaStreamFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", "bytes=10-0"),
                 FILE_ONE
         ).andExpect(status().isPartialContent())
@@ -157,7 +157,7 @@ public class FileControllerRangeTest {
 
         mockMvcHeadersForFile(
                 get("/file")
-                        .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
+                        .requestAttr(FILE, new JavaStreamFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", "bytes=10-0"),
                 FILE_ONE
         ).andExpect(status().isPartialContent())
@@ -170,7 +170,7 @@ public class FileControllerRangeTest {
     public void I_cannot_request_a_partial_file_with_no_ranges() throws Exception {
 
         mockMvc.perform(get("/file")
-                .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
+                .requestAttr(FILE, new JavaStreamFile(FILE_ONE.getAbsolutePath()))
                 .header("Range", "bytes=")
         ).andExpect(status().isRequestedRangeNotSatisfiable())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
@@ -183,7 +183,7 @@ public class FileControllerRangeTest {
     public void I_cannot_request_a_partial_file_with_an_invalid_range() throws Exception {
 
         mockMvc.perform(get("/file")
-                .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
+                .requestAttr(FILE, new JavaStreamFile(FILE_ONE.getAbsolutePath()))
                 .header("Range", "bytes=1000-1001")
         ).andExpect(status().isRequestedRangeNotSatisfiable())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
@@ -208,7 +208,7 @@ public class FileControllerRangeTest {
 
         final MvcResult result = mockMvcHeadersForFile(
                 get("/file")
-                        .requestAttr(FILE, new JavaFile(FILE_ONE.getAbsolutePath()))
+                        .requestAttr(FILE, new JavaStreamFile(FILE_ONE.getAbsolutePath()))
                         .header("Range", format("bytes=%d-%d,%d-%d,%d-%d", start1, end1, start2, end2, start3, end3)),
                 FILE_ONE
         ).andExpect(status().isPartialContent())

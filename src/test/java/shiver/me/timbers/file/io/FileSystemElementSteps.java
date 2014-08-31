@@ -62,23 +62,17 @@ public class FileSystemElementSteps {
     }
 
     public static String The_file_system_element_should_be_able_to_be_serialised(FileSystemElement element,
-                                                                                 String... values) {
+                                                                                 String... values)
+            throws JsonProcessingException {
 
-        try {
+        final String serialisedFileSystemElement = OBJECT_MAPPER.writeValueAsString(element);
 
-            final String serialisedFileSystemElement = OBJECT_MAPPER.writeValueAsString(element);
+        for (String value : values) {
 
-            for (String value : values) {
-
-                assertThat(format("the file system element %s could not be serialised.", element),
-                        serialisedFileSystemElement, containsString(value));
-            }
-
-            return serialisedFileSystemElement;
-
-        } catch (JsonProcessingException e) {
-
-            throw new AssertionError("Failed to serialise object.", e);
+            assertThat(format("the file system element %s could not be serialised.", element),
+                    serialisedFileSystemElement, containsString(value));
         }
+
+        return serialisedFileSystemElement;
     }
 }
