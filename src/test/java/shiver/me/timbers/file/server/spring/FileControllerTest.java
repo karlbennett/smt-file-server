@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import shiver.me.timbers.file.io.JavaStreamFile;
 import shiver.me.timbers.file.io.TestFile;
-import shiver.me.timbers.file.server.servlet.AcceptRangesFilter;
 
 import static org.springframework.http.HttpMethod.HEAD;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -44,7 +43,7 @@ public class FileControllerTest {
 
     @Before
     public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).addFilter(new AcceptRangesFilter()).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
 
     @Test

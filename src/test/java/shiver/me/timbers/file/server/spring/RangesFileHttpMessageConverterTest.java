@@ -25,6 +25,8 @@ import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 import static shiver.me.timbers.file.server.RangeFiles.buildRanges;
 import static shiver.me.timbers.file.server.RangeFiles.buildRangesFile;
 import static shiver.me.timbers.file.server.spring.Controllers.buildContent;
+import static shiver.me.timbers.file.server.spring.Controllers.mockFile;
+import static shiver.me.timbers.file.server.spring.Controllers.mockHttpOutputMessage;
 import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_can_check_that_the_message_converter_supports_all_media_types;
 import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_can_check_that_the_type_that_the_message_converter_supports;
 import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_cannot_read_the_supported_type;
@@ -86,10 +88,10 @@ public class RangesFileHttpMessageConverterTest {
         final Ranges ranges = mock(Ranges.class);
         when(ranges.isValid()).thenReturn(false);
 
-        final RangesFile file = mock(RangesFile.class);
+        final RangesFile file = mockFile(RangesFile.class);
         when(file.getRanges()).thenReturn(ranges);
 
-        MESSAGE_CONVERTER.write(file, null, mock(HttpOutputMessage.class));
+        MESSAGE_CONVERTER.write(file, null, mockHttpOutputMessage());
     }
 
     @Test(expected = NullPointerException.class)

@@ -18,6 +18,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static shiver.me.timbers.file.server.spring.Controllers.mockHttpOutputMessage;
 
 public class FileHttpMessageConverterSteps {
 
@@ -57,7 +58,7 @@ public class FileHttpMessageConverterSteps {
 
         final OutputStream output = new ByteArrayOutputStream();
 
-        final HttpOutputMessage message = mockHttpOutputMessage(output);
+        final HttpOutputMessage message = mockHttpOutputMessageWithBody(output);
 
         messageConverter.write(input, null, message);
 
@@ -66,19 +67,14 @@ public class FileHttpMessageConverterSteps {
 
     public static <T> void I_cannot_write_null_input(HttpMessageConverter<T> messageConverter) throws IOException {
 
-        messageConverter.write(null, null, mockHttpOutputMessage(new ByteArrayOutputStream()));
+        messageConverter.write(null, null, mockHttpOutputMessageWithBody(new ByteArrayOutputStream()));
     }
 
     public static <T> void I_cannot_write_input_to_a_null_output_stream(
             HttpMessageConverter<T> messageConverter, T input)
             throws IOException {
 
-        final HttpHeaders headers = mock(HttpHeaders.class);
-
-        final HttpOutputMessage message = mock(HttpOutputMessage.class);
-        when(message.getHeaders()).thenReturn(headers);
-
-        messageConverter.write(input, null, message);
+        messageConverter.write(input, null, mockHttpOutputMessage());
     }
 
     public static <T> void I_cannot_write_input_to_a_null_message(HttpMessageConverter<T> messageConverter, T input)
@@ -87,7 +83,7 @@ public class FileHttpMessageConverterSteps {
         messageConverter.write(input, null, null);
     }
 
-    private static HttpOutputMessage mockHttpOutputMessage(OutputStream output) throws IOException {
+    private static HttpOutputMessage mockHttpOutputMessageWithBody(OutputStream output) throws IOException {
 
         final HttpHeaders headers = new HttpHeaders();
 

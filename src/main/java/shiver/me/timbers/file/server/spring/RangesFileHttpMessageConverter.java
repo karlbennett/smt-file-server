@@ -16,7 +16,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.String.format;
 import static java.util.Collections.singletonMap;
-import static shiver.me.timbers.file.server.spring.Responses.addFileHeaders;
 
 /**
  * This http message converter converts a {@link shiver.me.timbers.file.server.RangesFile} type into a valid response
@@ -33,15 +32,14 @@ public class RangesFileHttpMessageConverter extends AbstractFileHttpMessageConve
     }
 
     @Override
-    public void write(RangesFile rangesFile, MediaType messageContentType, HttpOutputMessage outputMessage)
-            throws IOException, HttpMessageNotWritableException {
-
-        final HttpHeaders headers = outputMessage.getHeaders();
+    public void write(RangesFile rangesFile, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
 
         checkRangeFileIsValid(rangesFile);
 
-        addFileHeaders(headers, rangesFile);
+        final HttpHeaders headers = outputMessage.getHeaders();
 
+        // Must get the responses mime type before any modifications are made to the headers and the content type is
+        // overwritten.
         final MediaType contentType = headers.getContentType();
 
         final String boundary = generateBoundary();

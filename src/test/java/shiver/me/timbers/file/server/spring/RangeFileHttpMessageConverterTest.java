@@ -1,7 +1,6 @@
 package shiver.me.timbers.file.server.spring;
 
 import org.junit.Test;
-import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
 import shiver.me.timbers.file.io.File;
 import shiver.me.timbers.file.server.Range;
@@ -13,6 +12,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
 import static shiver.me.timbers.file.server.RangeFiles.buildRangeFile;
+import static shiver.me.timbers.file.server.spring.Controllers.mockFile;
+import static shiver.me.timbers.file.server.spring.Controllers.mockHttpOutputMessage;
 import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_can_check_that_the_message_converter_supports_all_media_types;
 import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_can_check_that_the_type_that_the_message_converter_supports;
 import static shiver.me.timbers.file.server.spring.FileHttpMessageConverterSteps.I_can_write_the_supported_type;
@@ -63,10 +64,10 @@ public class RangeFileHttpMessageConverterTest {
         final Range range = mock(Range.class);
         when(range.isValid()).thenReturn(false);
 
-        final RangeFile file = mock(RangeFile.class);
+        final RangeFile file = mockFile(RangeFile.class);
         when(file.getRange()).thenReturn(range);
 
-        MESSAGE_CONVERTER.write(file, null, mock(HttpOutputMessage.class));
+        MESSAGE_CONVERTER.write(file, null, mockHttpOutputMessage());
     }
 
     @Test(expected = NullPointerException.class)

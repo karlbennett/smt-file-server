@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import shiver.me.timbers.file.io.JavaStreamFile;
 import shiver.me.timbers.file.io.TestFile;
-import shiver.me.timbers.file.server.servlet.AcceptRangesFilter;
 
 import java.util.Arrays;
 
@@ -51,7 +50,7 @@ public class FileControllerRangeTest {
 
     @Before
     public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).addFilter(new AcceptRangesFilter()).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
 
     @Test

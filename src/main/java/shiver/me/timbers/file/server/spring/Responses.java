@@ -23,6 +23,7 @@ public class Responses {
 
     public static void addFileHeaders(HttpHeaders headers, File file) throws IOException {
 
+        headers.set("Accept-Ranges", "bytes");
         headers.setContentType(MediaType.valueOf(file.getMimeType()));
         headers.setETag(format("\"%s_%d_%d\"", file.getName(), file.getSize(), file.getModified().getTime()));
         headers.set("Last-Modified", HTTP_DATE.print(file.getModified().getTime()));

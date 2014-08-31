@@ -11,13 +11,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import shiver.me.timbers.file.io.JavaDirectory;
-import shiver.me.timbers.file.server.servlet.AcceptRangesFilter;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE;
@@ -30,9 +28,6 @@ import static shiver.me.timbers.file.server.spring.Requests.DIRECTORY;
 @WebAppConfiguration("classpath:")
 public class DirectoryControllerTest {
 
-    private static final String ACCEPT_RANGES = "Accept-Ranges";
-    private static final String ACCEPT_RANGES_VALUE = "bytes";
-
     @Autowired
     private WebApplicationContext wac;
 
@@ -40,7 +35,7 @@ public class DirectoryControllerTest {
 
     @Before
     public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).addFilter(new AcceptRangesFilter()).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
 
     @Test
@@ -48,7 +43,6 @@ public class DirectoryControllerTest {
 
         mockMvc.perform(get("/directory").requestAttr(DIRECTORY, new JavaDirectory(DIRECTORY_ONE.getAbsolutePath())))
                 .andExpect(status().isOk())
-                .andExpect(header().string(ACCEPT_RANGES, ACCEPT_RANGES_VALUE))
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.name").value(DIRECTORY_ONE.getName()))
                 .andExpect(jsonPath("$.modified").exists())
@@ -69,7 +63,6 @@ public class DirectoryControllerTest {
 
         mockMvc.perform(get("/directory"))
                 .andExpect(status().isBadRequest())
-                .andExpect(header().string(ACCEPT_RANGES, ACCEPT_RANGES_VALUE))
                 .andExpect(content().contentType(APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.error").value("No directory provided."));
     }

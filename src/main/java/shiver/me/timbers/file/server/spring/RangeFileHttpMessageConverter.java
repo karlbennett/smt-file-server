@@ -25,15 +25,16 @@ public class RangeFileHttpMessageConverter extends StreamFileHttpMessageConverte
     }
 
     @Override
-    public void write(RangeFile file, MediaType contentType, HttpOutputMessage outputMessage)
+    public void write(RangeFile file, HttpOutputMessage outputMessage)
             throws IOException, HttpMessageNotWritableException {
+
         final HttpHeaders headers = outputMessage.getHeaders();
 
         checkRangeFileIsValid(file);
 
         addContentRange(headers, file);
 
-        super.write(file, contentType, outputMessage);
+        super.write(file, outputMessage);
     }
 
     private static void checkRangeFileIsValid(RangeFile file) {
