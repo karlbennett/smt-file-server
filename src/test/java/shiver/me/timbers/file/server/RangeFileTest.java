@@ -8,8 +8,10 @@ import shiver.me.timbers.file.io.StreamFile;
 import shiver.me.timbers.file.io.StreamFileCreator;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static shiver.me.timbers.file.io.FileConstants.FILE_ONE;
@@ -24,8 +26,6 @@ import static shiver.me.timbers.file.io.FileSteps.The_files_name_should_be_corre
 import static shiver.me.timbers.file.io.FileSteps.The_files_size_should_be_correct;
 import static shiver.me.timbers.file.io.StreamFileSteps.The_file_should_produce_an_input_stream;
 import static shiver.me.timbers.file.io.StreamFileSteps.The_files_input_stream_should_contain;
-import static shiver.me.timbers.file.server.RangeFileSteps.I_can_read_a_files_partial_input_stream;
-import static shiver.me.timbers.file.server.RangeFileSteps.I_cannot_skip_an_invalid_input_stream;
 import static shiver.me.timbers.file.server.RangeFiles.buildRangeFile;
 
 public class RangeFileTest {
@@ -129,13 +129,23 @@ public class RangeFileTest {
     @Test
     public void I_can_read_a_range_files_partial_input_stream() {
 
-        I_can_read_a_files_partial_input_stream(new RangeFileCreator());
+        final int start = 5;
+        final int end = 10;
+
+        The_files_input_stream_should_contain(new RangeFileContentGetter(start, end), new RangeFileCreator(start, end));
     }
 
     @Test(expected = InvalidPathException.class)
     public void I_cannot_skip_a_range_files_invalid_input_stream() throws IOException {
 
-        I_cannot_skip_an_invalid_input_stream(new RangeFileCreator());
+        final InputStream input = mock(InputStream.class);
+        when(input.skip(anyLong())).thenThrow(new IOException("test IO exception."));
+
+        final StreamFile file = mock(StreamFile.class);
+        when(file.getInputStream()).thenReturn(input);
+        when(file.getSize()).thenReturn(2L);
+
+        new RangeFileCreator().create(file, 0, 1).getInputStream();
     }
 
     public class RangeFileCreator extends AbstractPartialFileCreator<RangeFile>

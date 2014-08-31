@@ -13,6 +13,7 @@ import org.springframework.web.context.WebApplicationContext;
 import shiver.me.timbers.file.io.JavaDirectory;
 import shiver.me.timbers.file.server.servlet.AcceptRangesFilter;
 
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -52,9 +53,11 @@ public class DirectoryControllerTest {
                 .andExpect(jsonPath("$.name").value(DIRECTORY_ONE.getName()))
                 .andExpect(jsonPath("$.modified").exists())
                 .andExpect(jsonPath("$.directories").isArray())
+                .andExpect(jsonPath("$.directories").value(hasSize(1)))
                 .andExpect(jsonPath("$.directories[0].name").value(DIRECTORY_TWO.getName()))
                 .andExpect(jsonPath("$.directories[0].modified").exists())
                 .andExpect(jsonPath("$.files").isArray())
+                .andExpect(jsonPath("$.files").value(hasSize(1)))
                 .andExpect(jsonPath("$.files[0].name").value(FILE_TWO.getName()))
                 .andExpect(jsonPath("$.files[0].modified").value(FILE_TWO.getModified().getTime()))
                 .andExpect(jsonPath("$.files[0].extension").value(FILE_TWO.getExtension()))
