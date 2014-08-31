@@ -1,8 +1,7 @@
 package shiver.me.timbers.file.io;
 
 /**
- * This exception is thrown when a file is {@link FileSystemElement} is created with a path to a file that does not
- * exist.
+ * This exception is thrown when a {@link FileSystemElement} is created with a path to a file that does not exist.
  *
  * @author Karl Bennett
  */

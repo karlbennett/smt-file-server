@@ -23,15 +23,13 @@ public class JavaFile extends JavaFileSystemElement implements File {
     public JavaFile(java.io.File file) {
         super(file);
 
-        final java.io.File canonicalFile = getCanonicalFile(file);
-
-        if (canonicalFile.isDirectory()) {
+        if (file.isDirectory()) {
             throw new InvalidPathException("The supplied path is to a directory not a file.");
         }
 
-        this.extension = deriveExtension(canonicalFile);
+        this.extension = deriveExtension(file);
         this.size = file.length();
-        this.mimeType = inspectMediaType(canonicalFile, this.extension);
+        this.mimeType = inspectMediaType(file, this.extension);
     }
 
     private static String deriveExtension(java.io.File canonicalFile) {

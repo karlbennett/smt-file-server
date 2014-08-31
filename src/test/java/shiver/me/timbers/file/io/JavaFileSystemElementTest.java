@@ -63,8 +63,8 @@ public class JavaFileSystemElementTest {
         new JavaFileSystemElement(".");
     }
 
-    @Test
-    public void I_can_create_a_java_file_system_element_with_an_empty_string() {
+    @Test(expected = InvalidPathException.class)
+    public void I_cannot_create_a_java_file_system_element_with_an_empty_string() {
 
         new JavaFileSystemElement("");
     }

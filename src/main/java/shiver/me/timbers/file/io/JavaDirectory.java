@@ -19,13 +19,11 @@ public class JavaDirectory extends JavaFileSystemElement implements Directory {
     public JavaDirectory(java.io.File file) {
         super(file);
 
-        final java.io.File canonicalFile = getCanonicalFile(file);
-
-        if (canonicalFile.isFile()) {
+        if (file.isFile()) {
             throw new InvalidPathException("The supplied path is to a file not a directory.");
         }
 
-        final java.io.File[] files = canonicalFile.listFiles();
+        final java.io.File[] files = file.listFiles();
 
         if (null == files) {
             throw new InvalidPathException("Could not list the contents of the directory.");
@@ -43,12 +41,12 @@ public class JavaDirectory extends JavaFileSystemElement implements Directory {
 
             if (file.isDirectory()) {
 
-                this.directories.add(new JavaFileSystemElement(getCanonicalFile(file).getPath()));
+                this.directories.add(new JavaFileSystemElement(file.getPath()));
             }
 
             if (file.isFile()) {
 
-                this.files.add(new JavaFile(getCanonicalFile(file).getPath()));
+                this.files.add(new JavaFile(file.getPath()));
             }
         }
     }

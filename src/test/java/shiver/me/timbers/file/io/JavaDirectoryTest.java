@@ -85,8 +85,8 @@ public class JavaDirectoryTest {
         new JavaDirectory(".");
     }
 
-    @Test
-    public void I_can_create_a_directory_with_an_empty_string() {
+    @Test(expected = InvalidPathException.class)
+    public void I_cannot_create_a_directory_with_an_empty_string() {
 
         new JavaDirectory("");
     }

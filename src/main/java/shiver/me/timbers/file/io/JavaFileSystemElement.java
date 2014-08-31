@@ -1,6 +1,5 @@
 package shiver.me.timbers.file.io;
 
-import java.io.IOException;
 import java.util.Date;
 
 import static java.lang.String.format;
@@ -20,26 +19,12 @@ public class JavaFileSystemElement implements FileSystemElement {
 
     public JavaFileSystemElement(java.io.File file) {
 
-        final java.io.File canonicalFile = getCanonicalFile(file);
-
-        if (!canonicalFile.exists()) {
+        if (!file.exists()) {
             throw new InvalidPathException(format("Nothing exists at %s", file.getPath()));
         }
 
-        name = canonicalFile.getName();
-        modified = new Date(canonicalFile.lastModified());
-    }
-
-    static java.io.File getCanonicalFile(java.io.File file) {
-
-        try {
-
-            return file.getCanonicalFile();
-
-        } catch (IOException e) {
-
-            throw new InvalidPathException(format("Could not access file system at %s", file.getPath()), e);
-        }
+        name = file.getName();
+        modified = new Date(file.lastModified());
     }
 
     @Override
