@@ -52,7 +52,8 @@ public class FileControllerTest {
     @Test
     public void I_can_check_a_file() throws Exception {
 
-        mockMvcForFile(request(HEAD, "/file").requestAttr(FILE, new JavaStreamFile(FILE_ONE.getAbsolutePath())), FILE_ONE)
+        mockMvcForFile(
+                request(HEAD, "/file").requestAttr(FILE, new JavaStreamFile(FILE_ONE.getAbsolutePath())), FILE_ONE)
                 .andExpect(content().string(""));
     }
 
