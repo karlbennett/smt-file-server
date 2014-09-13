@@ -18,6 +18,9 @@ import static shiver.me.timbers.Constants.TEST_PROPERTIES;
 
 public class FileConstants {
 
+    public static final TestFile<String> LOG4J_FILE = new TextFile(
+            TEST_PROPERTIES.getProperty("absolutePath.log4j"), APPLICATION_XML_VALUE, "xml");
+
     public static final TestFile<String> TEST_PROPERTIES_FILE = new TextFile(
             TEST_PROPERTIES.getProperty("absolutePath.testProperties"), TEXT_PLAIN_VALUE, "properties");
 

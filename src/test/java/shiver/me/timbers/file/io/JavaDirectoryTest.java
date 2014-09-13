@@ -32,6 +32,7 @@ import static shiver.me.timbers.file.io.FileConstants.FILE_SEVEN;
 import static shiver.me.timbers.file.io.FileConstants.FILE_SIX;
 import static shiver.me.timbers.file.io.FileConstants.FILE_THREE;
 import static shiver.me.timbers.file.io.FileConstants.FILE_TWO;
+import static shiver.me.timbers.file.io.FileConstants.LOG4J_FILE;
 import static shiver.me.timbers.file.io.FileConstants.TEST_PROPERTIES_FILE;
 
 public class JavaDirectoryTest {
@@ -138,7 +139,7 @@ public class JavaDirectoryTest {
     public void I_can_get_a_directories_file_list() {
 
         The_directories_list_of_files_should_be_correct(new JavaDirectory(TEST_DIRECTORY.getAbsolutePath()),
-                TEST_PROPERTIES_FILE, FILE_ONE, FILE_FIVE, FILE_SIX, FILE_SEVEN, FILE_EIGHT);
+                LOG4J_FILE, TEST_PROPERTIES_FILE, FILE_ONE, FILE_FIVE, FILE_SIX, FILE_SEVEN, FILE_EIGHT);
         The_directories_list_of_files_should_be_correct(new JavaDirectory(DIRECTORY_ONE.getAbsolutePath()), FILE_TWO);
         The_directories_list_of_files_should_be_correct(new JavaDirectory(DIRECTORY_TWO.getAbsolutePath()), FILE_THREE);
         The_directories_list_of_files_should_be_correct(new JavaDirectory(DIRECTORY_THREE.getAbsolutePath()));
