@@ -3,7 +3,6 @@ package shiver.me.timbers.file.server.spring;
 import org.junit.Test;
 import shiver.me.timbers.file.io.Directory;
 import shiver.me.timbers.file.io.File;
-import shiver.me.timbers.file.io.StreamFile;
 
 import static org.mockito.Mockito.mock;
 
@@ -28,7 +27,7 @@ public class DirectoryArgumentResolverTest {
     @Test
     public void I_can_resolve_a_directory_from_the_request() throws Exception {
 
-        final StreamFile directory = mock(StreamFile.class);
+        final Directory directory = mock(Directory.class);
 
         ArgumentResolverSteps.I_can_resolve_a_directory_from_the_request(RESOLVER, "directory", directory);
     }
