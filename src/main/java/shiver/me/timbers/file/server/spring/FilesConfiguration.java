@@ -28,6 +28,7 @@ public class FilesConfiguration extends WebMvcConfigurationSupport {
     /**
      * @return the path of the directory that this application started up in. It is then used as the base for all
      *         subsequents resource requests.
+     * @throws IOException if the root path does not exist.
      */
     @Bean
     public static String rootPath() throws IOException {

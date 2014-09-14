@@ -19,7 +19,7 @@ public class Requests {
     public static final String RANGE = "Range";
 
     public static Directory getDirectoryFrom(HttpServletRequest request) {
-        // FIXME: Need unit tests.
+
         return getAttributeFrom(DIRECTORY, request, new Creator<RuntimeException>() {
             @Override
             public RuntimeException create() {
@@ -29,7 +29,7 @@ public class Requests {
     }
 
     public static StreamFile getFileFrom(HttpServletRequest request) {
-        // FIXME: Need unit tests.
+
         return getAttributeFrom(FILE, request, new Creator<RuntimeException>() {
             @Override
             public RuntimeException create() {
