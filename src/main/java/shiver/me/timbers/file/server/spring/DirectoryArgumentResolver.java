@@ -17,7 +17,7 @@ import static shiver.me.timbers.file.server.spring.Requests.getDirectoryFrom;
  * @author Karl Bennett
  */
 public class DirectoryArgumentResolver implements HandlerMethodArgumentResolver {
-    // FIXME: Need unit tests.
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return Directory.class.isAssignableFrom(parameter.getParameterType());

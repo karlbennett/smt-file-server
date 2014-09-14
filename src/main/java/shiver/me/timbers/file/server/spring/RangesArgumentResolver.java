@@ -19,7 +19,7 @@ import static shiver.me.timbers.file.server.spring.Requests.getFileFrom;
  * @author Karl Bennett
  */
 public class RangesArgumentResolver implements HandlerMethodArgumentResolver {
-    // FIXME: Need unit tests.
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return Ranges.class.isAssignableFrom(parameter.getParameterType());

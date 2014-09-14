@@ -17,7 +17,7 @@ import static shiver.me.timbers.file.server.spring.Requests.getFileFrom;
  * @author Karl Bennett
  */
 public class StreamFileArgumentResolver implements HandlerMethodArgumentResolver {
-    // FIXME: Need unit tests.
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return StreamFile.class.isAssignableFrom(parameter.getParameterType());
