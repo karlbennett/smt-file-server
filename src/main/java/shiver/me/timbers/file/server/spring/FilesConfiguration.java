@@ -5,7 +5,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.view.InternalResourceView;
+import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,6 +33,21 @@ public class FilesConfiguration extends WebMvcConfigurationSupport {
     public static String rootPath() throws IOException {
 
         return new java.io.File("").getCanonicalPath();
+    }
+
+    @Override
+    protected void configureViewResolvers(ViewResolverRegistry registry) {
+
+        final UrlBasedViewResolver resolver = new UrlBasedViewResolver();
+        resolver.setViewClass(InternalResourceView.class);
+
+        registry.viewResolver(resolver);
+    }
+
+    @Override
+    protected void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+
+        configurer.favorPathExtension(false);
     }
 
     @Override
