@@ -12,14 +12,12 @@ import shiver.me.timbers.file.server.RangesFile;
 import shiver.me.timbers.file.server.RequestedRangeNotSatisfiableException;
 
 import java.io.IOException;
-import java.util.Map;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 import static org.springframework.http.HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
-import static shiver.me.timbers.file.server.spring.GlobalControllerAdvice.buildError;
 import static shiver.me.timbers.file.server.spring.Requests.RANGE;
 
 /**
@@ -56,15 +54,15 @@ public class FileController {
 
     @ExceptionHandler
     @ResponseStatus(BAD_REQUEST)
-    public Map<String, String> noFileProvided(NoFileException e) {
+    public Error noFileProvided(NoFileException e) {
 
-        return buildError(e);
+        return new Error(e);
     }
 
     @ExceptionHandler
     @ResponseStatus(REQUESTED_RANGE_NOT_SATISFIABLE)
-    public Map<String, String> requestedRangeNotSatisfiable(RequestedRangeNotSatisfiableException e) {
+    public Error requestedRangeNotSatisfiable(RequestedRangeNotSatisfiableException e) {
 
-        return buildError(e);
+        return new Error(e);
     }
 }

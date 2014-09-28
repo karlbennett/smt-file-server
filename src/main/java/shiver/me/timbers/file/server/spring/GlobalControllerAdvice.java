@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import shiver.me.timbers.file.io.InvalidPathException;
 
-import java.util.Map;
-
-import static java.util.Collections.singletonMap;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
@@ -22,13 +19,8 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler
     @ResponseStatus(NOT_FOUND)
-    public Map<String, String> invalidPath(InvalidPathException e) {
+    public Error invalidPath(InvalidPathException e) {
 
-        return buildError(e);
-    }
-
-    public static Map<String, String> buildError(Throwable throwable) {
-
-        return singletonMap("error", throwable.getMessage());
+        return new Error(e);
     }
 }
