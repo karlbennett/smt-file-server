@@ -22,7 +22,7 @@ import javax.servlet.annotation.WebServlet;
                 // Tell Spring where the Java configuration file is.
                 @WebInitParam(
                         name = "contextConfigLocation",
-                        value = "shiver.me.timbers.file.server.spring.FilesConfiguration"
+                        value = "shiver.me.timbers.file.server.spring.config.FilesConfiguration"
                 )},
         asyncSupported = true
 )
