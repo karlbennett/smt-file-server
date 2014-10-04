@@ -5,9 +5,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.mvc.method.annotation.DefaultAwareExceptionHandlerExceptionResolver;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
+import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
@@ -20,9 +24,7 @@ import java.util.List;
  * @author Karl Bennett
  */
 @Configuration
-// Tell Spring which package to look in for controller classes.
 @ComponentScan("shiver.me.timbers.file.server")
-// Spring MVC is enabled by extending WebMvcConfigurationSupport
 public class FilesConfiguration extends WebMvcConfigurationSupport {
 
     /**
@@ -59,6 +61,36 @@ public class FilesConfiguration extends WebMvcConfigurationSupport {
         converters.add(new StreamFileHttpMessageConverter<>());
 
         addDefaultHttpMessageConverters(converters);
+    }
+
+    @Override
+    protected void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
+        super.addDefaultHandlerExceptionResolvers(exceptionResolvers);
+
+        HandlerExceptionResolver defaultHandlerExceptionResolver = findHandlerExceptionResolver(
+                DefaultHandlerExceptionResolver.class, exceptionResolvers);
+
+        ExceptionHandlerExceptionResolver old = findHandlerExceptionResolver(
+                ExceptionHandlerExceptionResolver.class, exceptionResolvers);
+
+        DefaultAwareExceptionHandlerExceptionResolver current =
+                new DefaultAwareExceptionHandlerExceptionResolver(defaultHandlerExceptionResolver, old);
+
+        exceptionResolvers.set(0, current);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends HandlerExceptionResolver> T findHandlerExceptionResolver(
+            Class<T> type, List<HandlerExceptionResolver> exceptionResolvers) {
+
+        for (HandlerExceptionResolver exceptionResolver : exceptionResolvers) {
+
+            if (type.isAssignableFrom(exceptionResolver.getClass())) {
+                return (T) exceptionResolver;
+            }
+        }
+
+        throw new IllegalArgumentException("Cannot find HandlerExceptionResolver of type " + type.getName());
     }
 
     @Override

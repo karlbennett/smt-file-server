@@ -17,6 +17,7 @@ import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_FOUR;
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_ONE;
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_THREE;
 import static shiver.me.timbers.file.io.DirectoryConstants.DIRECTORY_TWO;
+import static shiver.me.timbers.file.io.DirectoryConstants.ORG_DIRECTORY;
 import static shiver.me.timbers.file.io.DirectoryConstants.SHIVER_DIRECTORY;
 import static shiver.me.timbers.file.io.DirectoryConstants.TEST_DIRECTORY;
 import static shiver.me.timbers.file.io.DirectorySteps.The_directories_modification_date_should_be_correct;
@@ -126,7 +127,7 @@ public class JavaDirectoryTest {
     public void I_can_get_a_directories_directory_list() {
 
         The_directories_list_of_directories_should_be_correct(new JavaDirectory(TEST_DIRECTORY.getAbsolutePath()),
-                DIRECTORY_ONE, DIRECTORY_THREE, SHIVER_DIRECTORY);
+                DIRECTORY_ONE, DIRECTORY_THREE, ORG_DIRECTORY, SHIVER_DIRECTORY);
         The_directories_list_of_directories_should_be_correct(new JavaDirectory(DIRECTORY_ONE.getAbsolutePath()),
                 DIRECTORY_TWO);
         The_directories_list_of_directories_should_be_correct(new JavaDirectory(DIRECTORY_TWO.getAbsolutePath()));

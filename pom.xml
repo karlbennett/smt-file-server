@@ -63,6 +63,9 @@
                         <configuration>
                             <includes>
                                 <include>shiver.me.timbers.file.*</include>
+                                <include>
+                                    org.springframework.web.servlet.mvc.method.annotation.DefaultAwareExceptionHandlerExceptionResolver
+                                </include>
                             </includes>
                         </configuration>
                     </execution>

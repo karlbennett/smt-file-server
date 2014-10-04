@@ -10,9 +10,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.util.NestedServletException;
 
-import static org.junit.Assert.fail;
 import static org.springframework.http.HttpMethod.HEAD;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -120,13 +118,7 @@ public class FilesRoutingControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.error").value(ERROR_MESSAGE));
 
-        try {
-
-            mockMvc.perform(get(path).accept("never/supported"))
-                    .andExpect(status().isNotAcceptable());
-            fail();
-        } catch (NestedServletException e) {
-            // This exception should not be thrown but it is.
-        }
+        mockMvc.perform(get(path).accept("never/supported"))
+                .andExpect(status().isNotAcceptable());
     }
 }

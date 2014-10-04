@@ -30,6 +30,9 @@ public class DirectoryConstants {
     public static final TestDirectory DIRECTORY_FOUR = new ConstantTestDirectory(
             TEST_PROPERTIES.getProperty("absolutePath.dirfour"), EMPTY_DIRECTORIES, EMPTY_FILES);
 
+    public static final TestDirectory ORG_DIRECTORY = new ConstantTestDirectory(
+            TEST_PROPERTIES.getProperty("absolutePath.org"), EMPTY_DIRECTORIES, EMPTY_FILES);
+
     public static final TestDirectory SHIVER_DIRECTORY = new ConstantTestDirectory(
             TEST_PROPERTIES.getProperty("absolutePath.shiver"), EMPTY_DIRECTORIES, EMPTY_FILES);
 
