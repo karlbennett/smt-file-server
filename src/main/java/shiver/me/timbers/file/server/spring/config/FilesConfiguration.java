@@ -68,19 +68,21 @@ public class FilesConfiguration extends WebMvcConfigurationSupport {
         converters.add(new StreamFileHttpMessageConverter<>());
 
         addDefaultHttpMessageConverters(converters);
+
+
     }
 
     @Override
     protected void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
         super.addDefaultHandlerExceptionResolvers(exceptionResolvers);
 
-        HandlerExceptionResolver defaultHandlerExceptionResolver = findHandlerExceptionResolver(
+        final HandlerExceptionResolver defaultHandlerExceptionResolver = findType(
                 DefaultHandlerExceptionResolver.class, exceptionResolvers);
 
-        ExceptionHandlerExceptionResolver old = findHandlerExceptionResolver(
+        final ExceptionHandlerExceptionResolver old = findType(
                 ExceptionHandlerExceptionResolver.class, exceptionResolvers);
 
-        DefaultAwareExceptionHandlerExceptionResolver current =
+        final DefaultAwareExceptionHandlerExceptionResolver current =
                 new DefaultAwareExceptionHandlerExceptionResolver(defaultHandlerExceptionResolver,
                         new WrappedExceptionHandlerExceptionResolver(old));
 
@@ -88,13 +90,12 @@ public class FilesConfiguration extends WebMvcConfigurationSupport {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends HandlerExceptionResolver> T findHandlerExceptionResolver(
-            Class<T> type, List<HandlerExceptionResolver> exceptionResolvers) {
+    public static <T> T findType(Class<T> type, List list) {
 
-        for (HandlerExceptionResolver exceptionResolver : exceptionResolvers) {
+        for (Object element : list) {
 
-            if (type.isAssignableFrom(exceptionResolver.getClass())) {
-                return (T) exceptionResolver;
+            if (type.isAssignableFrom(element.getClass())) {
+                return (T) element;
             }
         }
 

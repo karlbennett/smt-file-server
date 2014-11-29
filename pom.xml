@@ -20,7 +20,7 @@
 
     <description>A simple file server.</description>
 
-    <url>http://karlbennett.github.io/${project.artifactId}/</url>
+    <url>http://shiver-me-timbers.github.io/${project.artifactId}/</url>
 
     <properties>
         <jackson.version>[2.4.1]</jackson.version>

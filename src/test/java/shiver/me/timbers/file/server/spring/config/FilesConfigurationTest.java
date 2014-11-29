@@ -16,12 +16,14 @@ import shiver.me.timbers.file.server.spring.controller.FilesRoutingController;
 import shiver.me.timbers.file.server.spring.controller.GlobalControllerAdvice;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
-import static shiver.me.timbers.file.server.spring.config.FilesConfiguration.findHandlerExceptionResolver;
+import static shiver.me.timbers.file.server.spring.config.FilesConfiguration.findType;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = FilesConfiguration.class)
@@ -83,20 +85,29 @@ public class FilesConfigurationTest {
     }
 
     @Test
-    public void I_can_find_a_handler_exception_resolver() {
+    public void I_can_find_a_type() {
 
-        final DefaultHandlerExceptionResolver defaultHandlerExceptionResolver = mock(DefaultHandlerExceptionResolver.class);
-        final ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver = mock(ExceptionHandlerExceptionResolver.class);
+        class TypeOne {
+        }
 
-        final List<HandlerExceptionResolver> resolvers = new ArrayList<>();
-        resolvers.add(defaultHandlerExceptionResolver);
-        resolvers.add(exceptionHandlerExceptionResolver);
-        resolvers.add(mock(HandlerExceptionResolver.class));
+        class TypeTwo {
+        }
 
-        assertEquals("the default handler exception resolver should be found", defaultHandlerExceptionResolver,
-                findHandlerExceptionResolver(DefaultHandlerExceptionResolver.class, resolvers));
-        assertEquals("the exception handler exception resolver should be found", exceptionHandlerExceptionResolver,
-                findHandlerExceptionResolver(ExceptionHandlerExceptionResolver.class, resolvers));
+        class TypeThree extends TypeTwo {
+        }
+
+        class TypeFour {
+        }
+
+
+        final TypeOne typeOne = mock(TypeOne.class);
+        final TypeThree typethree = mock(TypeThree.class);
+
+        final List<Object> resolvers = asList(typeOne, typethree, mock(TypeFour.class));
+
+        assertEquals("type one should be found", typeOne, findType(TypeOne.class, resolvers));
+        assertEquals("type three should be found", typethree, findType(TypeTwo.class, resolvers));
+        assertEquals("type three should be found", typethree, findType(TypeThree.class, resolvers));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -105,6 +116,6 @@ public class FilesConfigurationTest {
         final List<HandlerExceptionResolver> resolvers = new ArrayList<>();
         resolvers.add(mock(HandlerExceptionResolver.class));
 
-        findHandlerExceptionResolver(DefaultHandlerExceptionResolver.class, resolvers);
+        findType(DefaultHandlerExceptionResolver.class, resolvers);
     }
 }
